@@ -6,7 +6,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 @immutable
 abstract class ProfileEvent {}
 
-class LoadProfiles extends ProfileEvent {}
+class LoadProfiles extends ProfileEvent {
+  final String userId;
+
+  LoadProfiles(this.userId);
+}
 
 class AddProfile extends ProfileEvent {
   final Profile profile;
@@ -58,9 +62,11 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     on<LoadProfiles>((event, emit) async {
       try {
         emit(ProfileLoading());
-        final profiles = await _firestoreService.getProfiles().first;
+        final profiles = await _firestoreService.getProfiles(event.userId).first;
+        print("Pobrano profile: $profiles");
         emit(ProfileLoaded(profiles));
       } catch (e) {
+        print("Błąd podczas pobierania profili: $e");
         emit(ProfileError('Failed to load profiles.'));
       }
     });

@@ -7,21 +7,16 @@ import 'medication_screen.dart';
 import 'package:medication/Services/authorization.dart';
 
 class ProfileView extends StatefulWidget {
-  const ProfileView({Key? key}) : super(key: key);
+  final String userId;
+
+  const ProfileView({
+    Key? key,
+    required this.userId,
+  }) : super(key: key);
 
   @override
   State<ProfileView> createState() => _ProfileViewState();
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.lightBlue),
-        useMaterial3: true,
-      ),
-      home: const ProfileView(),
-    );
-  }
 }
 
 class _ProfileViewState extends State<ProfileView> {
@@ -30,7 +25,8 @@ class _ProfileViewState extends State<ProfileView> {
 
   @override
   void initState() {
-    BlocProvider.of<ProfileBloc>(context).add(LoadProfiles());
+    BlocProvider.of<ProfileBloc>(context).add(LoadProfiles(widget.userId));
+
     super.initState();
   }
 
@@ -180,7 +176,7 @@ class _ProfileViewState extends State<ProfileView> {
                                       onPressed: () {
                                         _showEditDialog(context, profile);
                                       },
-                                      icon: Icon(Icons.edit),
+                                      icon: const Icon(Icons.edit),
                                     ),
                                   ),
                                   Expanded(
@@ -189,7 +185,7 @@ class _ProfileViewState extends State<ProfileView> {
                                       onPressed: () {
                                         _showDeleteDialog(context, profile);
                                       },
-                                      icon: Icon(Icons.delete),
+                                      icon: const Icon(Icons.delete),
                                     ),
                                   ),
                                 ],
@@ -204,7 +200,7 @@ class _ProfileViewState extends State<ProfileView> {
               ],
             );
           } else if (state is ProfileOperationSuccess) {
-            _profileBloc.add(LoadProfiles()); // Reload profiles
+            _profileBloc.add(LoadProfiles(widget.userId)); // Reload profiles
             return Container();
           } else if (state is ProfileError) {
             return Center(
@@ -223,7 +219,7 @@ class _ProfileViewState extends State<ProfileView> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _showAddProfileDialog(context);
+          _showAddProfileDialog(context, widget.userId);
         },
         tooltip: 'Dodaj nowy profil',
         child: const Icon(Icons.person_add_alt),
@@ -231,7 +227,7 @@ class _ProfileViewState extends State<ProfileView> {
     );
   }
 }
-void _showAddProfileDialog(BuildContext context) {
+void _showAddProfileDialog(BuildContext context, String userId) {
   bool isAnimalController = false;
   Color? button1Color = Theme.of(context).colorScheme.inversePrimary;
   Color? button2Color = Colors.grey[200];
@@ -341,6 +337,7 @@ void _showAddProfileDialog(BuildContext context) {
                           profileId: DateTime.now().toString(),
                           name: name,
                           isAnimal: isAnimalController,
+                          userId: userId,
                         );
                         BlocProvider.of<ProfileBloc>(context).add(AddProfile(profile));
                         Navigator.pop(context);
@@ -484,7 +481,8 @@ void _showEditDialog(BuildContext context, Profile profile) {
                 final updatedProfile = Profile(
                     profileId: profile.profileId,
                     name: name,
-                    isAnimal: profile.isAnimal
+                    isAnimal: profile.isAnimal,
+                    userId: profile.userId,
                 );
                 BlocProvider.of<ProfileBloc>(context).add(UpdateProfile(updatedProfile));
                 Navigator.pop(context);

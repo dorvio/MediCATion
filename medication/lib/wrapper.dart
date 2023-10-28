@@ -14,7 +14,7 @@ class Wrapper extends StatelessWidget {
     if(isSigned == null) {
     return const SignInView();
     } else {
-      return const ProfileView();
+      return ProfileView(userId: isSigned.uid.toString());
     }
 
 

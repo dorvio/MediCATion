@@ -17,30 +17,32 @@ class FirestoreService {
   final CollectionReference _usagesCollection =
   FirebaseFirestore.instance.collection('usages');
 
-  Stream<List<Profile>> getProfiles() {
-    return _profilesCollection.snapshots().map((snapshot) {
+  Stream<List<Profile>> getProfiles(String userId) {
+    return _profilesCollection.where('user_id', isEqualTo: userId).snapshots().map((snapshot) {
       return snapshot.docs.map((doc) {
         Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
         return Profile(
           profileId: doc.id,
           name: data['name'],
           isAnimal: data['is_animal'],
+          userId: data['user_id'],
         );
       }).toList();
     });
   }
 
+
   Future<void> addProfile(Profile profile) {
     return _profilesCollection.add({
       'name': profile.name,
       'is_animal': profile.isAnimal,
+      'user_id': profile.userId,
     });
   }
 
   Future<void> updateProfile(Profile profile) {
     return _profilesCollection.doc(profile.profileId.toString()).update({
       'name': profile.name,
-      'is_animal': profile.isAnimal,
     });
   }
 
