@@ -195,13 +195,12 @@ class _RegisterViewState extends State<RegisterView> {
                           ),
                           onPressed: () async {
                             if(_formKey.currentState!.validate()){
-                              String erMessage = '';
                               dynamic result = await _authorizationService.registerEmail(email, password);
                               if(result  == null) {
                                 errorMessage = "Email już w użyciu. Zaloguj się.";
                               }
                               else {
-                                _goToProfileScreen(context);
+                                errorMessage = '';
                               }
                             }
                           },
@@ -219,11 +218,4 @@ class _RegisterViewState extends State<RegisterView> {
         )
     );
   }
-}
-
-void _goToProfileScreen(BuildContext context) {
-  Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => ProfileView()),
-  );
 }

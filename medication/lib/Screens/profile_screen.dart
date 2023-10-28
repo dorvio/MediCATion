@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../Database_classes/Profile.dart';
 import '../Blocks/profile_bloc.dart';
-import '../Blocks/type_bloc.dart';
 import 'medication_screen.dart';
+import 'package:medication/Services/authorization.dart';
 
 class ProfileView extends StatefulWidget {
   const ProfileView({Key? key}) : super(key: key);
@@ -26,6 +26,8 @@ class ProfileView extends StatefulWidget {
 
 class _ProfileViewState extends State<ProfileView> {
 
+  final AuthorizationService _authorizationService = AuthorizationService();
+
   @override
   void initState() {
     BlocProvider.of<ProfileBloc>(context).add(LoadProfiles());
@@ -40,12 +42,60 @@ class _ProfileViewState extends State<ProfileView> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text('MediCATion'),
         centerTitle: true,
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.menu),
-            onPressed: () {},
+      ),
+      endDrawer: Drawer(
+        backgroundColor: Colors.grey[900],
+          clipBehavior: Clip.none,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20),
+                bottomLeft: Radius.circular(20)),
           ),
-        ],
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            const SizedBox(
+              height: 93, // To change the height of DrawerHeader
+              width: double.infinity, // To Change the width of DrawerHeader
+              child: DrawerHeader(
+                decoration: BoxDecoration(
+                    color: Color.fromARGB(255, 174, 199, 255),
+                ),
+                child: Center(
+                  child: Text(
+                    'Menu',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 30,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            OutlinedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.grey[900],
+              ),
+              onPressed: (){
+                _authorizationService.signOut();
+              },
+              child: const Row(
+                children: [
+                  Icon(Icons.logout, color: Colors.white),
+                  SizedBox(width: 20),
+                  Text(
+                      "Wyloguj się",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                        ),
+                      ),
+                ],
+              ),
+            ),
+          ],
+        )
+
       ),
       backgroundColor: Colors.grey[900],
       body: BlocBuilder<ProfileBloc, ProfileState>(

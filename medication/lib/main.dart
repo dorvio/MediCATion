@@ -7,8 +7,9 @@ import 'package:medication/Blocks/medication_bloc.dart';
 import 'package:medication/Blocks/usage_bloc.dart';
 import 'firebase_options.dart';
 import 'Services/firestore_service.dart';
-import 'Screens/profile_screen.dart';
-import 'Screens/signIn_screen.dart';
+import 'wrapper.dart';
+import 'package:provider/provider.dart';
+import 'Services/authorization.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,10 +25,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
         providers: [
-          //BlocProvider(
-          //  create: (context) =>   AuthenticationBloc(AuthenticationRepositoryImpl())
-          //   ..add(AuthenticationStarted()),
-          // ),
           BlocProvider<ProfileBloc>(
             create: (context) => ProfileBloc(FirestoreService()),
           ),
@@ -40,6 +37,7 @@ class MyApp extends StatelessWidget {
           BlocProvider<UsageBloc>(
             create: (context) => UsageBloc(FirestoreService()),
           ),
+          StreamProvider.value(value: AuthorizationService().user, initialData: null),
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
@@ -48,7 +46,7 @@ class MyApp extends StatelessWidget {
                   seedColor: Colors.blueAccent
               )
           ),
-          home: const SignInView(),
+          home: const Wrapper(),
         )
     );
   }

@@ -209,7 +209,6 @@ class _SignInViewState extends State<SignInView> {
                         errorMessage = "Email lub hasło jest nieprawidłowe. Spróbuj ponownie lub zarejestruj się.";
                       } else {
                         errorMessage = '';
-                        _goToProfileScreen(context);
                       }
                     }
                   },
@@ -233,12 +232,6 @@ void _goToRegisterScreen(BuildContext context) {
   Navigator.push(
     context,
     MaterialPageRoute(builder: (context) => RegisterView()),
-  );
-}
-void _goToProfileScreen(BuildContext context) {
-  Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => ProfileView()),
   );
 }
 

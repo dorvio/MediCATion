@@ -3,6 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 class AuthorizationService {
   final FirebaseAuth _authorization = FirebaseAuth.instance;
 
+  Stream<User?> get user {
+    return _authorization.authStateChanges();
+  }
+
   Future signInEmail(String email, String password) async {
     try{
       UserCredential result =  await _authorization.signInWithEmailAndPassword(email: email, password: password);
