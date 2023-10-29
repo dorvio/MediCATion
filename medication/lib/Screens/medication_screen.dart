@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:medication/Screens/new_medication_screen.dart';
 import '../Blocks/usage_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:medication/Services/authorization.dart';
@@ -102,33 +103,28 @@ class _MedicationViewState extends State<MedicationView> {
             final usages = state.usages;
             return Column(
               children: [
-                const SizedBox(height: 10),
-                Container(
-                  height: 50,
-                  width: double.infinity,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        widget.profile.isAnimal == false ? Icons.person : Icons.pets,
-                        color: const Color.fromARGB(255, 174, 199, 255),
-                        size: 40,
-                      ),
-                      const SizedBox(width: 10),
-                      Text(
-                      widget.profile.name,
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      widget.profile.isAnimal == false ? Icons.person : Icons.pets,
+                      color: const Color.fromARGB(255, 174, 199, 255),
+                      size: 35,
+                    ),
+                    Text(
+                      widget.profile.name.toUpperCase(),
                       style: GoogleFonts.tiltNeon(
                         textStyle: const TextStyle(
                           color: Color.fromARGB(255, 174, 199, 255),
-                          fontSize: 35,
+                          fontSize: 30,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
                   ],
-                  ),
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 5),
                 Expanded(
                   child: ListView.builder(
                     itemCount: usages.length,
@@ -236,9 +232,17 @@ class _MedicationViewState extends State<MedicationView> {
                 color:Colors.white),
             label: "Utwórz nowy lek",
             backgroundColor: Color.fromARGB(255, 175, 77, 152),
+            onTap: () => goToNewMedicationScreen(context),
           ),
         ],
       ),
     );
   }
+}
+
+void goToNewMedicationScreen(BuildContext context) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => NewMedicationView()),
+  );
 }
