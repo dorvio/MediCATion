@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medication/Screens/new_medication_screen.dart';
 import 'package:medication/CustomIcons/app_icons_icons.dart';
-import '../Blocks/usage_bloc.dart';
+import '../Blocs/usage_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:medication/Services/authorization.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -233,7 +233,7 @@ class _MedicationViewState extends State<MedicationView> {
                 color:Colors.white),
             label: "Utwórz nowy lek",
             backgroundColor: Color.fromARGB(255, 175, 77, 152),
-            onTap: () => goToNewMedicationScreen(context),
+            onTap: () => goToNewMedicationScreen(context, widget.profile.isAnimal),
           ),
         ],
       ),
@@ -241,9 +241,9 @@ class _MedicationViewState extends State<MedicationView> {
   }
 }
 
-void goToNewMedicationScreen(BuildContext context) {
+void goToNewMedicationScreen(BuildContext context, bool animal) {
   Navigator.push(
     context,
-    MaterialPageRoute(builder: (context) => NewMedicationView()),
+    MaterialPageRoute(builder: (context) => NewMedicationView(animal: animal)),
   );
 }

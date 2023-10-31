@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:medication/Blocks/profile_bloc.dart';
-import 'package:medication/Blocks/type_bloc.dart';
-import 'package:medication/Blocks/medication_bloc.dart';
-import 'package:medication/Blocks/usage_bloc.dart';
+import 'package:medication/Blocs/profile_bloc.dart';
+import 'package:medication/Blocs/medication_bloc.dart';
+import 'package:medication/Blocs/usage_bloc.dart';
 import 'firebase_options.dart';
 import 'Services/firestore_service.dart';
 import 'wrapper.dart';
@@ -27,9 +26,6 @@ class MyApp extends StatelessWidget {
         providers: [
           BlocProvider<ProfileBloc>(
             create: (context) => ProfileBloc(FirestoreService()),
-          ),
-          BlocProvider<TypeBloc>(
-            create: (context) => TypeBloc(FirestoreService()),
           ),
           BlocProvider<MedicationBloc>(
             create: (context) => MedicationBloc(FirestoreService()),
