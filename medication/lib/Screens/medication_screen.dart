@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medication/Screens/new_medication_screen.dart';
+import 'package:medication/CustomIcons/app_icons_icons.dart';
 import '../Blocks/usage_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:medication/Services/authorization.dart';
@@ -219,8 +220,8 @@ class _MedicationViewState extends State<MedicationView> {
         overlayOpacity: 0,
         children: [
           SpeedDialChild(
-            child: Icon(
-                MdiIcons.pill,
+            child: const Icon(
+                AppIcons.person_pill,
                 color: Colors.white,
             ),
             label: "Dodaj lek",
@@ -228,7 +229,7 @@ class _MedicationViewState extends State<MedicationView> {
           ),
           SpeedDialChild(
             child: Icon(
-                MdiIcons.heartPlus,
+                MdiIcons.pill,
                 color:Colors.white),
             label: "Utwórz nowy lek",
             backgroundColor: Color.fromARGB(255, 175, 77, 152),
