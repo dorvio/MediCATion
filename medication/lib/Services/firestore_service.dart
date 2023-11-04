@@ -102,4 +102,8 @@ class FirestoreService {
       'profile_id': usage.profileId,
     });
   }
+
+  Future<void> deleteUsage(String usageId) {
+    return _usagesCollection.doc(usageId).delete();
+  }
 }

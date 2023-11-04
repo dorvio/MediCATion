@@ -180,7 +180,7 @@ class _MedicationViewState extends State<MedicationView> {
                                     flex: 1,
                                     child: IconButton(
                                       onPressed: () {
-                                        //_showDeleteDialog(context, profile);
+                                        _showDeleteDialog(context, usage);
                                       },
                                       icon: const Icon(Icons.delete),
                                     ),
@@ -196,6 +196,9 @@ class _MedicationViewState extends State<MedicationView> {
                 ),
               ],
             );
+          } else if (state is UsageOperationSuccess) {
+            BlocProvider.of<UsageBloc>(context).add(LoadUsages()); // Reload usages
+            return Container();
           } else if (state is UsageError) {
             return Center(
               child: Text(
@@ -245,5 +248,81 @@ void goToNewMedicationScreen(BuildContext context, bool animal) {
   Navigator.push(
     context,
     MaterialPageRoute(builder: (context) => NewMedicationView(animal: animal)),
+  );
+}
+
+void _showDeleteDialog(BuildContext context, Usage usage) {
+  final _formKey = GlobalKey<FormState>();
+  String name = '';
+
+  showDialog(
+    context: context,
+    builder: (context) {
+      return StatefulBuilder(
+        builder: (context, setState) {
+          return AlertDialog(
+            backgroundColor: Colors.grey[900],
+            title: Text(
+              'Czy na pewno chcesz usunąć lek ${usage.medicationName}?',
+              style: const TextStyle(color: Colors.white),
+            ),
+            content: Form(
+              key: _formKey,
+              child: TextFormField(
+                maxLength: 15,
+                style: const TextStyle(color: Colors.white),
+                decoration: const InputDecoration(
+                  labelText: 'Podaj nazwę',
+                  labelStyle: TextStyle(color: Colors.white),
+                  counterStyle: TextStyle(color: Colors.white),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey),
+                  ),
+                ),
+                validator: (text) {
+                  if (text == null || text.isEmpty) {
+                    return 'Wpisz nazwę';
+                  } else if (text != usage.medicationName){
+                    return 'Nieprawidłowa nazwa';
+                  }
+                  return null;
+                },
+                onChanged: (text) => setState(() => name = text),
+              ),
+            ),
+            actions: [
+              TextButton(
+                style: TextButton.styleFrom(
+                  foregroundColor: Theme.of(context).colorScheme.inversePrimary,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                  ),
+                ),
+                child: const Text('NIE'),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+              TextButton(
+                style: TextButton.styleFrom(
+                  foregroundColor: Theme.of(context).colorScheme.inversePrimary,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                  ),
+                ),
+                child: const Text('TAK'),
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    BlocProvider.of<UsageBloc>(context).add(
+                        DeleteUsage(usage.usageId));
+                    Navigator.pop(context);
+                  } else {}
+                },
+              ),
+            ],
+          );
+        },
+      );
+    },
   );
 }
