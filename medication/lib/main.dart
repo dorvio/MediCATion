@@ -4,9 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medication/Blocs/profile_bloc.dart';
 import 'package:medication/Blocs/medication_bloc.dart';
 import 'package:medication/Blocs/usage_bloc.dart';
+import 'package:medication/Screens/splash_screen.dart';
 import 'firebase_options.dart';
 import 'Services/firestore_service.dart';
-import 'wrapper.dart';
+import 'package:medication/Screens/splash_screen.dart';
 import 'package:provider/provider.dart';
 import 'Services/authorization.dart';
 
@@ -42,7 +43,7 @@ class MyApp extends StatelessWidget {
                   seedColor: Colors.blueAccent
               )
           ),
-          home: const Wrapper(),
+          home: const SplashView(),
         )
     );
   }
