@@ -195,7 +195,7 @@ class _ProfileViewState extends State<ProfileView> {
               ],
             );
           } else if (state is ProfileOperationSuccess) {
-            _profileBloc.add(LoadProfiles(widget.userId)); // Reload profiles
+            BlocProvider.of<ProfileBloc>(context).add(LoadProfiles(widget.userId)); // Reload profiles
             return Container();
           } else if (state is ProfileError) {
             return Center(

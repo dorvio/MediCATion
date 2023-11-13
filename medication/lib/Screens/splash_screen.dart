@@ -60,9 +60,11 @@ Future<void> checkInternetConnection() async {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   var connectivityResult = await Connectivity().checkConnectivity();
   if (connectivityResult == ConnectivityResult.none) {
+    print("No internet bro");
   } else {
+    print("Yo got the net");
     // await firestore.terminate();
-    // await firestore.clearPersistence();
+    await firestore.clearPersistence();
+    await firestore.enablePersistence();
   }
-  await firestore.enablePersistence();
 }
