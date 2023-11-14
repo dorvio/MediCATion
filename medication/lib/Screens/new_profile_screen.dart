@@ -4,13 +4,18 @@ import 'package:google_fonts/google_fonts.dart';
 import '../Database_classes/Profile.dart';
 import '../Blocs/profile_bloc.dart';
 import 'package:medication/Services/authorization.dart';
+import 'package:flutter_toggle_tab/flutter_toggle_tab.dart';
 
 class NewProfileView extends StatefulWidget {
-  final String userId;
+  final String? userId;
+  final bool editMode;
+  final Profile? profile;
 
   const NewProfileView({
     Key? key,
     required this.userId,
+    required this.editMode,
+    required this.profile,
   }) : super(key: key);
 
   @override
@@ -22,11 +27,20 @@ class _NewProfileViewState extends State<NewProfileView> {
 
   final AuthorizationService _authorizationService = AuthorizationService();
 
-  bool isAnimalController = false;
   Color? button1Color = Color.fromARGB(255, 174, 199, 255);
   Color? button2Color = Colors.grey[200];
   final _formKey = GlobalKey<FormState>();
   String name = '';
+  int _tabIconIndexSelected = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    name = widget.editMode ? widget.profile!.name : '';
+    if(widget.editMode){
+      _tabIconIndexSelected = widget.profile!.isAnimal ? 1 : 0;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -100,12 +114,12 @@ class _NewProfileViewState extends State<NewProfileView> {
                 mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                    "Dodaj nowy profil",
-                    style: GoogleFonts.tiltNeon(
-                      textStyle: const TextStyle(
-                        color: Color.fromARGB(255, 174, 199, 255),
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
+                      widget.editMode ? 'Edytuj profil' :'Dodaj nowy profil',
+                      style: GoogleFonts.tiltNeon(
+                        textStyle: const TextStyle(
+                          color: Color.fromARGB(255, 174, 199, 255),
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
@@ -116,6 +130,7 @@ class _NewProfileViewState extends State<NewProfileView> {
                   key: _formKey,
                   child: TextFormField(
                     maxLength: 15,
+                    initialValue: widget.editMode ? widget.profile?.name ?? '' : null,
                     style: const TextStyle(color: Colors.white),
                     decoration: InputDecoration(
                       labelText: 'Nazwa profilu',
@@ -149,55 +164,34 @@ class _NewProfileViewState extends State<NewProfileView> {
                     onChanged: (text) => setState(() => name = text),
                   ),
                 ),
-                const SizedBox(height: 50),
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(30.0),
-                    border: Border.all(
-                      color: Colors.grey,
-                    ),
-                    color: Colors.grey[800],
+                const SizedBox(height: 40),
+                FlutterToggleTab(
+                  width: 75,
+                  height: 60,
+                  selectedTextStyle: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 15,
                   ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        flex: 1,
-                        child: IconButton(
-                          tooltip: 'Profil człowieka',
-                          onPressed: () {
-                            setState(() {
-                              isAnimalController = false;
-                              button1Color = Theme.of(context).colorScheme.inversePrimary;
-                              button2Color = Colors.grey[200];
-                            });
-                          },
-                          icon: const Icon(Icons.person),
-                          color: button1Color,
-                          iconSize: 40,
-                        ),
-                      ),
-                      Expanded(
-                        flex: 1,
-                        child: IconButton(
-                          tooltip: 'Profil zwierzęcia',
-                          onPressed: () {
-                            setState(() {
-                              isAnimalController = true;
-                              button1Color = Colors.grey[200];
-                              button2Color = Theme.of(context).colorScheme.inversePrimary;
-                            });
-                          },
-                          icon: const Icon(Icons.pets),
-                          color: button2Color,
-                          iconSize: 40,
-                        ),
-                      ),
-                    ],
+                  unSelectedTextStyle: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 15,
                   ),
+                  selectedBackgroundColors: const [Color.fromARGB(255, 174, 199, 255)],
+                  unSelectedBackgroundColors: [Colors.grey[800]!],
+                  labels: ['Człowiek', 'Zwierzę'],
+                  selectedLabelIndex: (index) {
+                    if (!widget.editMode) {
+                      setState(() {
+                        _tabIconIndexSelected = index;
+                      });
+                    } else {}
+                  },
+                  selectedIndex: _tabIconIndexSelected,
+                  icons: [Icons.person, Icons.pets],
+                  iconSize: 25,
                 ),
-                const SizedBox(height: 150),
+                const SizedBox(height: 80),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
@@ -236,14 +230,29 @@ class _NewProfileViewState extends State<NewProfileView> {
                       ),
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          final profile = Profile(
+                          if(widget.editMode){
+                            if (name == widget.profile?.name){
+                              Navigator.pop(context);
+                            } else {
+                              final updatedProfile = Profile(
+                              profileId: widget.profile!.profileId,
+                              name: name,
+                              isAnimal: widget.profile!.isAnimal,
+                              userId: widget.profile!.userId,
+                              );
+                              BlocProvider.of<ProfileBloc>(context).add(UpdateProfile(updatedProfile));
+                              Navigator.pop(context);
+                            }
+                          } else {
+                            final profile = Profile(
                             profileId: DateTime.now().toString(),
                             name: name,
-                            isAnimal: isAnimalController,
-                            userId: widget.userId,
-                          );
-                          BlocProvider.of<ProfileBloc>(context).add(AddProfile(profile));
-                          Navigator.pop(context);
+                            isAnimal: _tabIconIndexSelected == 0 ? false : true,
+                            userId: widget.userId!,
+                            );
+                            BlocProvider.of<ProfileBloc>(context).add(AddProfile(profile));
+                            Navigator.pop(context);
+                            }
                         } else {}
                       },
                     ),

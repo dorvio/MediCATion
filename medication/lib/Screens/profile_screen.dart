@@ -170,7 +170,7 @@ class _ProfileViewState extends State<ProfileView> {
                                     flex: 1,
                                     child: IconButton(
                                       onPressed: () {
-                                        _showEditDialog(context, profile);
+                                        _modifyProfile(context, profile);
                                       },
                                       icon: const Icon(Icons.edit),
                                     ),
@@ -215,8 +215,7 @@ class _ProfileViewState extends State<ProfileView> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _goToNewProfileScreen(context, widget.userId);
-          //_showAddProfileDialog(context, widget.userId);
+          _createNewProfile(context, widget.userId);
         },
         tooltip: 'Dodaj nowy profil',
         child: const Icon(Icons.person_add_alt),
@@ -302,98 +301,6 @@ void _showDeleteDialog(BuildContext context, Profile profile) {
   );
 }
 
-void _showEditDialog(BuildContext context, Profile profile) {
-  bool showError = false;
-  final _formKey = GlobalKey<FormState>();
-  TextEditingController _nameController = TextEditingController(text: profile.name);
-  String name = profile.name;
-
-  showDialog(
-    context: context,
-    builder: (context) {
-    return StatefulBuilder(
-      builder: (context, setState) {
-      return AlertDialog(
-        backgroundColor: Colors.grey[900],
-        title: const Text(
-          'Zmień nazwę',
-          style: const TextStyle(color: Colors.white),
-        ),
-        content: Form(
-          key: _formKey,
-          child: TextFormField(
-            controller: _nameController,
-            maxLength: 15,
-            style: const TextStyle(color: Colors.white),
-            decoration: InputDecoration(
-              labelText: 'Podaj nazwę',
-              labelStyle: const TextStyle(color: Colors.white),
-              counterStyle: const TextStyle(color: Colors.white),
-              enabledBorder: const OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.grey),
-              ),
-              errorText: showError ? 'Pole nie może być puste!' : null,
-            ),
-            validator: (text) {
-              if (text == null || text.isEmpty) {
-                setState(() {
-                  showError = true;
-                });
-                return 'Pole nie może być puste!';
-              }
-              setState(() {
-                showError = false;
-              });
-              return null;
-            },
-            onChanged: (text) => setState(() => name = text),
-          ),
-        ),
-        actions: [
-          TextButton(
-            style: TextButton.styleFrom(
-              foregroundColor: Theme.of(context).colorScheme.inversePrimary,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30.0),
-              ),
-            ),
-            child: const Text('Anuluj'),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-          TextButton(
-            style: TextButton.styleFrom(
-              foregroundColor: Theme.of(context).colorScheme.inversePrimary,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30.0),
-              ),
-            ),
-            child: const Text('Zapisz'),
-            onPressed: () {
-              if (name == profile.name){
-                Navigator.pop(context);
-              }
-              else if (_formKey.currentState!.validate()) {
-                final updatedProfile = Profile(
-                    profileId: profile.profileId,
-                    name: name,
-                    isAnimal: profile.isAnimal,
-                    userId: profile.userId,
-                );
-                BlocProvider.of<ProfileBloc>(context).add(UpdateProfile(updatedProfile));
-                Navigator.pop(context);
-              } else {}
-            },
-          ),
-        ],
-      );
-    },
-    );
-    },
-  );
-}
-
 void _goToMedicationScreen(BuildContext context, Profile profile) {
   Navigator.push(
     context,
@@ -401,9 +308,16 @@ void _goToMedicationScreen(BuildContext context, Profile profile) {
   );
 }
 
-void _goToNewProfileScreen(BuildContext context, String userId) {
+void _createNewProfile(BuildContext context, String userId) {
   Navigator.push(
     context,
-    MaterialPageRoute(builder: (context) => NewProfileView(userId: userId)),
+    MaterialPageRoute(builder: (context) => NewProfileView(userId: userId, editMode: false, profile: null)),
+  );
+}
+
+void _modifyProfile(BuildContext context, Profile profile) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => NewProfileView(userId: null, editMode: true, profile: profile)),
   );
 }
