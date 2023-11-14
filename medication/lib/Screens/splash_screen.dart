@@ -3,6 +3,12 @@ import 'package:flutter/services.dart';
 import 'package:medication/wrapper.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../Blocs/usage_bloc.dart';
+import '../Blocs/profile_bloc.dart';
+import '../Blocs/medication_bloc.dart';
+import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SplashView extends StatefulWidget {
   const SplashView({Key? key}) : super(key: key);
@@ -17,7 +23,7 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
   void initState(){
     super.initState();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
-    checkInternetConnection();
+    checkInternetConnection(context);
     Future.delayed(const Duration(seconds: 3), () {
       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const Wrapper()));
     });
@@ -39,7 +45,6 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
             color: Color.fromARGB(255, 174, 199, 255),
           ),
           Text(
-            //'',//isConnected ? '' : "Brak połączenia. Dane nie zostaną załadowane",
             '',
             style: const TextStyle(
               color: Colors.white,
@@ -53,18 +58,28 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
 }
 
 Future<void> clearFirestoreCache() async {
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  await firestore.clearPersistence();
+}
+void downloadData (BuildContext context){
+  final isSigned = Provider.of<User?>(context);
+  if(isSigned == null) {
+  } else {
+    String userId = isSigned.uid.toString();
+    BlocProvider.of<ProfileBloc>(context).add(LoadProfiles(userId));
+    //TODO add fetching only users usages
+    BlocProvider.of<UsageBloc>(context).add(LoadUsages());
+    BlocProvider.of<MedicationBloc>(context).add(LoadMedications(true));
+    BlocProvider.of<MedicationBloc>(context).add(LoadMedications(false));
+  }
 
 
 }
-Future<void> checkInternetConnection() async {
-  FirebaseFirestore firestore = FirebaseFirestore.instance;
+Future<void> checkInternetConnection(BuildContext context) async {
   var connectivityResult = await Connectivity().checkConnectivity();
   if (connectivityResult == ConnectivityResult.none) {
-    print("No internet bro");
   } else {
-    print("Yo got the net");
-    // await firestore.terminate();
-    await firestore.clearPersistence();
-    await firestore.enablePersistence();
+    clearFirestoreCache();
+    downloadData(context);
   }
 }

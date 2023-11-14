@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:medication/Screens/new_profile_screen.dart';
 import '../Database_classes/Profile.dart';
 import '../Blocs/profile_bloc.dart';
 import 'medication_screen.dart';
@@ -51,8 +52,8 @@ class _ProfileViewState extends State<ProfileView> {
           padding: EdgeInsets.zero,
           children: [
             const SizedBox(
-              height: 93, // To change the height of DrawerHeader
-              width: double.infinity, // To Change the width of DrawerHeader
+              height: 93,
+              width: double.infinity,
               child: DrawerHeader(
                 decoration: BoxDecoration(
                     color: Color.fromARGB(255, 174, 199, 255),
@@ -214,7 +215,8 @@ class _ProfileViewState extends State<ProfileView> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _showAddProfileDialog(context, widget.userId);
+          _goToNewProfileScreen(context, widget.userId);
+          //_showAddProfileDialog(context, widget.userId);
         },
         tooltip: 'Dodaj nowy profil',
         child: const Icon(Icons.person_add_alt),
@@ -222,11 +224,8 @@ class _ProfileViewState extends State<ProfileView> {
     );
   }
 }
-void _showAddProfileDialog(BuildContext context, String userId) {
-  bool isAnimalController = false;
-  Color? button1Color = Theme.of(context).colorScheme.inversePrimary;
-  Color? button2Color = Colors.grey[200];
-  bool showError = false;
+
+void _showDeleteDialog(BuildContext context, Profile profile) {
   final _formKey = GlobalKey<FormState>();
   String name = '';
 
@@ -237,8 +236,8 @@ void _showAddProfileDialog(BuildContext context, String userId) {
         builder: (context, setState) {
           return AlertDialog(
             backgroundColor: Colors.grey[900],
-            title: const Text(
-              'Dodaj profil',
+            title: Text(
+              'Czy na pewno chcesz usunąć profil ${profile.name}?',
               style: const TextStyle(color: Colors.white),
             ),
             content: Form(
@@ -246,157 +245,60 @@ void _showAddProfileDialog(BuildContext context, String userId) {
               child: TextFormField(
                 maxLength: 15,
                 style: const TextStyle(color: Colors.white),
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Podaj nazwę',
-                  labelStyle: const TextStyle(color: Colors.white),
-                  counterStyle: const TextStyle(color: Colors.white),
-                  enabledBorder: const OutlineInputBorder(
+                  labelStyle: TextStyle(color: Colors.white),
+                  counterStyle: TextStyle(color: Colors.white),
+                  enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.grey),
                   ),
-                  errorText: showError ? 'Pole nie może być puste!' : null,
                 ),
                 validator: (text) {
                   if (text == null || text.isEmpty) {
-                    setState(() {
-                      showError = true;
-                    });
-                    return 'Pole nie może być puste!';
+                    return 'Wpisz nazwę';
+                  } else if (text != profile.name) {
+                    return 'Nieprawidłowa nazwa';
                   }
-                  setState(() {
-                    showError = false;
-                  });
                   return null;
                 },
                 onChanged: (text) => setState(() => name = text),
               ),
             ),
             actions: [
-              const SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  IconButton(
-                    onPressed: () {
-                      setState(() {
-                        isAnimalController = false;
-                        button1Color = Theme.of(context).colorScheme.inversePrimary;
-                        button2Color = Colors.grey[200];
-                      });
-                    },
-                    icon: const Icon(Icons.person),
-                    color: button1Color,
-                    iconSize: 40,
+              TextButton(
+                style: TextButton.styleFrom(
+                  foregroundColor: Theme.of(context).colorScheme.inversePrimary,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30.0),
                   ),
-                  const SizedBox(width: 30),
-                  IconButton(
-                    onPressed: () {
-                      setState(() {
-                        isAnimalController = true;
-                        button1Color = Colors.grey[200];
-                        button2Color = Theme.of(context).colorScheme.inversePrimary;
-                      });
-                    },
-                    icon: const Icon(Icons.pets),
-                    color: button2Color,
-                    iconSize: 40,
-                  ),
-                ],
+                ),
+                child: const Text('NIE'),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
               ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    style: TextButton.styleFrom(
-                      foregroundColor: Theme.of(context).colorScheme.inversePrimary,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0),
-                      ),
-                    ),
-                    child: const Text('Anuluj'),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
+              TextButton(
+                style: TextButton.styleFrom(
+                  foregroundColor: Theme.of(context).colorScheme.inversePrimary,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30.0),
                   ),
-                  TextButton(
-                    style: TextButton.styleFrom(
-                      foregroundColor: Theme.of(context).colorScheme.inversePrimary,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0),
-                      ),
-                    ),
-                    child: const Text('Zapisz'),
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        final profile = Profile(
-                          profileId: DateTime.now().toString(),
-                          name: name,
-                          isAnimal: isAnimalController,
-                          userId: userId,
-                        );
-                        BlocProvider.of<ProfileBloc>(context).add(AddProfile(profile));
-                        Navigator.pop(context);
-                      } else {}
-                    },
-                  ),
-                ],
+                ),
+                child: const Text('TAK'),
+                onPressed: () {
+                  if(_formKey.currentState!.validate()){
+                    BlocProvider.of<ProfileBloc>(context).add(
+                        DeleteProfile(profile.profileId),
+                    );
+                    Navigator.pop(context);
+                  } else {}
+                },
               ),
             ],
           );
         },
       );
     },
-  );
-}
-
-
-void _showDeleteDialog(BuildContext context, Profile profile){
-  showDialog(
-      context: context,
-      builder: (context)
-  {
-    return AlertDialog(
-      backgroundColor: Colors.grey[900],
-      title: Text(
-        'Czy na pewno chcesz usunąć profil ${profile.name}?',
-        style: const TextStyle(color: Colors.white),
-      ),
-      actions: [
-        TextButton(
-          style: TextButton.styleFrom(
-            foregroundColor: Theme
-                .of(context)
-                .colorScheme
-                .inversePrimary,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30.0),
-            ),
-          ),
-          child: const Text('NIE'),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        TextButton(
-          style: TextButton.styleFrom(
-            foregroundColor: Theme
-                .of(context)
-                .colorScheme
-                .inversePrimary,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30.0),
-            ),
-          ),
-          child: const Text('TAK'),
-          onPressed: () {
-            BlocProvider.of<ProfileBloc>(context).add(
-                DeleteProfile(profile.profileId));
-            Navigator.pop(context);
-          },
-        ),
-      ],
-    );
-  },
   );
 }
 
@@ -496,5 +398,12 @@ void _goToMedicationScreen(BuildContext context, Profile profile) {
   Navigator.push(
     context,
     MaterialPageRoute(builder: (context) => MedicationView(profile: profile)),
+  );
+}
+
+void _goToNewProfileScreen(BuildContext context, String userId) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => NewProfileView(userId: userId)),
   );
 }
