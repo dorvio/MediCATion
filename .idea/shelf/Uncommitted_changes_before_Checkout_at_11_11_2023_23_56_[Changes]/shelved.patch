@@ -1,0 +1,12 @@
+Index: medication/lib/Screens/splash_screen.dart
+===================================================================
+diff --git a/medication/lib/Screens/splash_screen.dart b/medication/lib/Screens/splash_screen.dart
+--- a/medication/lib/Screens/splash_screen.dart	
++++ b/medication/lib/Screens/splash_screen.dart	
+@@ -64,5 +64,5 @@
+     // await firestore.terminate();
+     // await firestore.clearPersistence();
+   }
+-  await firestore.enablePersistence();
++  //firestore.settings = const Settings(persistenceEnabled: true);
+ }
