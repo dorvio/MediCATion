@@ -13,6 +13,11 @@ class AddUsage extends UsageEvent {
 
   AddUsage(this.usage);
 }
+class DeleteUsage extends UsageEvent {
+  final String usageId;
+
+  DeleteUsage(this.usageId);
+}
 
 @immutable
 abstract class UsageState {}
@@ -60,6 +65,16 @@ class UsageBloc extends Bloc<UsageEvent, UsageState> {
         emit(UsageOperationSuccess('Usage added successfully.'));
       } catch (e) {
         emit(UsageError('Failed to add usages.'));
+      }
+    });
+
+    on<DeleteUsage>((event, emit) async {
+      try {
+        emit(UsageLoading());
+        await _firestoreService.deleteUsage(event.usageId);
+        emit(UsageOperationSuccess('Usage deleted successfully.'));
+      } catch (e) {
+        emit(UsageError('Failed to delete usage.'));
       }
     });
 

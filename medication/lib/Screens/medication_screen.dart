@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../Blocks/usage_bloc.dart';
+import 'package:medication/Screens/new_medication_screen.dart';
+import 'package:medication/CustomIcons/app_icons_icons.dart';
+import '../Blocs/usage_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:medication/Services/authorization.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -102,33 +104,28 @@ class _MedicationViewState extends State<MedicationView> {
             final usages = state.usages;
             return Column(
               children: [
-                const SizedBox(height: 10),
-                Container(
-                  height: 50,
-                  width: double.infinity,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        widget.profile.isAnimal == false ? Icons.person : Icons.pets,
-                        color: const Color.fromARGB(255, 174, 199, 255),
-                        size: 40,
-                      ),
-                      const SizedBox(width: 10),
-                      Text(
-                      widget.profile.name,
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      widget.profile.isAnimal == false ? Icons.person : Icons.pets,
+                      color: const Color.fromARGB(255, 174, 199, 255),
+                      size: 35,
+                    ),
+                    Text(
+                      widget.profile.name.toUpperCase(),
                       style: GoogleFonts.tiltNeon(
                         textStyle: const TextStyle(
                           color: Color.fromARGB(255, 174, 199, 255),
-                          fontSize: 35,
+                          fontSize: 30,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
                   ],
-                  ),
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 5),
                 Expanded(
                   child: ListView.builder(
                     itemCount: usages.length,
@@ -183,7 +180,7 @@ class _MedicationViewState extends State<MedicationView> {
                                     flex: 1,
                                     child: IconButton(
                                       onPressed: () {
-                                        //_showDeleteDialog(context, profile);
+                                        _showDeleteDialog(context, usage);
                                       },
                                       icon: const Icon(Icons.delete),
                                     ),
@@ -199,6 +196,9 @@ class _MedicationViewState extends State<MedicationView> {
                 ),
               ],
             );
+          } else if (state is UsageOperationSuccess) {
+            BlocProvider.of<UsageBloc>(context).add(LoadUsages()); // Reload usages
+            return Container();
           } else if (state is UsageError) {
             return Center(
               child: Text(
@@ -223,8 +223,8 @@ class _MedicationViewState extends State<MedicationView> {
         overlayOpacity: 0,
         children: [
           SpeedDialChild(
-            child: Icon(
-                MdiIcons.pill,
+            child: const Icon(
+                AppIcons.person_pill,
                 color: Colors.white,
             ),
             label: "Dodaj lek",
@@ -232,13 +232,97 @@ class _MedicationViewState extends State<MedicationView> {
           ),
           SpeedDialChild(
             child: Icon(
-                MdiIcons.heartPlus,
+                MdiIcons.pill,
                 color:Colors.white),
             label: "Utwórz nowy lek",
             backgroundColor: Color.fromARGB(255, 175, 77, 152),
+            onTap: () => goToNewMedicationScreen(context, widget.profile.isAnimal),
           ),
         ],
       ),
     );
   }
+}
+
+void goToNewMedicationScreen(BuildContext context, bool animal) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => NewMedicationView(animal: animal)),
+  );
+}
+
+void _showDeleteDialog(BuildContext context, Usage usage) {
+  final _formKey = GlobalKey<FormState>();
+  String name = '';
+
+  showDialog(
+    context: context,
+    builder: (context) {
+      return StatefulBuilder(
+        builder: (context, setState) {
+          return AlertDialog(
+            backgroundColor: Colors.grey[900],
+            title: Text(
+              'Czy na pewno chcesz usunąć lek ${usage.medicationName}?',
+              style: const TextStyle(color: Colors.white),
+            ),
+            content: Form(
+              key: _formKey,
+              child: TextFormField(
+                maxLength: 15,
+                style: const TextStyle(color: Colors.white),
+                decoration: const InputDecoration(
+                  labelText: 'Podaj nazwę',
+                  labelStyle: TextStyle(color: Colors.white),
+                  counterStyle: TextStyle(color: Colors.white),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey),
+                  ),
+                ),
+                validator: (text) {
+                  if (text == null || text.isEmpty) {
+                    return 'Wpisz nazwę';
+                  } else if (text != usage.medicationName){
+                    return 'Nieprawidłowa nazwa';
+                  }
+                  return null;
+                },
+                onChanged: (text) => setState(() => name = text),
+              ),
+            ),
+            actions: [
+              TextButton(
+                style: TextButton.styleFrom(
+                  foregroundColor: Theme.of(context).colorScheme.inversePrimary,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                  ),
+                ),
+                child: const Text('NIE'),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+              TextButton(
+                style: TextButton.styleFrom(
+                  foregroundColor: Theme.of(context).colorScheme.inversePrimary,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                  ),
+                ),
+                child: const Text('TAK'),
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    BlocProvider.of<UsageBloc>(context).add(
+                        DeleteUsage(usage.usageId));
+                    Navigator.pop(context);
+                  } else {}
+                },
+              ),
+            ],
+          );
+        },
+      );
+    },
+  );
 }

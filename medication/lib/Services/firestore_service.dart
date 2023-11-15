@@ -1,15 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../Database_classes/Profile.dart';
-import '../Database_classes/Type.dart';
 import '../Database_classes/Medication.dart';
 import '../Database_classes/Usage.dart';
 
 class FirestoreService {
   final CollectionReference _profilesCollection =
   FirebaseFirestore.instance.collection('profiles');
-
-  final CollectionReference _typesCollection =
-  FirebaseFirestore.instance.collection('types');
 
   final CollectionReference _medicationsCollection =
   FirebaseFirestore.instance.collection('medications');
@@ -48,18 +44,6 @@ class FirestoreService {
 
   Future<void> deleteProfile(String profileId) {
     return _profilesCollection.doc(profileId).delete();
-  }
-
-  Stream<List<Type>> getTypes() {
-    return _typesCollection.snapshots().map((snapshot) {
-      return snapshot.docs.map((doc) {
-        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-        return Type(
-          typeId: doc.id,
-          type: data['type'],
-        );
-      }).toList();
-    });
   }
 
   Stream<List<Medication>> getMedications() {
@@ -117,5 +101,9 @@ class FirestoreService {
       'medication_name': usage.medicationName,
       'profile_id': usage.profileId,
     });
+  }
+
+  Future<void> deleteUsage(String usageId) {
+    return _usagesCollection.doc(usageId).delete();
   }
 }

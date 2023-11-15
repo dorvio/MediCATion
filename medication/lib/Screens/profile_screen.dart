@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../Database_classes/Profile.dart';
-import '../Blocks/profile_bloc.dart';
+import '../Blocs/profile_bloc.dart';
 import 'medication_screen.dart';
 import 'package:medication/Services/authorization.dart';
 

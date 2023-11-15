@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 class Medication {
   String medicationId;
   String medication;
-  int type;
+  String type;
   String description;
   bool forAnimal;
 
@@ -19,7 +19,7 @@ class Medication {
   Medication copyWith({
     String? medicationId,
     String? medication,
-    int? type,
+    String? type,
     String? description,
     bool? forAnimal,
   }) {
