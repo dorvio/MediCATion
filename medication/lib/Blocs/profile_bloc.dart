@@ -2,6 +2,7 @@ import '../Database_classes/Profile.dart';
 import 'package:flutter/foundation.dart';
 import '../Services/firestore_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:connectivity/connectivity.dart';
 
 @immutable
 abstract class ProfileEvent {}
@@ -63,10 +64,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       try {
         emit(ProfileLoading());
         final profiles = await _firestoreService.getProfiles(event.userId).first;
-        print("Pobrano profile: $profiles");
         emit(ProfileLoaded(profiles));
       } catch (e) {
-        print("Błąd podczas pobierania profili: $e");
         emit(ProfileError('Failed to load profiles.'));
       }
     });
@@ -74,6 +73,9 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     on<AddProfile>((event, emit) async {
       try {
         emit(ProfileLoading());
+        var connectivityResult = await Connectivity().checkConnectivity();
+        if (connectivityResult == ConnectivityResult.none)
+          emit(ProfileOperationSuccess('Profile added successfully.'));
         await _firestoreService.addProfile(event.profile);
         emit(ProfileOperationSuccess('Profile added successfully.'));
       } catch (e) {
@@ -84,6 +86,9 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     on<UpdateProfile>((event, emit)  async {
       try {
         emit(ProfileLoading());
+        var connectivityResult = await Connectivity().checkConnectivity();
+        if (connectivityResult == ConnectivityResult.none)
+          emit(ProfileOperationSuccess('Profile added successfully.'));
         await _firestoreService.updateProfile(event.profile);
         emit(ProfileOperationSuccess('Profile updated successfully.'));
       } catch (e) {
@@ -94,6 +99,9 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     on<DeleteProfile>((event, emit) async {
       try {
         emit(ProfileLoading());
+        var connectivityResult = await Connectivity().checkConnectivity();
+        if (connectivityResult == ConnectivityResult.none)
+          emit(ProfileOperationSuccess('Profile added successfully.'));
         await _firestoreService.deleteProfile(event.profileId);
         emit(ProfileOperationSuccess('Profile deleted successfully.'));
       } catch (e) {

@@ -3,6 +3,11 @@ import 'Screens/signIn_screen.dart';
 import 'Screens/profile_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../Blocs/usage_bloc.dart';
+import '../Blocs/profile_bloc.dart';
+import '../Blocs/medication_bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class Wrapper extends StatelessWidget {
   const Wrapper({Key? key}) : super(key: key);
@@ -14,7 +19,13 @@ class Wrapper extends StatelessWidget {
     if(isSigned == null) {
     return const SignInView();
     } else {
-      return ProfileView(userId: isSigned.uid.toString());
+      String userId = isSigned.uid.toString();
+      BlocProvider.of<ProfileBloc>(context).add(LoadProfiles(userId));
+      //TODO add fetching only users usages
+      BlocProvider.of<UsageBloc>(context).add(LoadUsages());
+      BlocProvider.of<MedicationBloc>(context).add(LoadMedications(true));
+      BlocProvider.of<MedicationBloc>(context).add(LoadMedications(false));
+      return ProfileView(userId: userId);
     }
 
 
