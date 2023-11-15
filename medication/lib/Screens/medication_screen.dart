@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medication/Screens/new_medication_screen.dart';
+import 'package:medication/Screens/new_usage_screen.dart';
 import 'package:medication/CustomIcons/app_icons_icons.dart';
 import '../Blocs/usage_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -229,6 +230,7 @@ class _MedicationViewState extends State<MedicationView> {
             ),
             label: "Dodaj lek",
             backgroundColor: Color.fromARGB(255, 175, 77, 152),
+            onTap: () => goToNewUsageScreen(context, widget.profile.isAnimal, widget.profile.profileId),
           ),
           SpeedDialChild(
             child: Icon(
@@ -248,6 +250,13 @@ void goToNewMedicationScreen(BuildContext context, bool animal) {
   Navigator.push(
     context,
     MaterialPageRoute(builder: (context) => NewMedicationView(animal: animal)),
+  );
+}
+
+void goToNewUsageScreen(BuildContext context, bool animal, String profileId) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => NewUsageView(animal: animal, profileId: profileId)),
   );
 }
 

@@ -6,7 +6,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 @immutable
 abstract class MedicationEvent {}
 
-class LoadMedications extends MedicationEvent {}
+class LoadMedications extends MedicationEvent {
+  final bool isAnimal;
+
+  LoadMedications(this.isAnimal);
+}
 
 class AddMedication extends MedicationEvent {
   final Medication medication;
@@ -58,7 +62,7 @@ class MedicationBloc extends Bloc<MedicationEvent, MedicationState> {
     on<LoadMedications>((event, emit) async {
       try {
         emit(MedicationLoading());
-        final medications = await _firestoreService.getMedications().first;
+        final medications = await _firestoreService.getMedications(event.isAnimal).first;
         emit(MedicationLoaded(medications));
       } catch (e) {
         emit(MedicationError('Failed to load medications.'));

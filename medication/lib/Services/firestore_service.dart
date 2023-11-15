@@ -46,8 +46,8 @@ class FirestoreService {
     return _profilesCollection.doc(profileId).delete();
   }
 
-  Stream<List<Medication>> getMedications() {
-    return _medicationsCollection.snapshots().map((snapshot) {
+  Stream<List<Medication>> getMedications(bool isAnimal) {
+    return _medicationsCollection.where('for_animal', isEqualTo: isAnimal).snapshots().map((snapshot) {
       return snapshot.docs.map((doc) {
         Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
         return Medication(
