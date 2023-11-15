@@ -1,0 +1,166 @@
+Index: medication/lib/Screens/medication_screen.dart
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/medication/lib/Screens/medication_screen.dart b/medication/lib/Screens/medication_screen.dart
+--- a/medication/lib/Screens/medication_screen.dart	
++++ b/medication/lib/Screens/medication_screen.dart	
+@@ -180,7 +180,7 @@
+                                     flex: 1,
+                                     child: IconButton(
+                                       onPressed: () {
+-                                        //_showDeleteDialog(context, profile);
++                                        _showDeleteDialog(context, usage);
+                                       },
+                                       icon: const Icon(Icons.delete),
+                                     ),
+@@ -196,6 +196,9 @@
+                 ),
+               ],
+             );
++          } else if (state is UsageOperationSuccess) {
++            BlocProvider.of<UsageBloc>(context).add(LoadUsages()); // Reload usages
++            return Container();
+           } else if (state is UsageError) {
+             return Center(
+               child: Text(
+@@ -247,3 +250,82 @@
+     MaterialPageRoute(builder: (context) => NewMedicationView()),
+   );
+ }
++
++void _showDeleteDialog(BuildContext context, Usage usage) {
++  bool showError = false;
++  final _formKey = GlobalKey<FormState>();
++  String name = '';
++
++  showDialog(
++    context: context,
++    builder: (context) {
++      return StatefulBuilder(
++        builder: (context, setState) {
++          return AlertDialog(
++            backgroundColor: Colors.grey[900],
++            title: Text(
++            'Czy na pewno chcesz usunąć lek ${usage.medicationName}?',
++            style: const TextStyle(color: Colors.white),
++          ),
++            content: Form(
++              key: _formKey,
++              child: TextFormField(
++                maxLength: 15,
++                style: const TextStyle(color: Colors.white),
++                decoration: const InputDecoration(
++                  labelText: 'Wpisz nawę leku aby potwierdzić',
++                  labelStyle: TextStyle(color: Colors.white),
++                  counterStyle: TextStyle(color: Colors.white),
++                  enabledBorder: OutlineInputBorder(
++                    borderSide: BorderSide(color: Colors.grey),
++                  ),
++                ),
++                validator: (text) {
++                  if (text == null || text.isEmpty) {
++                    return 'Wpisz nazwę';
++                  } else if (text != usage.medicationName){
++                    return 'Nieprawidłowa nazwa';
++                  }
++                  return null;
++                },
++                onChanged: (text) => setState(() => name = text),
++              ),
++            ),
++            actions: [
++              TextButton(
++                style: TextButton.styleFrom(
++                  foregroundColor: Theme.of(context).colorScheme.inversePrimary,
++                  shape: RoundedRectangleBorder(
++                    borderRadius: BorderRadius.circular(30.0),
++                  ),
++                ),
++                child: const Text('NIE'),
++                onPressed: () {
++                  Navigator.pop(context);
++                },
++              ),
++              TextButton(
++                style: TextButton.styleFrom(
++                  foregroundColor: Theme.of(context).colorScheme.inversePrimary,
++                  shape: RoundedRectangleBorder(
++                    borderRadius: BorderRadius.circular(30.0),
++                  ),
++                ),
++                child: const Text('TAK'),
++                onPressed: () {
++                  if (_formKey.currentState!.validate()) {
++                  if(name == usage.medicationName){
++                  BlocProvider.of<UsageBloc>(context).add(
++                  DeleteUsage(usage.usageId));
++                  Navigator.pop(context);
++                  }else {}
++                  }
++                },
++              ),
++            ],
++          );
++        },
++      );
++    },
++  );
++}
+Index: medication/lib/Blocks/usage_bloc.dart
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/medication/lib/Blocks/usage_bloc.dart b/medication/lib/Blocks/usage_bloc.dart
+--- a/medication/lib/Blocks/usage_bloc.dart	
++++ b/medication/lib/Blocks/usage_bloc.dart	
+@@ -14,6 +14,12 @@
+   AddUsage(this.usage);
+ }
+ 
++class DeleteUsage extends UsageEvent {
++  final String medicationId;
++
++  DeleteUsage(this.medicationId);
++}
++
+ @immutable
+ abstract class UsageState {}
+ 
+@@ -63,5 +69,15 @@
+       }
+     });
+ 
++    on<DeleteUsage>((event, emit) async {
++      try {
++        emit(UsageLoading());
++        await _firestoreService.deleteUsage(event.medicationId);
++        emit(UsageOperationSuccess('Usage deleted successfully.'));
++      } catch (e) {
++        emit(UsageError('Failed to delete usage.'));
++      }
++    });
++
+   }
+ }
+\ No newline at end of file
+Index: medication/lib/Services/firestore_service.dart
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/medication/lib/Services/firestore_service.dart b/medication/lib/Services/firestore_service.dart
+--- a/medication/lib/Services/firestore_service.dart	
++++ b/medication/lib/Services/firestore_service.dart	
+@@ -118,4 +118,8 @@
+       'profile_id': usage.profileId,
+     });
+   }
++
++  Future<void> deleteUsage(String usageId) {
++    return _usagesCollection.doc(usageId).delete();
++  }
+ }
+\ No newline at end of file

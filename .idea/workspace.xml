@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="NONE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="ccaad566-714c-4f46-9c79-8ab410cca91e" name="Changes" comment="touch up on new_profile_screen and added handling modify profile" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Dart File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="splash_screen" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/medication/lib/Screens/medication_screen.dart" root0="FORCE_HIGHLIGHTING" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2UOZ4z1sUT0lC2PZcrFzdtJN4T9" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
+    &quot;io.flutter.reload.alreadyRun&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Dorota/AndroidStudioProjects/MediCATion&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;copyright&quot;,
+    &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Dorota\AndroidStudioProjects\MediCATion\medication\lib\CustomIcons" />
+      <recent name="C:\Users\Dorota\AndroidStudioProjects\MediCATion\medication\lib" />
+      <recent name="C:\Users\Dorota\AndroidStudioProjects\MediCATion\medication\assets" />
+      <recent name="C:\Users\Dorota\AndroidStudioProjects\MediCATion\medication\lib\Services" />
+      <recent name="C:\Users\Dorota\AndroidStudioProjects\MediCATion\medication\lib\Blocks" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="main.dart" type="FlutterRunConfigurationType" factoryName="Flutter">
+      <option name="filePath" value="$PROJECT_DIR$/medication/lib/main.dart" />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="ccaad566-714c-4f46-9c79-8ab410cca91e" name="Changes" comment="" />
+      <created>1692812420756</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1692812420756</updated>
+    </task>
+    <task id="LOCAL-00001" summary="sign in and register + profiles display">
+      <created>1698515073771</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1698515073771</updated>
+    </task>
+    <task id="LOCAL-00002" summary="sign in and register + profiles display">
+      <created>1698515186535</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1698515186535</updated>
+    </task>
+    <task id="LOCAL-00003" summary="added sign out and authorization stream">
+      <created>1698521691129</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1698521691129</updated>
+    </task>
+    <task id="LOCAL-00004" summary="added userId to profiles and loading profiles for signed in user">
+      <created>1698532193467</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1698532193467</updated>
+    </task>
+    <task id="LOCAL-00005" summary="added medication diaplay and expanded floating button">
+      <created>1698611587241</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1698611587241</updated>
+    </task>
+    <task id="LOCAL-00006" summary="first draft of new medication screen">
+      <created>1698614230147</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1698614230147</updated>
+    </task>
+    <task id="LOCAL-00007" summary="changed some visual details">
+      <created>1698750951377</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1698750951377</updated>
+    </task>
+    <task id="LOCAL-00008" summary="added deleting usages">
+      <created>1699130496828</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1699130496828</updated>
+    </task>
+    <task id="LOCAL-00009" summary="basic of addińg usage">
+      <created>1699729665522</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1699729665522</updated>
+    </task>
+    <task id="LOCAL-00010" summary="first draft of splash screen">
+      <created>1699741691558</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1699741691558</updated>
+    </task>
+    <task id="LOCAL-00011" summary="little fix splash screen">
+      <created>1699903403590</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1699903403590</updated>
+    </task>
+    <task id="LOCAL-00012" summary="fixed offline problems,&#10;added new_profile_screen,&#10;added downloading data at splash screen,&#10;added protection in deleting a profile">
+      <created>1699921771154</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1699921771154</updated>
+    </task>
+    <task id="LOCAL-00013" summary="touch up on new_profile_screen and added handling modify profile">
+      <created>1700003607057</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1700003607057</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="sign in and register + profiles display" />
+    <MESSAGE value="added sign out and authorization stream" />
+    <MESSAGE value="added userId to profiles and loading profiles for signed in user" />
+    <MESSAGE value="added medication diaplay and expanded floating button" />
+    <MESSAGE value="first draft of new medication screen" />
+    <MESSAGE value="changed some visual details" />
+    <MESSAGE value="added deleting usages" />
+    <MESSAGE value="basic of addińg usage" />
+    <MESSAGE value="first draft of splash screen" />
+    <MESSAGE value="little fix splash screen" />
+    <MESSAGE value="fixed offline problems,&#10;added new_profile_screen,&#10;added downloading data at splash screen,&#10;added protection in deleting a profile" />
+    <MESSAGE value="touch up on new_profile_screen and added handling modify profile" />
+    <option name="LAST_COMMIT_MESSAGE" value="touch up on new_profile_screen and added handling modify profile" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <default-breakpoints>
+        <breakpoint type="dart-exception" />
+      </default-breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>
