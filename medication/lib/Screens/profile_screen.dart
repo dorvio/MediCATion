@@ -107,9 +107,9 @@ class _ProfileViewState extends State<ProfileView> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Icon(
-                      Icons.arrow_left,
+                      Icons.group,
                       color: Color.fromARGB(255, 174, 199, 255),
-                      size: 50,
+                      size: 40,
                     ),
                     Text(
                       "TWOJE PROFILE",
@@ -120,11 +120,6 @@ class _ProfileViewState extends State<ProfileView> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ),
-                    const Icon(
-                      Icons.arrow_right,
-                      color: Color.fromARGB(255, 174, 199, 255),
-                      size: 50,
                     ),
                   ],
                 ),
@@ -148,7 +143,7 @@ class _ProfileViewState extends State<ProfileView> {
                                 backgroundColor: Colors.grey[800],
                               ),
                               onPressed: () {
-                                _goToMedicationScreen(context, profile.profileId, profile.name);
+                                _goToMedicationScreen(context, profile);
                               },
                               child: Row(
                                 children: [
@@ -497,9 +492,9 @@ void _showEditDialog(BuildContext context, Profile profile) {
   );
 }
 
-void _goToMedicationScreen(BuildContext context, String profileId, String profileName) {
+void _goToMedicationScreen(BuildContext context, Profile profile) {
   Navigator.push(
     context,
-    MaterialPageRoute(builder: (context) => MedicationView(profileId: profileId, profileName: profileName)),
+    MaterialPageRoute(builder: (context) => MedicationView(profile: profile)),
   );
 }

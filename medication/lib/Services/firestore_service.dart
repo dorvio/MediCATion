@@ -70,7 +70,8 @@ class FirestoreService {
           medicationId: doc.id,
           medication: data['medication'],
           type: data['type'],
-          description: data['description']
+          description: data['description'],
+          forAnimal: data['for_animal'],
         );
       }).toList();
     });
@@ -81,13 +82,13 @@ class FirestoreService {
       'medication': medication.medication,
       'type': medication.type,
       'description': medication.description,
+      'for_animal': medication.forAnimal,
     });
   }
 
   Future<void> updateMedication(Medication medication) {
     return _medicationsCollection.doc(medication.medicationId.toString()).update({
       'medication': medication.medication,
-      'type': medication.type,
       'description': medication.description,
     });
   }
@@ -103,7 +104,8 @@ class FirestoreService {
         return Usage(
             usageId: doc.id,
             medicationId: data['medication_id'],
-            profileId: data['profile_id']
+            medicationName: data['medication_name'],
+            profileId: data['profile_id'],
         );
       }).toList();
     });
@@ -112,6 +114,7 @@ class FirestoreService {
   Future<void> addUsage(Usage usage) {
     return _usagesCollection.add({
       'medication_id': usage.medicationId,
+      'medication_name': usage.medicationName,
       'profile_id': usage.profileId,
     });
   }
