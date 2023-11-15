@@ -16,7 +16,7 @@ class FirestoreService {
   Stream<List<Profile>> getProfiles(String userId) {
     return _profilesCollection.where('user_id', isEqualTo: userId).snapshots().map((snapshot) {
       return snapshot.docs.map((doc) {
-        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+         Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
         return Profile(
           profileId: doc.id,
           name: data['name'],
