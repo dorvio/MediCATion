@@ -47,6 +47,8 @@ dependencies:
   flutter_typeahead: ^4.8.0
   connectivity: ^3.0.6
   flutter_toggle_tab: ^1.4.1
+  flutter_rounded_date_picker: ^3.0.4
+  flutter_multi_select_items: ^0.4.2
 
 dev_dependencies:
   flutter_test:
