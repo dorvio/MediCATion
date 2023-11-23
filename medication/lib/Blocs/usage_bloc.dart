@@ -1,9 +1,8 @@
-import 'package:medication/Blocs/medication_bloc.dart';
-
 import '../Database_classes/Usage.dart';
 import 'package:flutter/foundation.dart';
 import '../Services/firestore_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:connectivity/connectivity.dart';
 
 @immutable
 abstract class UsageEvent {}
@@ -30,6 +29,12 @@ class DeleteUsage extends UsageEvent {
   final String usageId;
 
   DeleteUsage(this.usageId);
+}
+
+class LoadUsagesById extends UsageEvent {
+  final String userId;
+
+  LoadUsagesById(this.userId);
 }
 
 @immutable
@@ -74,6 +79,9 @@ class UsageBloc extends Bloc<UsageEvent, UsageState> {
     on<AddUsage>((event, emit) async {
       try {
         emit(UsageLoading());
+        var connectivityResult = await Connectivity().checkConnectivity();
+        if (connectivityResult == ConnectivityResult.none)
+          emit(UsageOperationSuccess('Profile added successfully.'));
         await _firestoreService.addUsage(event.usage);
         emit(UsageOperationSuccess('Usage added successfully.'));
       } catch (e) {
@@ -84,16 +92,22 @@ class UsageBloc extends Bloc<UsageEvent, UsageState> {
     on<UpdateUsage>((event, emit) async {
       try {
         emit(UsageLoading());
+        var connectivityResult = await Connectivity().checkConnectivity();
+        if (connectivityResult == ConnectivityResult.none)
+          emit(UsageOperationSuccess('Profile added successfully.'));
         await _firestoreService.updateUsage(event.usage);
         emit(UsageOperationSuccess('Usage updated successfully.'));
       } catch (e) {
-        emit(UsageError('Failed to adupdate usage.'));
+        emit(UsageError('Failed to update usage.'));
       }
     });
 
     on<DeleteUsage>((event, emit) async {
       try {
         emit(UsageLoading());
+        var connectivityResult = await Connectivity().checkConnectivity();
+        if (connectivityResult == ConnectivityResult.none)
+          emit(UsageOperationSuccess('Profile added successfully.'));
         await _firestoreService.deleteUsage(event.usageId);
         emit(UsageOperationSuccess('Usage deleted successfully.'));
       } catch (e) {
@@ -101,5 +115,14 @@ class UsageBloc extends Bloc<UsageEvent, UsageState> {
       }
     });
 
+    on<LoadUsagesById>((event, emit) async {
+      try {
+        emit(UsageLoading());
+        final usages = await _firestoreService.getUsagesById(event.userId).first;
+        emit(UsageLoaded(usages));
+      } catch (e) {
+        emit(UsageError('Failed to load usages.'));
+      }
+    });
   }
 }

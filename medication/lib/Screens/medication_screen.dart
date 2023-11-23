@@ -30,6 +30,7 @@ class _MedicationViewState extends State<MedicationView> {
   @override
   void initState() {
     BlocProvider.of<UsageBloc>(context).add(LoadUsages(widget.profile.profileId));
+    //BlocProvider.of<UsageBloc>(context).add(LoadUsagesById('oszJ9QJ038PgmiJ9jx1lsVdu9KG3'));
     super.initState();
   }
 
@@ -97,9 +98,7 @@ class _MedicationViewState extends State<MedicationView> {
       backgroundColor: Colors.grey[900],
       body: BlocBuilder<UsageBloc, UsageState>(
         builder: (context, state) {
-          if (state is UsageInitial) {
-            return CircularProgressIndicator();
-          } else if (state is UsageLoading) {
+          if (state is UsageLoading) {
             return CircularProgressIndicator();
           } else if (state is UsageLoaded) {
             final usages = state.usages;
@@ -198,7 +197,7 @@ class _MedicationViewState extends State<MedicationView> {
               ],
             );
           } else if (state is UsageOperationSuccess) {
-            BlocProvider.of<UsageBloc>(context).add(LoadUsages(widget.profile.profileId)); // Reload usages
+            BlocProvider.of<UsageBloc>(context).add(LoadUsages(widget.profile.profileId));
             return Container();
           } else if (state is UsageError) {
             return Center(
@@ -278,7 +277,6 @@ void _showDeleteDialog(BuildContext context, Usage usage) {
             content: Form(
               key: _formKey,
               child: TextFormField(
-                maxLength: 15,
                 style: const TextStyle(color: Colors.white),
                 decoration: const InputDecoration(
                   labelText: 'Podaj nazwę',

@@ -13,6 +13,7 @@ import 'package:flutter_toggle_tab/flutter_toggle_tab.dart';
 import 'package:flutter_multi_select_items/flutter_multi_select_items.dart';
 import 'package:day_night_time_picker/day_night_time_picker.dart';
 import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class NewUsageView extends StatefulWidget {
   final bool animal;
@@ -50,6 +51,9 @@ class _NewUsageViewState extends State<NewUsageView> {
   String restrictions = '';
   List <dynamic> conflict = [];
   String probiotic = '';
+  bool administrationError = false;
+  bool hourError = false;
+  bool restrictionError = false;
 
   final List<MultiSelectCard> daysCards = <MultiSelectCard>[
     MultiSelectCard(value: 'Pon', label: 'Pon'),
@@ -84,8 +88,8 @@ class _NewUsageViewState extends State<NewUsageView> {
   Widget build(BuildContext context) {
     final hours = time.hour.toString().padLeft(2, '0');
     final minutes = time.minute.toString().padLeft(2, '0');
-    final hourCon = time.hour.toString().padLeft(2, '0');
-    final minuteCon = time.minute.toString().padLeft(2, '0');
+    final hourCon = timeCon.hour.toString().padLeft(2, '0');
+    final minuteCon = timeCon.minute.toString().padLeft(2, '0');
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -257,6 +261,11 @@ class _NewUsageViewState extends State<NewUsageView> {
                               suggestionsBoxDecoration: SuggestionsBoxDecoration(
                                 color: Colors.grey[800],
                               ),
+                              validator: (text) {
+                                if(text == null || text.isEmpty){
+                                  return 'Pole nie może być puste';
+                                }
+                              },
                             ),
                             const SizedBox(height: 30),
                             const Text(
@@ -329,6 +338,16 @@ class _NewUsageViewState extends State<NewUsageView> {
                                         ),
                                       ),
                                     ),
+                                  ),
+                                  Visibility(
+                                    visible: administrationError,
+                                      child: const Text(
+                                        'Zaznacz co najmniej jeden element',
+                                        style: TextStyle(
+                                          color: Colors.red,
+                                          fontSize: 15,
+                                        )
+                                      ),
                                   ),
                                 ],
                               ),
@@ -433,6 +452,16 @@ class _NewUsageViewState extends State<NewUsageView> {
                                             size: 14,
                                           ),
                                         ),
+                                      ),
+                                    ),
+                                    Visibility(
+                                      visible: hourError,
+                                      child: const Text(
+                                          'Zaznacz co najmniej jeden element',
+                                          style: TextStyle(
+                                            color: Colors.red,
+                                            fontSize: 15,
+                                          )
                                       ),
                                     ),
                                   ],
@@ -545,6 +574,16 @@ class _NewUsageViewState extends State<NewUsageView> {
                                     size: 14,
                                   ),
                                 ),
+                              ),
+                            ),
+                            Visibility(
+                              visible: restrictionError,
+                              child: const Text(
+                                  'Należy zaznaczyć element',
+                                  style: TextStyle(
+                                    color: Colors.red,
+                                    fontSize: 15,
+                                  )
                               ),
                             ),
                             Visibility(
@@ -667,6 +706,11 @@ class _NewUsageViewState extends State<NewUsageView> {
                                           suggestionsBoxDecoration: SuggestionsBoxDecoration(
                                             color: Colors.grey[800],
                                           ),
+                                          validator: (text) {
+                                            if(text == null || text.isEmpty){
+                                              return 'Pole nie może być puste';
+                                            }
+                                          },
                                         ),
                                       ],
                                     ),
@@ -788,6 +832,11 @@ class _NewUsageViewState extends State<NewUsageView> {
                                     suggestionsBoxDecoration: SuggestionsBoxDecoration(
                                       color: Colors.grey[800],
                                     ),
+                                    validator: (text) {
+                                      if(text == null || text.isEmpty){
+                                        return 'Pole nie może być puste';
+                                      }
+                                    },
                                   ),
                                   const SizedBox(height: 20),
                                   const Text(
@@ -836,7 +885,7 @@ class _NewUsageViewState extends State<NewUsageView> {
                                           });
                                         },
                                         child: Text(
-                                          '$hours:$minutes',
+                                          '$hourCon:$minuteCon',
                                           style: const TextStyle(
                                             fontSize: 35,
                                             fontWeight: FontWeight.bold,
@@ -886,8 +935,9 @@ class _NewUsageViewState extends State<NewUsageView> {
                                       )
                                   ),
                                   onPressed: () {
-                                    //TODO add saving usage
-                                    saveUsage(medications);
+                                    if(_formKey.currentState!.validate() && _isAdministrationValid() && _isHourValid() && _isRestrictionValid()){
+                                      saveUsage(medications);
+                                    }
                                   },
                                 ),
                               ],
@@ -966,6 +1016,47 @@ class _NewUsageViewState extends State<NewUsageView> {
     }
   }
 
+  bool _isAdministrationValid(){
+    if(_administrationChoice == 1 && administration.isEmpty){
+      setState(() {
+        administrationError = true;
+      });
+        return false;
+      } else {
+      setState(() {
+        administrationError = false;
+      });
+      return true;
+    }
+  }
+
+  bool _isHourValid(){
+    if(_timeMedChoice == 1 && hour.isEmpty){
+      setState(() {
+        hourError = true;
+      });
+      return false;
+    } else {
+      setState(() {
+        hourError = false;
+      });
+      return true;
+    }
+  }
+  bool _isRestrictionValid(){
+    if(restrictions.isEmpty){
+      setState(() {
+        restrictionError = true;
+      });
+      return false;
+    } else {
+      setState(() {
+        restrictionError = false;
+      });
+      return true;
+    }
+  }
+
   void saveUsage(List<Medication> medications) {
     if(_administrationChoice == 0){
       administration = ['Codziennie'];
@@ -989,6 +1080,12 @@ class _NewUsageViewState extends State<NewUsageView> {
     } else {
       probiotic = '';
     }
+    String userId = '';
+    User? user = FirebaseAuth.instance.currentUser;
+    if(user == null) {
+    } else {
+      userId = user.uid.toString();
+    }
     final usage = Usage(
       usageId: DateTime.now().toString(),
       medicationName: medication,
@@ -998,12 +1095,10 @@ class _NewUsageViewState extends State<NewUsageView> {
       restrictions: restrictions,
       conflict: conflict,
       probiotic: probiotic,
+      userId: userId,
     );
     BlocProvider.of<UsageBloc>(context).add(AddUsage(usage));
     Navigator.pop(context);
   }
 
 }
-
-
-

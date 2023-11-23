@@ -94,6 +94,7 @@ class FirestoreService {
             restrictions: data['restrictions'],
             conflict: data['conflict'],
             probiotic: data['probiotic'],
+            userId: data['user_id'],
         );
       }).toList();
     });
@@ -108,6 +109,7 @@ class FirestoreService {
       'restrictions': usage.restrictions,
       'conflict': usage.conflict,
       'probiotic': usage.probiotic,
+      'user_id': usage.userId,
     });
   }
 
@@ -118,10 +120,30 @@ class FirestoreService {
       'restrictions': usage.restrictions,
       'conflict': usage.conflict,
       'probiotic': usage.probiotic,
+      'user_id': usage.userId,
     });
   }
 
   Future<void> deleteUsage(String usageId) {
     return _usagesCollection.doc(usageId).delete();
+  }
+
+  Stream<List<Usage>> getUsagesById(String userId){
+    return _usagesCollection.where('user_id', isEqualTo: userId).snapshots().map((snapshot) {
+      return snapshot.docs.map((doc) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        return Usage(
+          usageId: doc.id,
+          medicationName: data['medication_name'],
+          profileId: data['profile_id'],
+          administration: data['administration'],
+          hour: data['hour'],
+          restrictions: data['restrictions'],
+          conflict: data['conflict'],
+          probiotic: data['probiotic'],
+          userId: data['user_id'],
+        );
+      }).toList();
+    });
   }
 }

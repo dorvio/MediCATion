@@ -23,7 +23,7 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
   void initState(){
     super.initState();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
-    checkInternetConnection(context);
+    checkInternetConnection();
     Future.delayed(const Duration(seconds: 3), () {
       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const Wrapper()));
     });
@@ -55,31 +55,30 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
       ),
     );
   }
+  void downloadData (){
+    User? user = FirebaseAuth.instance.currentUser;
+    if(user == null) {
+    } else {
+      String userId = user.uid.toString();
+      BlocProvider.of<ProfileBloc>(context).add(LoadProfiles(userId));
+      BlocProvider.of<MedicationBloc>(context).add(LoadMedications(true));
+      BlocProvider.of<MedicationBloc>(context).add(LoadMedications(false));
+      BlocProvider.of<UsageBloc>(context).add(LoadUsagesById(userId));
+    }
+  }
+
+  Future<void> checkInternetConnection() async {
+    var connectivityResult = await Connectivity().checkConnectivity();
+    if (connectivityResult == ConnectivityResult.none) {
+    } else {
+      clearFirestoreCache();
+      downloadData();
+    }
+  }
 }
 
 Future<void> clearFirestoreCache() async {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   await firestore.clearPersistence();
 }
-void downloadData (BuildContext context){
-  final isSigned = Provider.of<User?>(context);
-  if(isSigned == null) {
-  } else {
-    String userId = isSigned.uid.toString();
-    BlocProvider.of<ProfileBloc>(context).add(LoadProfiles(userId));
-    //TODO add fetching only users usages
-    //BlocProvider.of<UsageBloc>(context).add(LoadUsages());
-    BlocProvider.of<MedicationBloc>(context).add(LoadMedications(true));
-    BlocProvider.of<MedicationBloc>(context).add(LoadMedications(false));
-  }
 
-
-}
-Future<void> checkInternetConnection(BuildContext context) async {
-  var connectivityResult = await Connectivity().checkConnectivity();
-  if (connectivityResult == ConnectivityResult.none) {
-  } else {
-    clearFirestoreCache();
-    downloadData(context);
-  }
-}
