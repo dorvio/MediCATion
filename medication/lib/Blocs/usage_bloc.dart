@@ -1,3 +1,5 @@
+import 'package:medication/Blocs/medication_bloc.dart';
+
 import '../Database_classes/Usage.dart';
 import 'package:flutter/foundation.dart';
 import '../Services/firestore_service.dart';
@@ -6,13 +8,24 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 @immutable
 abstract class UsageEvent {}
 
-class LoadUsages extends UsageEvent {}
+class LoadUsages extends UsageEvent {
+  final String profileId;
+
+  LoadUsages(this.profileId);
+}
 
 class AddUsage extends UsageEvent {
   final Usage usage;
 
   AddUsage(this.usage);
 }
+
+class UpdateUsage extends UsageEvent {
+  final Usage usage;
+
+  UpdateUsage(this.usage);
+}
+
 class DeleteUsage extends UsageEvent {
   final String usageId;
 
@@ -51,7 +64,7 @@ class UsageBloc extends Bloc<UsageEvent, UsageState> {
     on<LoadUsages>((event, emit) async {
       try {
         emit(UsageLoading());
-        final usages = await _firestoreService.getUsages().first;
+        final usages = await _firestoreService.getUsages(event.profileId).first;
         emit(UsageLoaded(usages));
       } catch (e) {
         emit(UsageError('Failed to load usages.'));
@@ -64,7 +77,17 @@ class UsageBloc extends Bloc<UsageEvent, UsageState> {
         await _firestoreService.addUsage(event.usage);
         emit(UsageOperationSuccess('Usage added successfully.'));
       } catch (e) {
-        emit(UsageError('Failed to add usages.'));
+        emit(UsageError('Failed to add usage.'));
+      }
+    });
+
+    on<UpdateUsage>((event, emit) async {
+      try {
+        emit(UsageLoading());
+        await _firestoreService.updateUsage(event.usage);
+        emit(UsageOperationSuccess('Usage updated successfully.'));
+      } catch (e) {
+        emit(UsageError('Failed to adupdate usage.'));
       }
     });
 

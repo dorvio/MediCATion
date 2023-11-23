@@ -81,15 +81,19 @@ class FirestoreService {
     return _medicationsCollection.doc(medicationId).delete();
   }
 
-  Stream<List<Usage>> getUsages() {
-    return _usagesCollection.snapshots().map((snapshot) {
+  Stream<List<Usage>> getUsages(String profileId) {
+    return _usagesCollection.where('profile_id', isEqualTo: profileId).snapshots().map((snapshot) {
       return snapshot.docs.map((doc) {
         Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
         return Usage(
             usageId: doc.id,
-            medicationId: data['medication_id'],
             medicationName: data['medication_name'],
             profileId: data['profile_id'],
+            administration: data['administration'],
+            hour: data['hour'],
+            restrictions: data['restrictions'],
+            conflict: data['conflict'],
+            probiotic: data['probiotic'],
         );
       }).toList();
     });
@@ -97,9 +101,23 @@ class FirestoreService {
 
   Future<void> addUsage(Usage usage) {
     return _usagesCollection.add({
-      'medication_id': usage.medicationId,
       'medication_name': usage.medicationName,
       'profile_id': usage.profileId,
+      'administration': usage.administration,
+      'hour': usage.hour,
+      'restrictions': usage.restrictions,
+      'conflict': usage.conflict,
+      'probiotic': usage.probiotic,
+    });
+  }
+
+  Future<void> updateUsage(Usage usage) {
+    return _usagesCollection.doc(usage.usageId.toString()).update({
+      'administration': usage.administration,
+      'hour': usage.hour,
+      'restrictions': usage.restrictions,
+      'conflict': usage.conflict,
+      'probiotic': usage.probiotic,
     });
   }
 

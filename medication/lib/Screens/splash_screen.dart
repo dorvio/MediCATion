@@ -68,7 +68,7 @@ void downloadData (BuildContext context){
     String userId = isSigned.uid.toString();
     BlocProvider.of<ProfileBloc>(context).add(LoadProfiles(userId));
     //TODO add fetching only users usages
-    BlocProvider.of<UsageBloc>(context).add(LoadUsages());
+    //BlocProvider.of<UsageBloc>(context).add(LoadUsages());
     BlocProvider.of<MedicationBloc>(context).add(LoadMedications(true));
     BlocProvider.of<MedicationBloc>(context).add(LoadMedications(false));
   }

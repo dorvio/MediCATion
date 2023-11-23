@@ -29,7 +29,7 @@ class _MedicationViewState extends State<MedicationView> {
 
   @override
   void initState() {
-    BlocProvider.of<UsageBloc>(context).add(LoadUsages());
+    BlocProvider.of<UsageBloc>(context).add(LoadUsages(widget.profile.profileId));
     super.initState();
   }
 
@@ -198,7 +198,7 @@ class _MedicationViewState extends State<MedicationView> {
               ],
             );
           } else if (state is UsageOperationSuccess) {
-            BlocProvider.of<UsageBloc>(context).add(LoadUsages()); // Reload usages
+            BlocProvider.of<UsageBloc>(context).add(LoadUsages(widget.profile.profileId)); // Reload usages
             return Container();
           } else if (state is UsageError) {
             return Center(
