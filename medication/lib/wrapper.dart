@@ -20,14 +20,22 @@ class Wrapper extends StatelessWidget {
     return const SignInView();
     } else {
       String userId = isSigned.uid.toString();
-      BlocProvider.of<ProfileBloc>(context).add(LoadProfiles(userId));
-      //TODO add fetching only users usages
-      //BlocProvider.of<UsageBloc>(context).add(LoadUsages());
-      BlocProvider.of<MedicationBloc>(context).add(LoadMedications(true));
-      BlocProvider.of<MedicationBloc>(context).add(LoadMedications(false));
+      downloadData(context);
       return ProfileView(userId: userId);
     }
 
 
+  }
+
+  void downloadData (BuildContext context){
+    User? user = FirebaseAuth.instance.currentUser;
+    if(user == null) {
+    } else {
+      String userId = user.uid.toString();
+      BlocProvider.of<ProfileBloc>(context).add(LoadProfiles(userId));
+      BlocProvider.of<MedicationBloc>(context).add(LoadMedications(true));
+      BlocProvider.of<MedicationBloc>(context).add(LoadMedications(false));
+      BlocProvider.of<UsageBloc>(context).add(LoadUsagesById(userId));
+    }
   }
 }

@@ -18,10 +18,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 class NewUsageView extends StatefulWidget {
   final bool animal;
   final String profileId;
+  final Usage? usage;
 
   const NewUsageView({
     required this.animal,
     required this.profileId,
+    required this.usage,
     Key? key,
   }) : super(key: key);
 
@@ -44,7 +46,7 @@ class _NewUsageViewState extends State<NewUsageView> {
   int _probioticChoice = 0;
   int _conflictChoice = 0;
   bool isTypedIn = false;
-  TimeOfDay time = TimeOfDay.now();
+  TimeOfDay timeMed = TimeOfDay.now();
   TimeOfDay timeCon = TimeOfDay(hour: 1, minute: 0);
   List <dynamic> administration = [];
   List <dynamic> hour = [];
@@ -54,40 +56,77 @@ class _NewUsageViewState extends State<NewUsageView> {
   bool administrationError = false;
   bool hourError = false;
   bool restrictionError = false;
-
-  final List<MultiSelectCard> daysCards = <MultiSelectCard>[
-    MultiSelectCard(value: 'Pon', label: 'Pon'),
-    MultiSelectCard(value: 'Wt', label: 'Wt'),
-    MultiSelectCard(value: 'Śr', label: 'Śr'),
-    MultiSelectCard(value: 'Czw', label: 'Czw'),
-    MultiSelectCard(value: 'Pt', label: 'Pt'),
-    MultiSelectCard(value: 'Sb', label: 'Sb'),
-    MultiSelectCard(value: 'Ndz', label: 'Ndz'),
-  ];
-  final List<MultiSelectCard> timeOfDayCards = <MultiSelectCard>[
-    MultiSelectCard(value: 'Rano', label: 'Rano'),
-    MultiSelectCard(value: 'Wieczorem', label: 'Wieczorem'),
-    MultiSelectCard(value: 'W południe', label: 'W południe'),
-    MultiSelectCard(value: 'Na noc', label: 'Na noc'),
-  ];
-  final List<MultiSelectCard> restrictionsCards = <MultiSelectCard>[
-    MultiSelectCard(value: 'Brak', label: 'Brak'),
-    MultiSelectCard(value: 'Na czczo', label: 'Na czczo'),
-    MultiSelectCard(value: 'Przy posiłku', label: 'Przy posiłku'),
-    MultiSelectCard(value: 'Po posiłku', label: 'Po posiłku'),
-  ];
+  List<bool> daysCardsSelected = [false, false, false, false, false, false, false];
+  List<bool> timeOfDayCardsSelected = [false, false, false, false];
+  List<bool> restrictionsCardsSelected = [false, false, false, false];
 
   @override
   void initState() {
     BlocProvider.of<MedicationBloc>(context).add(LoadMedications(widget.animal));
     BlocProvider.of<UsageBloc>(context).add(LoadUsages(widget.profileId));
     super.initState();
+
+    if (widget.usage != null) {
+      medication = widget.usage!.medicationName;
+      _typeAheadMedController.text = widget.usage!.medicationName;
+      List<dynamic> tmp = widget.usage!.administration;
+      if (tmp[0] == 'Codziennie') {
+        _administrationChoice = 0;
+      } else {
+        _administrationChoice = 1;
+        administration = widget.usage!.administration;
+        daysCardsSelected[0] = administration.contains('Pon');
+        daysCardsSelected[1] = administration.contains('Wt');
+        daysCardsSelected[2] = administration.contains('Śr');
+        daysCardsSelected[3] = administration.contains('Czw');
+        daysCardsSelected[4] = administration.contains('Pt');
+        daysCardsSelected[5] = administration.contains('Sb');
+        daysCardsSelected[6] = administration.contains('Ndz');
+      }
+      RegExp regex = RegExp(r'^\d+:\d+$');
+      tmp = widget.usage!.hour;
+      if (tmp[0] == 'Brak') {
+        _timeMedChoice = 2;
+      } else if (regex.hasMatch(tmp[0].toString())) {
+        _timeMedChoice = 0;
+        timeMed = stringToTimeOfDay(tmp[0].toString());
+      } else {
+        _timeMedChoice = 1;
+        hour = widget.usage!.hour;
+        timeOfDayCardsSelected[0] = hour.contains('Rano');
+        timeOfDayCardsSelected[1] = hour.contains('Wieczorem');
+        timeOfDayCardsSelected[2] = hour.contains('W południe');
+        timeOfDayCardsSelected[3] = hour.contains('Na noc');
+      }
+      if(widget.usage!.probiotic == 'Brak'){
+        _probioticChoice = 1;
+      } else if (widget.usage!.probiotic == ''){
+
+      } else {
+        probioticName = widget.usage!.probiotic;
+        _typeAheadProController.text = widget.usage!.probiotic;
+      }
+      tmp = widget.usage!.conflict;
+      if(tmp[0] == 'Brak'){
+        _conflictChoice = 1;
+      } else {
+        _conflictChoice = 0;
+        conflictMed = tmp[0].toString();
+        timeCon = stringToTimeOfDay(tmp[1].toString());
+        _typeAheadConController.text = tmp[0].toString();
+      }
+      restrictions = widget.usage!.restrictions;
+      restrictionsCardsSelected[0] = restrictions == 'Brak' ? true : false;
+      restrictionsCardsSelected[1] = restrictions == 'Na czczo' ? true : false;
+      restrictionsCardsSelected[2] = restrictions == 'Przy posiłku' ? true : false;
+      restrictionsCardsSelected[3] = restrictions == 'Po posiłku' ? true : false;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final hours = time.hour.toString().padLeft(2, '0');
-    final minutes = time.minute.toString().padLeft(2, '0');
+    final hours = timeMed.hour.toString().padLeft(2, '0');
+    final minutes = timeMed.minute.toString().padLeft(2, '0');
     final hourCon = timeCon.hour.toString().padLeft(2, '0');
     final minuteCon = timeCon.minute.toString().padLeft(2, '0');
     return Scaffold(
@@ -186,6 +225,7 @@ class _NewUsageViewState extends State<NewUsageView> {
                             const SizedBox(height: 30),
                             TypeAheadFormField(
                               textFieldConfiguration: TextFieldConfiguration(
+                                enabled: widget.usage == null,
                                 controller: _typeAheadMedController,
                                 style: const TextStyle(color: Colors.white),
                                 decoration: InputDecoration(
@@ -193,6 +233,10 @@ class _NewUsageViewState extends State<NewUsageView> {
                                   labelStyle: const TextStyle(color: Colors.white),
                                   counterStyle: const TextStyle(color: Colors.white),
                                   enabledBorder: OutlineInputBorder(
+                                    borderSide: const BorderSide(color: Colors.grey),
+                                    borderRadius: BorderRadius.circular(30.0),
+                                  ),
+                                  disabledBorder: OutlineInputBorder(
                                     borderSide: const BorderSide(color: Colors.grey),
                                     borderRadius: BorderRadius.circular(30.0),
                                   ),
@@ -303,9 +347,17 @@ class _NewUsageViewState extends State<NewUsageView> {
                               visible: _administrationChoice == 1,
                               child: Column(
                                 children: [
-                                  const SizedBox(height: 20),
+                                  const SizedBox(height: 30),
                                   MultiSelectContainer(
-                                    items: daysCards,
+                                    items: [
+                                      MultiSelectCard(value: 'Pon', label: 'Pon', selected: daysCardsSelected[0]),
+                                      MultiSelectCard(value: 'Wt', label: 'Wt', selected: daysCardsSelected[1]),
+                                      MultiSelectCard(value: 'Śr', label: 'Śr', selected: daysCardsSelected[2]),
+                                      MultiSelectCard(value: 'Czw', label: 'Czw', selected: daysCardsSelected[3]),
+                                      MultiSelectCard(value: 'Pt', label: 'Pt', selected: daysCardsSelected[4]),
+                                      MultiSelectCard(value: 'Sb', label: 'Sb', selected: daysCardsSelected[5]),
+                                      MultiSelectCard(value: 'Ndz', label: 'Ndz', selected: daysCardsSelected[6]),
+                                    ],
                                     onChange: (allSelectedItems, selectedItem){
                                       setState(() {
                                         administration = allSelectedItems;
@@ -388,7 +440,7 @@ class _NewUsageViewState extends State<NewUsageView> {
                               visible: _timeMedChoice == 0,
                               child: Column(
                                 children: [
-                                  const SizedBox(height: 20),
+                                  const SizedBox(height: 30),
                                   Center(
                                     child: ElevatedButton(
                                         style: ElevatedButton.styleFrom(
@@ -399,7 +451,7 @@ class _NewUsageViewState extends State<NewUsageView> {
                                           TimeOfDay? newTime = await _showTimePicker(context);
                                           if(newTime == null) return;
                                           setState(() {
-                                            time = newTime;
+                                            timeMed = newTime;
                                           });
                                         },
                                         child: Text(
@@ -418,9 +470,14 @@ class _NewUsageViewState extends State<NewUsageView> {
                                 visible: _timeMedChoice == 1,
                                 child: Column(
                                   children: [
-                                    const SizedBox(height: 20),
+                                    const SizedBox(height: 30),
                                     MultiSelectContainer(
-                                      items: timeOfDayCards,
+                                      items: [
+                                        MultiSelectCard(value: 'Rano', label: 'Rano', selected: timeOfDayCardsSelected[0]),
+                                        MultiSelectCard(value: 'Wieczorem', label: 'Wieczorem', selected: timeOfDayCardsSelected[1]),
+                                        MultiSelectCard(value: 'W południe', label: 'W południe', selected: timeOfDayCardsSelected[2]),
+                                        MultiSelectCard(value: 'Na noc', label: 'Na noc', selected: timeOfDayCardsSelected[3]),
+                                      ],
                                       onChange: (allSelectedItems, selectedItem){
                                         setState(() {
                                           hour = allSelectedItems;
@@ -504,7 +561,7 @@ class _NewUsageViewState extends State<NewUsageView> {
                               visible: _timeNotChoice == 0 && _timeMedChoice != 0,
                               child: Column(
                                 children: [
-                                  const SizedBox(height: 20),
+                                  const SizedBox(height: 30),
                                   Center(
                                     child: ElevatedButton(
                                         style: ElevatedButton.styleFrom(
@@ -515,7 +572,7 @@ class _NewUsageViewState extends State<NewUsageView> {
                                           TimeOfDay? newTime = await _showTimePicker(context);
                                           if(newTime == null) return;
                                           setState(() {
-                                            time = newTime;
+                                            timeMed = newTime;
                                           });
                                         },
                                         child: Text(
@@ -530,7 +587,7 @@ class _NewUsageViewState extends State<NewUsageView> {
                                 ],
                               ),
                             ),
-                            const SizedBox(height: 20),
+                            const SizedBox(height: 30),
                             const Text(
                               'OGRANICZNIA',
                               style: TextStyle(
@@ -541,7 +598,12 @@ class _NewUsageViewState extends State<NewUsageView> {
                             ),
                             const SizedBox(height: 10),
                             MultiSelectContainer(
-                              items: restrictionsCards,
+                              items: [
+                                MultiSelectCard(value: 'Brak', label: 'Brak', selected: restrictionsCardsSelected[0]),
+                                MultiSelectCard(value: 'Na czczo', label: 'Na czczo', selected: restrictionsCardsSelected[1]),
+                                MultiSelectCard(value: 'Przy posiłku', label: 'Przy posiłku', selected: restrictionsCardsSelected[2]),
+                                MultiSelectCard(value: 'Po posiłku', label: 'Po posiłku', selected: restrictionsCardsSelected[3]),
+                              ],
                               onChange: (allSelectedItems, selectedItem){
                                 setState(() {
                                   restrictions = selectedItem.toString();
@@ -591,7 +653,7 @@ class _NewUsageViewState extends State<NewUsageView> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const SizedBox(height: 20),
+                                  const SizedBox(height: 30),
                                   const Text(
                                     'PROBIOTYK',
                                     style: TextStyle(
@@ -628,7 +690,7 @@ class _NewUsageViewState extends State<NewUsageView> {
                                     visible: _probioticChoice == 0,
                                     child: Column(
                                       children: [
-                                        const SizedBox(height: 20),
+                                        const SizedBox(height: 30),
                                         TypeAheadFormField(
                                           textFieldConfiguration: TextFieldConfiguration(
                                             controller: _typeAheadProController,
@@ -718,7 +780,7 @@ class _NewUsageViewState extends State<NewUsageView> {
                                 ],
                               ),
                             ),
-                            const SizedBox(height: 20),
+                            const SizedBox(height: 30),
                             const Text(
                               'KONFLIKT Z INNYM LEKIEM',
                               style: TextStyle(
@@ -754,7 +816,7 @@ class _NewUsageViewState extends State<NewUsageView> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const SizedBox(height: 20),
+                                  const SizedBox(height: 30),
                                   TypeAheadFormField(
                                     textFieldConfiguration: TextFieldConfiguration(
                                       controller: _typeAheadConController,
@@ -838,7 +900,7 @@ class _NewUsageViewState extends State<NewUsageView> {
                                       }
                                     },
                                   ),
-                                  const SizedBox(height: 20),
+                                  const SizedBox(height: 30),
                                   const Text(
                                     'CZAS POMIĘDZY LEKAMI',
                                     style: TextStyle(
@@ -881,7 +943,7 @@ class _NewUsageViewState extends State<NewUsageView> {
                                           );
                                           if(newTime == null) return;
                                           setState(() {
-                                            time = newTime;
+                                            timeCon = newTime;
                                           });
                                         },
                                         child: Text(
@@ -1062,12 +1124,12 @@ class _NewUsageViewState extends State<NewUsageView> {
       administration = ['Codziennie'];
     }
     if(_timeMedChoice == 0){
-      hour = [time.toString()];
+      hour = [formatTimeOfDay(timeMed)];
     } else if(_timeMedChoice == 2){
       hour = ['Brak'];
     }
     if(_conflictChoice == 0){
-      conflict = [conflictMed, timeCon.toString()];
+      conflict = [conflictMed, formatTimeOfDay(timeCon)];
     } else if(_conflictChoice == 1){
       conflict = ['Brak'];
     }
@@ -1086,8 +1148,8 @@ class _NewUsageViewState extends State<NewUsageView> {
     } else {
       userId = user.uid.toString();
     }
-    final usage = Usage(
-      usageId: DateTime.now().toString(),
+    final newUsage = Usage(
+      usageId: widget.usage == null ? DateTime.now().toString() : widget.usage!.usageId,
       medicationName: medication,
       profileId: widget.profileId,
       administration: administration,
@@ -1097,8 +1159,24 @@ class _NewUsageViewState extends State<NewUsageView> {
       probiotic: probiotic,
       userId: userId,
     );
-    BlocProvider.of<UsageBloc>(context).add(AddUsage(usage));
+    if(widget.usage == null){
+      BlocProvider.of<UsageBloc>(context).add(AddUsage(newUsage));
+    } else {
+      BlocProvider.of<UsageBloc>(context).add(UpdateUsage(newUsage));
+    }
     Navigator.pop(context);
   }
 
+  String formatTimeOfDay(TimeOfDay time) {
+    final hour = time.hour.toString().padLeft(2, '0');
+    final minute = time.minute.toString().padLeft(2, '0');
+    return '$hour:$minute';
+  }
+
+  TimeOfDay stringToTimeOfDay(String timeString) {
+    List<String> parts = timeString.split(':');
+    int hour = int.parse(parts[0]);
+    int minute = int.parse(parts[1]);
+    return TimeOfDay(hour: hour, minute: minute);
+  }
 }

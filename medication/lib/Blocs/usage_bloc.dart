@@ -81,7 +81,7 @@ class UsageBloc extends Bloc<UsageEvent, UsageState> {
         emit(UsageLoading());
         var connectivityResult = await Connectivity().checkConnectivity();
         if (connectivityResult == ConnectivityResult.none)
-          emit(UsageOperationSuccess('Profile added successfully.'));
+          emit(UsageOperationSuccess('Usage added successfully.'));
         await _firestoreService.addUsage(event.usage);
         emit(UsageOperationSuccess('Usage added successfully.'));
       } catch (e) {
@@ -94,10 +94,11 @@ class UsageBloc extends Bloc<UsageEvent, UsageState> {
         emit(UsageLoading());
         var connectivityResult = await Connectivity().checkConnectivity();
         if (connectivityResult == ConnectivityResult.none)
-          emit(UsageOperationSuccess('Profile added successfully.'));
+          emit(UsageOperationSuccess('Usage updated successfully.'));
         await _firestoreService.updateUsage(event.usage);
         emit(UsageOperationSuccess('Usage updated successfully.'));
       } catch (e) {
+        print('Here this shit: $e');
         emit(UsageError('Failed to update usage.'));
       }
     });

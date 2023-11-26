@@ -120,7 +120,6 @@ class FirestoreService {
       'restrictions': usage.restrictions,
       'conflict': usage.conflict,
       'probiotic': usage.probiotic,
-      'user_id': usage.userId,
     });
   }
 

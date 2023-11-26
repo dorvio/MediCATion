@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medication/Screens/new_medication_screen.dart';
 import 'package:medication/Screens/new_usage_screen.dart';
+import 'package:medication/Screens/usage_screen.dart';
 import 'package:medication/CustomIcons/app_icons_icons.dart';
 import '../Blocs/usage_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -30,7 +31,6 @@ class _MedicationViewState extends State<MedicationView> {
   @override
   void initState() {
     BlocProvider.of<UsageBloc>(context).add(LoadUsages(widget.profile.profileId));
-    //BlocProvider.of<UsageBloc>(context).add(LoadUsagesById('oszJ9QJ038PgmiJ9jx1lsVdu9KG3'));
     super.initState();
   }
 
@@ -145,7 +145,7 @@ class _MedicationViewState extends State<MedicationView> {
                                 backgroundColor: Colors.grey[800],
                               ),
                               onPressed: () {
-                                //_goToMedicationScreen(context, profile.profileId, profile.name, profile.isAnimal);
+                                _goToUsageScreen(context, usage);
                               },
                               child: Row(
                                 children: [
@@ -171,7 +171,7 @@ class _MedicationViewState extends State<MedicationView> {
                                     flex: 1,
                                     child: IconButton(
                                       onPressed: () {
-                                        //_showEditDialog(context, profile);
+                                        goToEditUsageScreen(context, widget.profile.isAnimal, widget.profile.profileId, usage);
                                       },
                                       icon: const Icon(Icons.edit),
                                     ),
@@ -255,7 +255,21 @@ void goToNewMedicationScreen(BuildContext context, bool animal) {
 void goToNewUsageScreen(BuildContext context, bool animal, String profileId) {
   Navigator.push(
     context,
-    MaterialPageRoute(builder: (context) => NewUsageView(animal: animal, profileId: profileId)),
+    MaterialPageRoute(builder: (context) => NewUsageView(animal: animal, profileId: profileId, usage: null)),
+  );
+}
+
+void goToEditUsageScreen(BuildContext context, bool animal, String profileId, Usage usage) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => NewUsageView(animal: animal, profileId: profileId, usage: usage)),
+  );
+}
+
+void _goToUsageScreen(BuildContext context, Usage usage) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => UsageView(usage: usage)),
   );
 }
 
