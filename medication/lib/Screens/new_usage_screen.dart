@@ -1,3 +1,4 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,15 +15,18 @@ import 'package:flutter_multi_select_items/flutter_multi_select_items.dart';
 import 'package:day_night_time_picker/day_night_time_picker.dart';
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:medication/Services/notification_service.dart';
 
 class NewUsageView extends StatefulWidget {
   final bool animal;
   final String profileId;
+  final String profileName;
   final Usage? usage;
 
   const NewUsageView({
     required this.animal,
     required this.profileId,
+    required this.profileName,
     required this.usage,
     Key? key,
   }) : super(key: key);
@@ -53,6 +57,8 @@ class _NewUsageViewState extends State<NewUsageView> {
   String restrictions = '';
   List <dynamic> conflict = [];
   String probiotic = '';
+  List <dynamic> notificationData = [];
+  List<int> notificationIds = [];
   bool administrationError = false;
   bool hourError = false;
   bool restrictionError = false;
@@ -74,14 +80,7 @@ class _NewUsageViewState extends State<NewUsageView> {
         _administrationChoice = 0;
       } else {
         _administrationChoice = 1;
-        administration = widget.usage!.administration;
-        daysCardsSelected[0] = administration.contains('Pon');
-        daysCardsSelected[1] = administration.contains('Wt');
-        daysCardsSelected[2] = administration.contains('Śr');
-        daysCardsSelected[3] = administration.contains('Czw');
-        daysCardsSelected[4] = administration.contains('Pt');
-        daysCardsSelected[5] = administration.contains('Sb');
-        daysCardsSelected[6] = administration.contains('Ndz');
+        checkSelectedDays();
       }
       RegExp regex = RegExp(r'^\d+:\d+$');
       tmp = widget.usage!.hour;
@@ -977,6 +976,10 @@ class _NewUsageViewState extends State<NewUsageView> {
                                       )
                                   ),
                                   onPressed: () {
+                                    //TODO remove
+                                    //NotificationService().scheduleNotificationWeekday(title: 'Hello', body: 'Tutaj ja', id: 1, hour: 00, minute: 39, weekday: 1);
+                                    //NotificationService().clearNotifications(1);
+                                    NotificationService().showScheduledNotifications();
                                     Navigator.pop(context);
                                   },
                                 ),
@@ -998,6 +1001,11 @@ class _NewUsageViewState extends State<NewUsageView> {
                                   ),
                                   onPressed: () {
                                     if(_formKey.currentState!.validate() && _isAdministrationValid() && _isHourValid() && _isRestrictionValid()){
+                                      if(_timeNotChoice == 0){
+                                        _createNotificationIds();
+                                        _scheduleNotifications();
+                                        NotificationService().showScheduledNotifications();
+                                      }
                                       saveUsage(medications);
                                     }
                                   },
@@ -1142,6 +1150,10 @@ class _NewUsageViewState extends State<NewUsageView> {
     } else {
       probiotic = '';
     }
+    if(_timeNotChoice == 0){
+      notificationData = [timeMed.hour, timeMed.minute];
+      notificationData.join(notificationIds.toString());
+    }
     String userId = '';
     User? user = FirebaseAuth.instance.currentUser;
     if(user == null) {
@@ -1158,6 +1170,7 @@ class _NewUsageViewState extends State<NewUsageView> {
       conflict: conflict,
       probiotic: probiotic,
       userId: userId,
+      notificationData: notificationData,
     );
     if(widget.usage == null){
       BlocProvider.of<UsageBloc>(context).add(AddUsage(newUsage));
@@ -1179,4 +1192,59 @@ class _NewUsageViewState extends State<NewUsageView> {
     int minute = int.parse(parts[1]);
     return TimeOfDay(hour: hour, minute: minute);
   }
+
+  void checkSelectedDays(){
+    daysCardsSelected[0] = administration.contains('Pon');
+    daysCardsSelected[1] = administration.contains('Wt');
+    daysCardsSelected[2] = administration.contains('Śr');
+    daysCardsSelected[3] = administration.contains('Czw');
+    daysCardsSelected[4] = administration.contains('Pt');
+    daysCardsSelected[5] = administration.contains('Sb');
+    daysCardsSelected[6] = administration.contains('Ndz');
+  }
+
+  void _createNotificationIds() {
+    //TODO add creating notification ids
+    // if(_administrationChoice == 0){
+    //   notificationIds = [notificationId];
+    //   notificationId++;
+    // } else {
+    //   checkSelectedDays();
+    //   for(int i = 0; i < 7; i++){
+    //     if(daysCardsSelected[i]){
+    //       notificationIds.add(notificationId);
+    //       notificationId++;
+    //     }
+    //   }
+    // }
+    print('Here: $notificationIds');
+  }
+
+  void _scheduleNotifications() async {
+    if(_administrationChoice == 0){
+      await NotificationService().scheduleDailyNotification(
+          title: 'Czas na lek!',
+          body: 'To już czas dla ${widget.profileName}, aby przyjąć $medication',
+          id: notificationIds[0],
+          hour: timeMed.hour,
+          minute: timeMed.minute,
+      );
+    } else {
+      int id = 0;
+      for(int i = 0; i < 7; i++){
+        if(daysCardsSelected[i]){
+          await NotificationService().scheduleNotificationWeekday(
+              title: 'Czas na lek',
+              body: 'To już czas dla ${widget.profileName}, aby przyjąć $medication',
+              id: notificationIds[id],
+              hour: timeMed.hour,
+              minute: timeMed.minute,
+              weekday: i +1
+          );
+        }
+        id++;
+      }
+    }
+  }
+
 }

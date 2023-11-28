@@ -86,15 +86,16 @@ class FirestoreService {
       return snapshot.docs.map((doc) {
         Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
         return Usage(
-            usageId: doc.id,
-            medicationName: data['medication_name'],
-            profileId: data['profile_id'],
-            administration: data['administration'],
-            hour: data['hour'],
-            restrictions: data['restrictions'],
-            conflict: data['conflict'],
-            probiotic: data['probiotic'],
-            userId: data['user_id'],
+          usageId: doc.id,
+          medicationName: data['medication_name'],
+          profileId: data['profile_id'],
+          administration: data['administration'],
+          hour: data['hour'],
+          restrictions: data['restrictions'],
+          conflict: data['conflict'],
+          probiotic: data['probiotic'],
+          userId: data['user_id'],
+            notificationData: data['notification_data']
         );
       }).toList();
     });
@@ -110,6 +111,7 @@ class FirestoreService {
       'conflict': usage.conflict,
       'probiotic': usage.probiotic,
       'user_id': usage.userId,
+      'notification_data' : usage.notificationData,
     });
   }
 
@@ -120,6 +122,7 @@ class FirestoreService {
       'restrictions': usage.restrictions,
       'conflict': usage.conflict,
       'probiotic': usage.probiotic,
+      'notification_data' : usage.notificationData,
     });
   }
 
@@ -141,6 +144,7 @@ class FirestoreService {
           conflict: data['conflict'],
           probiotic: data['probiotic'],
           userId: data['user_id'],
+          notificationData: data['notification_data'],
         );
       }).toList();
     });

@@ -4,15 +4,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medication/Blocs/profile_bloc.dart';
 import 'package:medication/Blocs/medication_bloc.dart';
 import 'package:medication/Blocs/usage_bloc.dart';
-import 'package:medication/Screens/new_medication_screen.dart';
 import 'package:medication/Screens/splash_screen.dart';
 import 'package:medication/Services/messaging_service.dart';
 import 'firebase_options.dart';
 import 'Services/firestore_service.dart';
-import 'package:medication/Screens/splash_screen.dart';
-import 'package:medication/wrapper.dart';
 import 'package:provider/provider.dart';
 import 'Services/authorization.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
@@ -21,7 +19,9 @@ void main() async{
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  await FirebaseMess().initNotifications();
+  await MessagingService().initNotifications();
+
+
   runApp(const MyApp());
 }
 class MyApp extends StatelessWidget {
@@ -51,15 +51,6 @@ class MyApp extends StatelessWidget {
           ),
           home: const SplashView(),
           navigatorKey: navigatorKey,
-          onGenerateRoute: (settings) {
-            if (settings.name == '/notification') {
-              return MaterialPageRoute(
-                //TODO change route to med specification
-                builder: (context) => NewMedicationView(animal: false),
-              );
-            }
-            return null;
-          },
         )
     );
   }

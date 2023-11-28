@@ -11,6 +11,7 @@ class Usage {
   List <dynamic> conflict;
   String probiotic;
   String userId;
+  List <dynamic> notificationData;
 
 
   Usage({
@@ -23,6 +24,7 @@ class Usage {
     required this.conflict,
     required this.probiotic,
     required this.userId,
+    required this.notificationData,
   });
 
   Usage copyWith({
@@ -35,6 +37,7 @@ class Usage {
     List <dynamic>? conflict,
     String? probiotic,
     String? userId,
+    List <dynamic>? notificationData,
   }) {
     return Usage(
       usageId : usageId ?? this.usageId,
@@ -46,6 +49,7 @@ class Usage {
       conflict : conflict ?? this.conflict,
       probiotic : probiotic ?? this.probiotic,
       userId : userId ?? this.userId,
+      notificationData : notificationData ?? this.notificationData,
     );
   }
 }

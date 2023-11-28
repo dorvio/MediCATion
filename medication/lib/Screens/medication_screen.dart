@@ -171,7 +171,7 @@ class _MedicationViewState extends State<MedicationView> {
                                     flex: 1,
                                     child: IconButton(
                                       onPressed: () {
-                                        goToEditUsageScreen(context, widget.profile.isAnimal, widget.profile.profileId, usage);
+                                        goToEditUsageScreen(context, widget.profile.isAnimal, widget.profile.profileId, usage, widget.profile.name);
                                       },
                                       icon: const Icon(Icons.edit),
                                     ),
@@ -229,7 +229,7 @@ class _MedicationViewState extends State<MedicationView> {
             ),
             label: "Dodaj lek",
             backgroundColor: Color.fromARGB(255, 175, 77, 152),
-            onTap: () => goToNewUsageScreen(context, widget.profile.isAnimal, widget.profile.profileId),
+            onTap: () => goToNewUsageScreen(context, widget.profile.isAnimal, widget.profile.profileId, widget.profile.name),
           ),
           SpeedDialChild(
             child: Icon(
@@ -252,17 +252,17 @@ void goToNewMedicationScreen(BuildContext context, bool animal) {
   );
 }
 
-void goToNewUsageScreen(BuildContext context, bool animal, String profileId) {
+void goToNewUsageScreen(BuildContext context, bool animal, String profileId, String profileName) {
   Navigator.push(
     context,
-    MaterialPageRoute(builder: (context) => NewUsageView(animal: animal, profileId: profileId, usage: null)),
+    MaterialPageRoute(builder: (context) => NewUsageView(animal: animal, profileId: profileId, profileName: profileName, usage: null)),
   );
 }
 
-void goToEditUsageScreen(BuildContext context, bool animal, String profileId, Usage usage) {
+void goToEditUsageScreen(BuildContext context, bool animal, String profileId, Usage usage, String profileName) {
   Navigator.push(
     context,
-    MaterialPageRoute(builder: (context) => NewUsageView(animal: animal, profileId: profileId, usage: usage)),
+    MaterialPageRoute(builder: (context) => NewUsageView(animal: animal, profileId: profileId, profileName: profileName, usage: usage)),
   );
 }
 
