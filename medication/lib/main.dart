@@ -4,8 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medication/Blocs/profile_bloc.dart';
 import 'package:medication/Blocs/medication_bloc.dart';
 import 'package:medication/Blocs/usage_bloc.dart';
+import 'package:medication/Blocs/usage_history_bloc.dart';
 import 'package:medication/Screens/splash_screen.dart';
-import 'package:medication/Services/messaging_service.dart';
 import 'firebase_options.dart';
 import 'Services/firestore_service.dart';
 import 'package:provider/provider.dart';
@@ -19,7 +19,6 @@ void main() async{
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  await MessagingService().initNotifications();
 
 
   runApp(const MyApp());
@@ -39,6 +38,9 @@ class MyApp extends StatelessWidget {
           ),
           BlocProvider<UsageBloc>(
             create: (context) => UsageBloc(FirestoreService()),
+          ),
+          BlocProvider<UsageHistoryBloc>(
+            create: (context) => UsageHistoryBloc(FirestoreService()),
           ),
           StreamProvider.value(value: AuthorizationService().user, initialData: null),
         ],

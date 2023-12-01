@@ -5,6 +5,7 @@ import 'package:connectivity/connectivity.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../Blocs/usage_bloc.dart';
+import '../Blocs/usage_history_bloc.dart';
 import '../Blocs/profile_bloc.dart';
 import '../Blocs/medication_bloc.dart';
 import 'package:provider/provider.dart';
@@ -38,13 +39,12 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[900],
-      body: const Column(
+      body: Column(
         children: [
-          Icon(
-            Icons.image,
-            color: Color.fromARGB(255, 174, 199, 255),
+          Image.asset(
+            'assets/medication.png',
           ),
-          Text(
+          const Text(
             '',
             style: const TextStyle(
               color: Colors.white,
@@ -64,6 +64,7 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
       BlocProvider.of<MedicationBloc>(context).add(LoadMedications(true));
       BlocProvider.of<MedicationBloc>(context).add(LoadMedications(false));
       BlocProvider.of<UsageBloc>(context).add(LoadUsagesById(userId));
+      BlocProvider.of<UsageHistoryBloc>(context).add(LoadUsageHistoryById(userId));
     }
   }
 

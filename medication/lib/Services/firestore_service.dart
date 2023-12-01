@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../Database_classes/Profile.dart';
 import '../Database_classes/Medication.dart';
 import '../Database_classes/Usage.dart';
+import '../Database_classes/UsageHistory.dart';
 
 class FirestoreService {
   final CollectionReference _profilesCollection =
@@ -12,6 +13,9 @@ class FirestoreService {
 
   final CollectionReference _usagesCollection =
   FirebaseFirestore.instance.collection('usages');
+
+  final CollectionReference _usageHistoryCollection =
+  FirebaseFirestore.instance.collection('usage_history');
 
   Stream<List<Profile>> getProfiles(String userId) {
     return _profilesCollection.where('user_id', isEqualTo: userId).snapshots().map((snapshot) {
@@ -145,6 +149,55 @@ class FirestoreService {
           probiotic: data['probiotic'],
           userId: data['user_id'],
           notificationData: data['notification_data'],
+        );
+      }).toList();
+    });
+  }
+
+  Future<void> updateUsageConflict(String usageId, List<dynamic> conflict) {
+    return _usagesCollection.doc(usageId).update({
+      'conflict': conflict,
+    });
+  }
+
+  Stream<List<UsageHistory>> getUsageHistory(String profileId) {
+    return _usageHistoryCollection.where('profile_id', isEqualTo: profileId).snapshots().map((snapshot) {
+      return snapshot.docs.map((doc) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        return UsageHistory(
+          usageHistoryId: doc.id,
+          usageId: data['usage_id'],
+          date: data['date'],
+          profileId: data['profile_id'],
+          userId: data['user_id'],
+        );
+      }).toList();
+    });
+  }
+
+  Future<void> addUsageHistory(UsageHistory usageHistory) {
+    return _usageHistoryCollection.add({
+      'usage_id': usageHistory.usageId,
+      'date' : usageHistory.date,
+      'profile_id': usageHistory.profileId,
+      'user_id': usageHistory.userId,
+    });
+  }
+
+  Future<void> deleteUsageHistory(String usageHistoryId) {
+    return _usageHistoryCollection.doc(usageHistoryId).delete();
+  }
+
+  Stream<List<UsageHistory>> getUsageHistoryById(String userId){
+    return _usageHistoryCollection.where('user_id', isEqualTo: userId).snapshots().map((snapshot) {
+      return snapshot.docs.map((doc) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        return UsageHistory(
+          usageHistoryId: doc.id,
+          usageId: data['usage_id'],
+          date: data['date'],
+          profileId: data['profile_id'],
+          userId: data['user_id'],
         );
       }).toList();
     });

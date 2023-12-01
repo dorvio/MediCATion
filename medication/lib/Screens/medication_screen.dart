@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medication/Screens/new_medication_screen.dart';
 import 'package:medication/Screens/new_usage_screen.dart';
-import 'package:medication/Screens/usage_screen.dart';
 import 'package:medication/CustomIcons/app_icons_icons.dart';
+import 'package:medication/Screens/usage_screen_controller.dart';
 import '../Blocs/usage_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:medication/Services/authorization.dart';
@@ -217,7 +217,6 @@ class _MedicationViewState extends State<MedicationView> {
       floatingActionButton: SpeedDial(
         icon: Icons.add,
         activeIcon: Icons.close,
-        //animatedIcon: AnimatedIcons.menu_close,
         spaceBetweenChildren: 20,
         backgroundColor: Color.fromARGB(255, 174, 199, 255),
         overlayOpacity: 0,
@@ -269,7 +268,7 @@ void goToEditUsageScreen(BuildContext context, bool animal, String profileId, Us
 void _goToUsageScreen(BuildContext context, Usage usage) {
   Navigator.push(
     context,
-    MaterialPageRoute(builder: (context) => UsageView(usage: usage)),
+    MaterialPageRoute(builder: (context) => UsageController(usage: usage)),
   );
 }
 

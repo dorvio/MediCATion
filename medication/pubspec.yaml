@@ -52,10 +52,17 @@ dependencies:
   firebase_messaging: ^14.7.5
   flutter_local_notifications: ^16.2.0
   awesome_notifications: ^0.8.2
+  flutter_launcher_icons: ^0.13.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/medication.png"
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -79,6 +86,7 @@ flutter:
     - family: AppIcons
       fonts:
         - asset: assets/AppIcons.ttf
+
 
   # To add assets to your application, add an assets section, like this:
   # assets:

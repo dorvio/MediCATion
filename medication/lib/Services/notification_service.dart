@@ -159,4 +159,16 @@ class NotificationService{
     }
   }
 
+  Future<List<int>> getScheduledNotificationIds() async {
+    List<int> ids = [];
+    List<dynamic> scheduled = await AwesomeNotifications()
+        .listScheduledNotifications();
+    if (scheduled.isNotEmpty) {
+      for (NotificationModel el in scheduled) {
+        ids.add(el.content!.id!);
+      }
+    }
+    return ids;
+  }
+
 }

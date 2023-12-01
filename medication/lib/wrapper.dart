@@ -4,6 +4,7 @@ import 'Screens/profile_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../Blocs/usage_bloc.dart';
+import '../Blocs/usage_history_bloc.dart';
 import '../Blocs/profile_bloc.dart';
 import '../Blocs/medication_bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -36,6 +37,7 @@ class Wrapper extends StatelessWidget {
       BlocProvider.of<MedicationBloc>(context).add(LoadMedications(true));
       BlocProvider.of<MedicationBloc>(context).add(LoadMedications(false));
       BlocProvider.of<UsageBloc>(context).add(LoadUsagesById(userId));
+      BlocProvider.of<UsageHistoryBloc>(context).add(LoadUsageHistoryById(userId));
     }
   }
 }

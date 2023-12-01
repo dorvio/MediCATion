@@ -1,4 +1,3 @@
-import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -43,6 +42,7 @@ class _NewUsageViewState extends State<NewUsageView> {
   final TextEditingController _typeAheadProController = TextEditingController();
   String medication = '';
   String conflictMed = '';
+  String conflictMedId = '';
   String probioticName = '';
   int _administrationChoice = 0;
   int _timeMedChoice = 0;
@@ -80,7 +80,13 @@ class _NewUsageViewState extends State<NewUsageView> {
         _administrationChoice = 0;
       } else {
         _administrationChoice = 1;
-        checkSelectedDays();
+        daysCardsSelected[0] = tmp.contains('Poniedziałek');
+        daysCardsSelected[1] = tmp.contains('Wtorek');
+        daysCardsSelected[2] = tmp.contains('Środa');
+        daysCardsSelected[3] = tmp.contains('Czwartek');
+        daysCardsSelected[4] = tmp.contains('Piątek');
+        daysCardsSelected[5] = tmp.contains('Sobota');
+        daysCardsSelected[6] = tmp.contains('Niedziela');
       }
       RegExp regex = RegExp(r'^\d+:\d+$');
       tmp = widget.usage!.hour;
@@ -94,7 +100,7 @@ class _NewUsageViewState extends State<NewUsageView> {
         hour = widget.usage!.hour;
         timeOfDayCardsSelected[0] = hour.contains('Rano');
         timeOfDayCardsSelected[1] = hour.contains('Wieczorem');
-        timeOfDayCardsSelected[2] = hour.contains('W południe');
+        timeOfDayCardsSelected[2] = hour.contains('Po południu');
         timeOfDayCardsSelected[3] = hour.contains('Na noc');
       }
       if(widget.usage!.probiotic == 'Brak'){
@@ -112,6 +118,7 @@ class _NewUsageViewState extends State<NewUsageView> {
         _conflictChoice = 0;
         conflictMed = tmp[0].toString();
         timeCon = stringToTimeOfDay(tmp[1].toString());
+        conflictMedId = tmp[2];
         _typeAheadConController.text = tmp[0].toString();
       }
       restrictions = widget.usage!.restrictions;
@@ -119,6 +126,12 @@ class _NewUsageViewState extends State<NewUsageView> {
       restrictionsCardsSelected[1] = restrictions == 'Na czczo' ? true : false;
       restrictionsCardsSelected[2] = restrictions == 'Przy posiłku' ? true : false;
       restrictionsCardsSelected[3] = restrictions == 'Po posiłku' ? true : false;
+      if(widget.usage!.notificationData[0] != 'Brak'){
+        notificationData = widget.usage!.notificationData;
+        if(widget.usage!.administration[0] != 'Codziennie'){
+          timeMed = TimeOfDay(hour: notificationData[0], minute: notificationData[1]);
+        }
+      }
     }
   }
 
@@ -349,13 +362,13 @@ class _NewUsageViewState extends State<NewUsageView> {
                                   const SizedBox(height: 30),
                                   MultiSelectContainer(
                                     items: [
-                                      MultiSelectCard(value: 'Pon', label: 'Pon', selected: daysCardsSelected[0]),
-                                      MultiSelectCard(value: 'Wt', label: 'Wt', selected: daysCardsSelected[1]),
-                                      MultiSelectCard(value: 'Śr', label: 'Śr', selected: daysCardsSelected[2]),
-                                      MultiSelectCard(value: 'Czw', label: 'Czw', selected: daysCardsSelected[3]),
-                                      MultiSelectCard(value: 'Pt', label: 'Pt', selected: daysCardsSelected[4]),
-                                      MultiSelectCard(value: 'Sb', label: 'Sb', selected: daysCardsSelected[5]),
-                                      MultiSelectCard(value: 'Ndz', label: 'Ndz', selected: daysCardsSelected[6]),
+                                      MultiSelectCard(value: 'Poniedziałek', label: 'Poniedziałek', selected: daysCardsSelected[0]),
+                                      MultiSelectCard(value: 'Wtorek', label: 'Wtorek', selected: daysCardsSelected[1]),
+                                      MultiSelectCard(value: 'Środa', label: 'Środa', selected: daysCardsSelected[2]),
+                                      MultiSelectCard(value: 'Czwartek', label: 'Czwartek', selected: daysCardsSelected[3]),
+                                      MultiSelectCard(value: 'Piątek', label: 'Piątek', selected: daysCardsSelected[4]),
+                                      MultiSelectCard(value: 'Sobota', label: 'Sobota', selected: daysCardsSelected[5]),
+                                      MultiSelectCard(value: 'Niedziela', label: 'Niedziela', selected: daysCardsSelected[6]),
                                     ],
                                     onChange: (allSelectedItems, selectedItem){
                                       setState(() {
@@ -474,7 +487,7 @@ class _NewUsageViewState extends State<NewUsageView> {
                                       items: [
                                         MultiSelectCard(value: 'Rano', label: 'Rano', selected: timeOfDayCardsSelected[0]),
                                         MultiSelectCard(value: 'Wieczorem', label: 'Wieczorem', selected: timeOfDayCardsSelected[1]),
-                                        MultiSelectCard(value: 'W południe', label: 'W południe', selected: timeOfDayCardsSelected[2]),
+                                        MultiSelectCard(value: 'Po południu', label: 'Po południu', selected: timeOfDayCardsSelected[2]),
                                         MultiSelectCard(value: 'Na noc', label: 'Na noc', selected: timeOfDayCardsSelected[3]),
                                       ],
                                       onChange: (allSelectedItems, selectedItem){
@@ -876,6 +889,8 @@ class _NewUsageViewState extends State<NewUsageView> {
                                       _typeAheadConController.text = suggestion;
                                       setState(() {
                                         conflictMed = suggestion;
+                                        conflictMedId = (usages
+                                            .where((us) => us.medicationName == conflictMed)).first.usageId;
                                       });
                                     },
                                     noItemsFoundBuilder: (context) =>
@@ -976,9 +991,6 @@ class _NewUsageViewState extends State<NewUsageView> {
                                       )
                                   ),
                                   onPressed: () {
-                                    //TODO remove
-                                    //NotificationService().scheduleNotificationWeekday(title: 'Hello', body: 'Tutaj ja', id: 1, hour: 00, minute: 39, weekday: 1);
-                                    //NotificationService().clearNotifications(1);
                                     NotificationService().showScheduledNotifications();
                                     Navigator.pop(context);
                                   },
@@ -1001,12 +1013,7 @@ class _NewUsageViewState extends State<NewUsageView> {
                                   ),
                                   onPressed: () {
                                     if(_formKey.currentState!.validate() && _isAdministrationValid() && _isHourValid() && _isRestrictionValid()){
-                                      if(_timeNotChoice == 0){
-                                        _createNotificationIds();
-                                        _scheduleNotifications();
-                                        NotificationService().showScheduledNotifications();
-                                      }
-                                      saveUsage(medications);
+                                      _handleSave(medications);
                                     }
                                   },
                                 ),
@@ -1137,7 +1144,7 @@ class _NewUsageViewState extends State<NewUsageView> {
       hour = ['Brak'];
     }
     if(_conflictChoice == 0){
-      conflict = [conflictMed, formatTimeOfDay(timeCon)];
+      conflict = [conflictMed, formatTimeOfDay(timeCon), conflictMedId];
     } else if(_conflictChoice == 1){
       conflict = ['Brak'];
     }
@@ -1152,7 +1159,9 @@ class _NewUsageViewState extends State<NewUsageView> {
     }
     if(_timeNotChoice == 0){
       notificationData = [timeMed.hour, timeMed.minute];
-      notificationData.join(notificationIds.toString());
+      notificationData.addAll(notificationIds);
+    } else {
+      notificationData = ['Brak'];
     }
     String userId = '';
     User? user = FirebaseAuth.instance.currentUser;
@@ -1194,30 +1203,47 @@ class _NewUsageViewState extends State<NewUsageView> {
   }
 
   void checkSelectedDays(){
-    daysCardsSelected[0] = administration.contains('Pon');
-    daysCardsSelected[1] = administration.contains('Wt');
-    daysCardsSelected[2] = administration.contains('Śr');
-    daysCardsSelected[3] = administration.contains('Czw');
-    daysCardsSelected[4] = administration.contains('Pt');
-    daysCardsSelected[5] = administration.contains('Sb');
-    daysCardsSelected[6] = administration.contains('Ndz');
+    daysCardsSelected[0] = administration.contains('Poniedziałek');
+    daysCardsSelected[1] = administration.contains('Wtorek');
+    daysCardsSelected[2] = administration.contains('Środa');
+    daysCardsSelected[3] = administration.contains('Czwartek');
+    daysCardsSelected[4] = administration.contains('Piątek');
+    daysCardsSelected[5] = administration.contains('Sobota');
+    daysCardsSelected[6] = administration.contains('Niedziela');
   }
 
-  void _createNotificationIds() {
-    //TODO add creating notification ids
-    // if(_administrationChoice == 0){
-    //   notificationIds = [notificationId];
-    //   notificationId++;
-    // } else {
-    //   checkSelectedDays();
-    //   for(int i = 0; i < 7; i++){
-    //     if(daysCardsSelected[i]){
-    //       notificationIds.add(notificationId);
-    //       notificationId++;
-    //     }
-    //   }
-    // }
-    print('Here: $notificationIds');
+  int findMissingNumber(List<int> numbers) {
+    if(numbers.isEmpty) return 1;
+    numbers.sort();
+    int missingNumber = 1;
+    for (int number in numbers) {
+      if (number == missingNumber) {
+        missingNumber++;
+      }
+    }
+    return missingNumber;
+  }
+
+  void _createNotificationIds(List<int> idsInUse) async  {
+    int newId = 0;
+    List<int> ids = [];
+    if(_administrationChoice == 0){
+      newId = findMissingNumber(idsInUse);
+      ids = [newId];
+    } else {
+      checkSelectedDays();
+      for(int i = 0; i < 7; i++){
+        if(daysCardsSelected[i]){
+          newId = findMissingNumber(idsInUse);
+          ids.add(newId);
+          idsInUse.add(newId);
+        }
+      }
+    }
+    setState(() {
+      notificationIds = ids;
+    });
+    //return ids;
   }
 
   void _scheduleNotifications() async {
@@ -1245,6 +1271,43 @@ class _NewUsageViewState extends State<NewUsageView> {
         id++;
       }
     }
+  }
+
+  void _handleSave (List<Medication> medications) async {
+    List<int> idsInUse = await NotificationService().getScheduledNotificationIds();
+    if(widget.usage != null){
+      //edit mode
+      if(_timeNotChoice == 0){
+        //chcemy powiadomienia
+        if(widget.usage!.notificationData.isNotEmpty){
+          //już było powiadomienie
+          for(int i = 2; i < notificationData.length; i++){
+            //usuwamy poprzednie powiadomienia
+            NotificationService().clearNotifications(notificationData[i]);
+          }
+        }
+        //nie było powidomień + tworzenie po usunięciu
+        _createNotificationIds(idsInUse);
+        _scheduleNotifications();
+      } else {
+        //nie chcemy powiadomień
+        if(widget.usage!.notificationData.isNotEmpty){
+          //są powiadomienia
+          for(int i = 2; i < notificationData.length; i++){
+            //usuwamy poprzednie powidomienia
+            NotificationService().clearNotifications(notificationData[i]);
+          }
+        }
+      }
+    } else {
+      //add mode
+      //wybrana opcja powiadomienia - dodajemy powiadomienie
+      if(_timeNotChoice == 0){
+        _createNotificationIds(idsInUse);
+        _scheduleNotifications();
+      }
+    }
+    saveUsage(medications);
   }
 
 }
