@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medication/Database_classes/UsageHistory.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class UsageReviewView extends StatefulWidget {
   final Usage usage;
@@ -225,6 +226,23 @@ class _UsageReviewViewState extends State<UsageReviewView> {
                           bool result = await _checkUsage();
                           if(result == true) {
                             _addToUsageHistory();
+                            Fluttertoast.showToast(
+                                msg: "Lek został podany",
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.CENTER,
+                                backgroundColor: Colors.grey[600],
+                                textColor: Colors.black,
+                                fontSize: 16.0
+                            );
+                          } else {
+                            Fluttertoast.showToast(
+                                msg: "Lek NIE został podany",
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.CENTER,
+                                backgroundColor: Colors.grey[600],
+                                textColor: Colors.black,
+                                fontSize: 16.0
+                            );
                           }
                         },
                       ),
@@ -330,7 +348,7 @@ class _UsageReviewViewState extends State<UsageReviewView> {
         if(!result) return false;
       }
     }
-    if(widget.usage.conflict != 'Brak') {
+    if (widget.usage.conflict.length > 1) {
       String conflictMedId = widget.usage.conflict[2];
       List<String> parts = widget.usage.conflict[1].split(':');
       int hours = int.parse(parts[0]);

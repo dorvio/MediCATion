@@ -10,7 +10,7 @@ import 'firebase_options.dart';
 import 'Services/firestore_service.dart';
 import 'package:provider/provider.dart';
 import 'Services/authorization.dart';
-import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
@@ -21,7 +21,7 @@ void main() async{
   );
 
 
-  runApp(const MyApp());
+  initializeDateFormatting().then((_) => runApp(MyApp()));
 }
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

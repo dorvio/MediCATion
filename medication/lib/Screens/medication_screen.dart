@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medication/Screens/new_medication_screen.dart';
 import 'package:medication/Screens/new_usage_screen.dart';
 import 'package:medication/CustomIcons/app_icons_icons.dart';
+import 'package:medication/Screens/usage_history_screen.dart';
 import 'package:medication/Screens/usage_screen_controller.dart';
 import '../Blocs/usage_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';

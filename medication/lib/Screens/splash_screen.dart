@@ -10,6 +10,7 @@ import '../Blocs/profile_bloc.dart';
 import '../Blocs/medication_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class SplashView extends StatefulWidget {
   const SplashView({Key? key}) : super(key: key);
@@ -19,7 +20,7 @@ class SplashView extends StatefulWidget {
 }
 
 class _SplashViewState extends State<SplashView> with SingleTickerProviderStateMixin {
-  bool isConnected = false;
+  bool noInternet = false;
   @override
   void initState(){
     super.initState();
@@ -39,19 +40,36 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[900],
-      body: Column(
-        children: [
-          Image.asset(
-            'assets/medication.png',
-          ),
-          const Text(
-            '',
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 16,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'mediCATion',
+              style: GoogleFonts.tiltNeon(
+                textStyle: const TextStyle(
+                  color: Color.fromARGB(255, 174, 199, 255),
+                  fontSize: 50,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
-          ),
-        ],
+            Image.asset(
+              'assets/medication.png',
+              scale: 2,
+            ),
+            Visibility(
+              visible: noInternet,
+                child: Text(
+                  'Brak połączenia z internetem.\nDane nie zostaną odświeżone.',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 15,
+                  ),
+                )
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -71,7 +89,13 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
   Future<void> checkInternetConnection() async {
     var connectivityResult = await Connectivity().checkConnectivity();
     if (connectivityResult == ConnectivityResult.none) {
+      setState(() {
+        noInternet = true;
+      });
     } else {
+      setState(() {
+        noInternet = false;
+      });
       clearFirestoreCache();
       downloadData();
     }
