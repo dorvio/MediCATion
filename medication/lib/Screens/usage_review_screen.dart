@@ -8,7 +8,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medication/Database_classes/UsageHistory.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 class UsageReviewView extends StatefulWidget {
   final Usage usage;
@@ -25,6 +24,7 @@ class UsageReviewView extends StatefulWidget {
 class _UsageReviewViewState extends State<UsageReviewView> {
   final AuthorizationService _authorizationService = AuthorizationService();
   List<UsageHistory> thisUsageHistory = [];
+  int showInfo = 0;
 
   @override
   void initState() {
@@ -226,27 +226,40 @@ class _UsageReviewViewState extends State<UsageReviewView> {
                           bool result = await _checkUsage();
                           if(result == true) {
                             _addToUsageHistory();
-                            Fluttertoast.showToast(
-                                msg: "Lek został podany",
-                                toastLength: Toast.LENGTH_SHORT,
-                                gravity: ToastGravity.CENTER,
-                                backgroundColor: Colors.grey[600],
-                                textColor: Colors.black,
-                                fontSize: 16.0
-                            );
+                            setState(() {
+                              showInfo = 1;
+                            });
+                            Timer timer = Timer(Duration(seconds: 3), () {
+                              setState(() {
+                                showInfo = 0;
+                              });
+                            });
                           } else {
-                            Fluttertoast.showToast(
-                                msg: "Lek NIE został podany",
-                                toastLength: Toast.LENGTH_SHORT,
-                                gravity: ToastGravity.CENTER,
-                                backgroundColor: Colors.grey[600],
-                                textColor: Colors.black,
-                                fontSize: 16.0
-                            );
+                            setState(() {
+                              showInfo = 2;
+                            });
+                            Timer timer = Timer(Duration(seconds: 3), () {
+                              setState(() {
+                                showInfo = 0;
+                              });
+                            });
                           }
                         },
                       ),
                     ),
+                    const SizedBox(height: 20),
+                    Center(
+                      child: Visibility(
+                          visible: showInfo != 0,
+                          child: Text(
+                              showInfo == 1 ? "Lek został podany" : "Lek NIE został podany",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 15,
+                              )
+                          )
+                      ),
+                    )
                   ],
                 ),
               );
