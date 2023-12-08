@@ -31,7 +31,7 @@ class _NewMedicationViewState extends State<NewMedicationView> {
     'Antybiotyk',
     'Nasenne',
     'Przeciwbólowe',
-    'Osłonowe',
+    'Probiotyk',
     'Przeciwhistaminowe',
     'Witaminy',
     'Inne'

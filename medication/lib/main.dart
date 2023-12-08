@@ -4,19 +4,22 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medication/Blocs/profile_bloc.dart';
 import 'package:medication/Blocs/medication_bloc.dart';
 import 'package:medication/Blocs/usage_bloc.dart';
+import 'package:medication/Blocs/usage_history_bloc.dart';
 import 'package:medication/Screens/splash_screen.dart';
 import 'firebase_options.dart';
 import 'Services/firestore_service.dart';
-import 'package:medication/Screens/splash_screen.dart';
 import 'package:provider/provider.dart';
 import 'Services/authorization.dart';
+import 'package:intl/date_symbol_data_local.dart';
+
+final navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const MyApp());
+  initializeDateFormatting('pl_PL', null).then((_) => runApp(MyApp()));
 }
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -34,6 +37,9 @@ class MyApp extends StatelessWidget {
           BlocProvider<UsageBloc>(
             create: (context) => UsageBloc(FirestoreService()),
           ),
+          BlocProvider<UsageHistoryBloc>(
+            create: (context) => UsageHistoryBloc(FirestoreService()),
+          ),
           StreamProvider.value(value: AuthorizationService().user, initialData: null),
         ],
         child: MaterialApp(
@@ -44,6 +50,7 @@ class MyApp extends StatelessWidget {
               )
           ),
           home: const SplashView(),
+          navigatorKey: navigatorKey,
         )
     );
   }

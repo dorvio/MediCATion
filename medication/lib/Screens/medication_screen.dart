@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medication/Screens/new_medication_screen.dart';
 import 'package:medication/Screens/new_usage_screen.dart';
 import 'package:medication/CustomIcons/app_icons_icons.dart';
+import 'package:medication/Screens/usage_history_screen.dart';
+import 'package:medication/Screens/usage_screen_controller.dart';
 import '../Blocs/usage_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:medication/Services/authorization.dart';
@@ -29,7 +31,7 @@ class _MedicationViewState extends State<MedicationView> {
 
   @override
   void initState() {
-    BlocProvider.of<UsageBloc>(context).add(LoadUsages());
+    BlocProvider.of<UsageBloc>(context).add(LoadUsages(widget.profile.profileId));
     super.initState();
   }
 
@@ -97,9 +99,7 @@ class _MedicationViewState extends State<MedicationView> {
       backgroundColor: Colors.grey[900],
       body: BlocBuilder<UsageBloc, UsageState>(
         builder: (context, state) {
-          if (state is UsageInitial) {
-            return CircularProgressIndicator();
-          } else if (state is UsageLoading) {
+          if (state is UsageLoading) {
             return CircularProgressIndicator();
           } else if (state is UsageLoaded) {
             final usages = state.usages;
@@ -146,7 +146,7 @@ class _MedicationViewState extends State<MedicationView> {
                                 backgroundColor: Colors.grey[800],
                               ),
                               onPressed: () {
-                                //_goToMedicationScreen(context, profile.profileId, profile.name, profile.isAnimal);
+                                _goToUsageScreen(context, usage);
                               },
                               child: Row(
                                 children: [
@@ -172,7 +172,7 @@ class _MedicationViewState extends State<MedicationView> {
                                     flex: 1,
                                     child: IconButton(
                                       onPressed: () {
-                                        //_showEditDialog(context, profile);
+                                        goToEditUsageScreen(context, widget.profile.isAnimal, widget.profile.profileId, usage, widget.profile.name);
                                       },
                                       icon: const Icon(Icons.edit),
                                     ),
@@ -198,7 +198,7 @@ class _MedicationViewState extends State<MedicationView> {
               ],
             );
           } else if (state is UsageOperationSuccess) {
-            BlocProvider.of<UsageBloc>(context).add(LoadUsages()); // Reload usages
+            BlocProvider.of<UsageBloc>(context).add(LoadUsages(widget.profile.profileId));
             return Container();
           } else if (state is UsageError) {
             return Center(
@@ -218,7 +218,6 @@ class _MedicationViewState extends State<MedicationView> {
       floatingActionButton: SpeedDial(
         icon: Icons.add,
         activeIcon: Icons.close,
-        //animatedIcon: AnimatedIcons.menu_close,
         spaceBetweenChildren: 20,
         backgroundColor: Color.fromARGB(255, 174, 199, 255),
         overlayOpacity: 0,
@@ -230,7 +229,7 @@ class _MedicationViewState extends State<MedicationView> {
             ),
             label: "Dodaj lek",
             backgroundColor: Color.fromARGB(255, 175, 77, 152),
-            onTap: () => goToNewUsageScreen(context, widget.profile.isAnimal, widget.profile.profileId),
+            onTap: () => goToNewUsageScreen(context, widget.profile.isAnimal, widget.profile.profileId, widget.profile.name),
           ),
           SpeedDialChild(
             child: Icon(
@@ -253,10 +252,24 @@ void goToNewMedicationScreen(BuildContext context, bool animal) {
   );
 }
 
-void goToNewUsageScreen(BuildContext context, bool animal, String profileId) {
+void goToNewUsageScreen(BuildContext context, bool animal, String profileId, String profileName) {
   Navigator.push(
     context,
-    MaterialPageRoute(builder: (context) => NewUsageView(animal: animal, profileId: profileId)),
+    MaterialPageRoute(builder: (context) => NewUsageView(animal: animal, profileId: profileId, profileName: profileName, usage: null)),
+  );
+}
+
+void goToEditUsageScreen(BuildContext context, bool animal, String profileId, Usage usage, String profileName) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => NewUsageView(animal: animal, profileId: profileId, profileName: profileName, usage: usage)),
+  );
+}
+
+void _goToUsageScreen(BuildContext context, Usage usage) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => UsageController(usage: usage)),
   );
 }
 
@@ -278,7 +291,6 @@ void _showDeleteDialog(BuildContext context, Usage usage) {
             content: Form(
               key: _formKey,
               child: TextFormField(
-                maxLength: 15,
                 style: const TextStyle(color: Colors.white),
                 decoration: const InputDecoration(
                   labelText: 'Podaj nazwę',

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../Database_classes/Profile.dart';
 import '../Database_classes/Medication.dart';
 import '../Database_classes/Usage.dart';
+import '../Database_classes/UsageHistory.dart';
 
 class FirestoreService {
   final CollectionReference _profilesCollection =
@@ -12,6 +13,9 @@ class FirestoreService {
 
   final CollectionReference _usagesCollection =
   FirebaseFirestore.instance.collection('usages');
+
+  final CollectionReference _usageHistoryCollection =
+  FirebaseFirestore.instance.collection('usage_history');
 
   Stream<List<Profile>> getProfiles(String userId) {
     return _profilesCollection.where('user_id', isEqualTo: userId).snapshots().map((snapshot) {
@@ -81,15 +85,21 @@ class FirestoreService {
     return _medicationsCollection.doc(medicationId).delete();
   }
 
-  Stream<List<Usage>> getUsages() {
-    return _usagesCollection.snapshots().map((snapshot) {
+  Stream<List<Usage>> getUsages(String profileId) {
+    return _usagesCollection.where('profile_id', isEqualTo: profileId).snapshots().map((snapshot) {
       return snapshot.docs.map((doc) {
         Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
         return Usage(
-            usageId: doc.id,
-            medicationId: data['medication_id'],
-            medicationName: data['medication_name'],
-            profileId: data['profile_id'],
+          usageId: doc.id,
+          medicationName: data['medication_name'],
+          profileId: data['profile_id'],
+          administration: data['administration'],
+          hour: data['hour'],
+          restrictions: data['restrictions'],
+          conflict: data['conflict'],
+          probiotic: data['probiotic'],
+          userId: data['user_id'],
+            notificationData: data['notification_data']
         );
       }).toList();
     });
@@ -97,13 +107,99 @@ class FirestoreService {
 
   Future<void> addUsage(Usage usage) {
     return _usagesCollection.add({
-      'medication_id': usage.medicationId,
       'medication_name': usage.medicationName,
       'profile_id': usage.profileId,
+      'administration': usage.administration,
+      'hour': usage.hour,
+      'restrictions': usage.restrictions,
+      'conflict': usage.conflict,
+      'probiotic': usage.probiotic,
+      'user_id': usage.userId,
+      'notification_data' : usage.notificationData,
+    });
+  }
+
+  Future<void> updateUsage(Usage usage) {
+    return _usagesCollection.doc(usage.usageId.toString()).update({
+      'administration': usage.administration,
+      'hour': usage.hour,
+      'restrictions': usage.restrictions,
+      'conflict': usage.conflict,
+      'probiotic': usage.probiotic,
+      'notification_data' : usage.notificationData,
     });
   }
 
   Future<void> deleteUsage(String usageId) {
     return _usagesCollection.doc(usageId).delete();
+  }
+
+  Stream<List<Usage>> getUsagesById(String userId){
+    return _usagesCollection.where('user_id', isEqualTo: userId).snapshots().map((snapshot) {
+      return snapshot.docs.map((doc) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        return Usage(
+          usageId: doc.id,
+          medicationName: data['medication_name'],
+          profileId: data['profile_id'],
+          administration: data['administration'],
+          hour: data['hour'],
+          restrictions: data['restrictions'],
+          conflict: data['conflict'],
+          probiotic: data['probiotic'],
+          userId: data['user_id'],
+          notificationData: data['notification_data'],
+        );
+      }).toList();
+    });
+  }
+
+  Future<void> updateUsageConflict(String usageId, List<dynamic> conflict) {
+    return _usagesCollection.doc(usageId).update({
+      'conflict': conflict,
+    });
+  }
+
+  Stream<List<UsageHistory>> getUsageHistory(String profileId) {
+    return _usageHistoryCollection.where('profile_id', isEqualTo: profileId).snapshots().map((snapshot) {
+      return snapshot.docs.map((doc) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        return UsageHistory(
+          usageHistoryId: doc.id,
+          usageId: data['usage_id'],
+          date: data['date'],
+          profileId: data['profile_id'],
+          userId: data['user_id'],
+        );
+      }).toList();
+    });
+  }
+
+  Future<void> addUsageHistory(UsageHistory usageHistory) {
+    return _usageHistoryCollection.add({
+      'usage_id': usageHistory.usageId,
+      'date' : usageHistory.date,
+      'profile_id': usageHistory.profileId,
+      'user_id': usageHistory.userId,
+    });
+  }
+
+  Future<void> deleteUsageHistory(String usageHistoryId) {
+    return _usageHistoryCollection.doc(usageHistoryId).delete();
+  }
+
+  Stream<List<UsageHistory>> getUsageHistoryById(String userId){
+    return _usageHistoryCollection.where('user_id', isEqualTo: userId).snapshots().map((snapshot) {
+      return snapshot.docs.map((doc) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        return UsageHistory(
+          usageHistoryId: doc.id,
+          usageId: data['usage_id'],
+          date: data['date'],
+          profileId: data['profile_id'],
+          userId: data['user_id'],
+        );
+      }).toList();
+    });
   }
 }

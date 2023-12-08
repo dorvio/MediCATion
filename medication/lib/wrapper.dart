@@ -4,6 +4,7 @@ import 'Screens/profile_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../Blocs/usage_bloc.dart';
+import '../Blocs/usage_history_bloc.dart';
 import '../Blocs/profile_bloc.dart';
 import '../Blocs/medication_bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -20,14 +21,23 @@ class Wrapper extends StatelessWidget {
     return const SignInView();
     } else {
       String userId = isSigned.uid.toString();
-      BlocProvider.of<ProfileBloc>(context).add(LoadProfiles(userId));
-      //TODO add fetching only users usages
-      BlocProvider.of<UsageBloc>(context).add(LoadUsages());
-      BlocProvider.of<MedicationBloc>(context).add(LoadMedications(true));
-      BlocProvider.of<MedicationBloc>(context).add(LoadMedications(false));
+      downloadData(context);
       return ProfileView(userId: userId);
     }
 
 
+  }
+
+  void downloadData (BuildContext context){
+    User? user = FirebaseAuth.instance.currentUser;
+    if(user == null) {
+    } else {
+      String userId = user.uid.toString();
+      BlocProvider.of<ProfileBloc>(context).add(LoadProfiles(userId));
+      BlocProvider.of<MedicationBloc>(context).add(LoadMedications(true));
+      BlocProvider.of<MedicationBloc>(context).add(LoadMedications(false));
+      BlocProvider.of<UsageBloc>(context).add(LoadUsagesById(userId));
+      BlocProvider.of<UsageHistoryBloc>(context).add(LoadUsageHistoryById(userId));
+    }
   }
 }
