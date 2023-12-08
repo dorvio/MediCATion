@@ -53,7 +53,10 @@ dependencies:
   flutter_local_notifications: ^16.2.0
   awesome_notifications: ^0.8.2
   flutter_launcher_icons: ^0.13.1
-  flutter_heatmap_calendar: ^1.0.5
+
+  flutter_heatmap_calendar:
+    git:
+      url: https://github.com/dorvio/flutter_heatmap_calendar.git
 
 dev_dependencies:
   flutter_test:

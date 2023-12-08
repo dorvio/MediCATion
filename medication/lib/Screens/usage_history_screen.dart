@@ -44,13 +44,16 @@ class _UsageHistoryViewState extends State<UsageHistoryView> {
             thisUsageHistory = history.where((element) => element.usageId == widget.usage.usageId).toList();
             List<DateTime> usageDates = thisUsageHistory.map((element) => DateTime.fromMillisecondsSinceEpoch(element.date.millisecondsSinceEpoch)).toList();
             if(thisUsageHistory.isNotEmpty) {
+              // usageDates = usageDates.map((date) {
+              //   return DateTime(date.year, date.month, date.day);
+              // }).toList();
+
               heatMapData = usageDates.fold({}, (map, dateTime) {
-                map[dateTime] = 1;
+                DateTime cleanedDateTime = DateTime(dateTime.year, dateTime.month, dateTime.day);
+                map[cleanedDateTime] = 1;
                 return map;
               });
             }
-            print('Here');
-            print(heatMapData);
             return Container(
                 padding: const EdgeInsets.symmetric(vertical: 30),
                 child: Column(
@@ -77,18 +80,16 @@ class _UsageHistoryViewState extends State<UsageHistoryView> {
                       ],
                   ),
                   const SizedBox(height: 50),
-                  HeatMap(
-                    showColorTip: false,
-                    scrollable: true,
-                    showText: true,
-                    textColor: Colors.white,
-                    defaultColor: Colors.grey[700],
-                    size: 30,
-                    colorsets: {
-                      1: Color.fromARGB(255, 175, 77, 152),
-                    },
-                    datasets: heatMapData,
-                  ),
+                    HeatMapCalendar(
+                      showColorTip: false,
+                      textColor: Colors.white,
+                      defaultColor: Colors.grey[700],
+                      colorsets: {
+                        1: Color.fromARGB(255, 175, 77, 152),
+                      },
+                      datasets: heatMapData,
+                      weekTextColor: Colors.white,
+                    ),
               ]
             ),
           );
@@ -112,4 +113,5 @@ class _UsageHistoryViewState extends State<UsageHistoryView> {
       ),
     );
   }
+
 }

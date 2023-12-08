@@ -128,7 +128,7 @@ class _NewUsageViewState extends State<NewUsageView> {
       restrictionsCardsSelected[3] = restrictions == 'Po posiłku' ? true : false;
       if(widget.usage!.notificationData[0] != 'Brak'){
         notificationData = widget.usage!.notificationData;
-        if(widget.usage!.administration[0] != 'Codziennie'){
+        if(_timeMedChoice != 0){
           timeMed = TimeOfDay(hour: notificationData[0], minute: notificationData[1]);
         }
       }

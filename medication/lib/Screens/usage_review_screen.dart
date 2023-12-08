@@ -115,7 +115,7 @@ class _UsageReviewViewState extends State<UsageReviewView> {
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      widget.usage.notificationData[0] == 'Brak' ? 'Brak' : '${widget.usage.notificationData[0]}:${widget.usage.notificationData[1]}',
+                      widget.usage.notificationData[0] == 'Brak' ? 'Brak' : '${widget.usage.notificationData[0].toString().padLeft(2, '0')}:${widget.usage.notificationData[1].toString().padLeft(2, '0')}',
                       style: const TextStyle(
                         color: Color.fromARGB(255, 174, 199, 255),
                         fontSize: 20,
@@ -339,19 +339,21 @@ class _UsageReviewViewState extends State<UsageReviewView> {
         }
       }
       //konkretna godzina
-      List<String> timeSplit = widget.usage.hour[0].split(":");
-      int hour = int.parse(timeSplit[0]);
-      int minute = int.parse(timeSplit[1]);
-      if (
-      hour == now.hour &&
-          (minute >= now.minute - 5 && minute <= now.minute + 5)
-      ){
-        result = true;
-      } else {
-        bool result = await _showAlertDialog('Podanie leku ${widget.usage.medicationName} jest zaplanowane na ${widget.usage.hour[0]}. Czy na pewno chcesz podać ten lek teraz?');
-        if(!result) return false;
+      if(widget.usage.hour[0] != 'Brak'){
+          List<String> timeSplit = widget.usage.hour[0].split(":");
+          int hour = int.parse(timeSplit[0]);
+          int minute = int.parse(timeSplit[1]);
+          if (
+          hour == now.hour &&
+              (minute >= now.minute - 5 && minute <= now.minute + 5)
+          ){
+            result = true;
+          } else {
+            bool result = await _showAlertDialog('Podanie leku ${widget.usage.medicationName} jest zaplanowane na ${widget.usage.hour[0]}. Czy na pewno chcesz podać ten lek teraz?');
+            if(!result) return false;
+          }
+        }
       }
-    }
     if(widget.usage.administration[0] != 'Codziennie'){
       String dayName = getDayName(now.weekday);
       if(widget.usage.administration.contains(dayName)){
