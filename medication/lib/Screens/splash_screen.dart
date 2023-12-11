@@ -8,9 +8,11 @@ import '../Blocs/usage_bloc.dart';
 import '../Blocs/usage_history_bloc.dart';
 import '../Blocs/profile_bloc.dart';
 import '../Blocs/medication_bloc.dart';
-import 'package:provider/provider.dart';
+import '../Blocs/notification_bloc.dart';
+import '../Database_classes/NotificationData.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:medication/Services/notification_service.dart';
 
 class SplashView extends StatefulWidget {
   const SplashView({Key? key}) : super(key: key);
@@ -21,18 +23,22 @@ class SplashView extends StatefulWidget {
 
 class _SplashViewState extends State<SplashView> with SingleTickerProviderStateMixin {
   bool noInternet = false;
+
   @override
-  void initState(){
+  void initState() {
     super.initState();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
     checkInternetConnection();
     Future.delayed(const Duration(seconds: 3), () {
-      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const Wrapper()));
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => const Wrapper()));
     });
   }
+
   @override
-  void dispose(){
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
+  void dispose() {
+    SystemChrome.setEnabledSystemUIMode(
+        SystemUiMode.manual, overlays: SystemUiOverlay.values);
     super.dispose();
   }
 
@@ -59,7 +65,7 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
               scale: 2,
             ),
             Visibility(
-              visible: noInternet,
+                visible: noInternet,
                 child: Text(
                   'Brak połączenia z internetem.\nDane nie zostaną odświeżone.',
                   style: TextStyle(
@@ -73,16 +79,17 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
       ),
     );
   }
-  void downloadData (){
+
+  void downloadData() {
     User? user = FirebaseAuth.instance.currentUser;
-    if(user == null) {
-    } else {
+    if (user == null) {} else {
       String userId = user.uid.toString();
       BlocProvider.of<ProfileBloc>(context).add(LoadProfiles(userId));
       BlocProvider.of<MedicationBloc>(context).add(LoadMedications(true));
       BlocProvider.of<MedicationBloc>(context).add(LoadMedications(false));
       BlocProvider.of<UsageBloc>(context).add(LoadUsagesById(userId));
-      BlocProvider.of<UsageHistoryBloc>(context).add(LoadUsageHistoryById(userId));
+      BlocProvider.of<UsageHistoryBloc>(context).add(
+          LoadUsageHistoryById(userId));
     }
   }
 
@@ -98,12 +105,53 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
       });
       clearFirestoreCache();
       downloadData();
+      setUpNotifications();
     }
   }
-}
 
-Future<void> clearFirestoreCache() async {
-  FirebaseFirestore firestore = FirebaseFirestore.instance;
-  await firestore.clearPersistence();
+  Future<void> clearFirestoreCache() async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    await firestore.clearPersistence();
+  }
+
+  Future<void> setUpNotifications() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user == null) {} else {
+      String userId = user.uid.toString();
+      BlocProvider.of<NotificationBloc>(context).add(LoadNotifications(userId));
+      List<NotificationData> notifications = [];
+      await for (final state in BlocProvider
+          .of<NotificationBloc>(context)
+          .stream) {
+        if (state is NotificationLoaded) {
+          notifications = state.notifications;
+          break;
+        }
+      }
+      NotificationService().showScheduledNotifications();
+      NotificationService().clearAllNotifications();
+      for(var not in notifications) {
+        if(not.weekday == null){
+          await NotificationService().scheduleDailyNotification(
+            title: 'Czas na lek!',
+            body: not.body,
+            id: not.awNotId,
+            hour: not.hour,
+            minute: not.minute,
+          );
+        } else {
+          await NotificationService().scheduleNotificationWeekday(
+              title: 'Czas na lek!',
+              body: not.body,
+              id: not.awNotId,
+              hour: not.hour,
+              minute: not.minute,
+              weekday: not.weekday!
+          );
+        }
+      }
+      NotificationService().showScheduledNotifications();
+    }
+  }
 }
 

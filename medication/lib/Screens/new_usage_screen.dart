@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:medication/Blocs/notification_bloc.dart';
 import 'package:medication/Blocs/usage_bloc.dart';
+import 'package:medication/Database_classes/NotificationData.dart';
 import 'package:medication/Services/authorization.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -131,6 +133,9 @@ class _NewUsageViewState extends State<NewUsageView> {
         if(_timeMedChoice != 0){
           timeMed = TimeOfDay(hour: notificationData[0], minute: notificationData[1]);
         }
+      }
+      else {
+        _timeNotChoice = 1;
       }
     }
   }
@@ -1247,7 +1252,20 @@ class _NewUsageViewState extends State<NewUsageView> {
   }
 
   void _scheduleNotifications() async {
+    String userId = '';
+    User? user = FirebaseAuth.instance.currentUser;
+    userId = user!.uid.toString();
     if(_administrationChoice == 0){
+      final notificationData = NotificationData(
+        notificationId : DateTime.now().toString(),
+        awNotId: notificationIds[0],
+        userId: userId,
+        body: 'To już czas dla ${widget.profileName}, aby przyjąć $medication',
+        hour: timeMed.hour,
+        minute: timeMed.minute,
+        weekday: null,
+      );
+      BlocProvider.of<NotificationBloc>(context).add(AddNotification(notificationData));
       await NotificationService().scheduleDailyNotification(
           title: 'Czas na lek!',
           body: 'To już czas dla ${widget.profileName}, aby przyjąć $medication',
@@ -1259,6 +1277,16 @@ class _NewUsageViewState extends State<NewUsageView> {
       int id = 0;
       for(int i = 0; i < 7; i++){
         if(daysCardsSelected[i]){
+          final notificationData = NotificationData(
+            notificationId : DateTime.now().toString(),
+            awNotId: notificationIds[id],
+            userId: userId,
+            body: 'To już czas dla ${widget.profileName}, aby przyjąć $medication',
+            hour: timeMed.hour,
+            minute: timeMed.minute,
+            weekday: i + 1,
+          );
+          BlocProvider.of<NotificationBloc>(context).add(AddNotification(notificationData));
           await NotificationService().scheduleNotificationWeekday(
               title: 'Czas na lek',
               body: 'To już czas dla ${widget.profileName}, aby przyjąć $medication',
@@ -1309,5 +1337,4 @@ class _NewUsageViewState extends State<NewUsageView> {
     }
     saveUsage(medications);
   }
-
 }

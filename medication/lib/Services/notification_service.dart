@@ -134,6 +134,10 @@ class NotificationService{
     await AwesomeNotifications().cancel(id);
   }
 
+  Future<void> clearAllNotifications() async {
+    await AwesomeNotifications().cancelAll();
+  }
+
   Future<void> showScheduledNotifications() async {
     List<dynamic> scheduled = await AwesomeNotifications()
         .listScheduledNotifications();

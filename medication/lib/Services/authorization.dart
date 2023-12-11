@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:medication/Services/notification_service.dart';
 
 class AuthorizationService {
   final FirebaseAuth _authorization = FirebaseAuth.instance;
@@ -30,6 +31,7 @@ class AuthorizationService {
   Future signOut() async {
     try{
       await _authorization.signOut();
+      NotificationService().clearAllNotifications();
     } catch(e){
       return null;
     }

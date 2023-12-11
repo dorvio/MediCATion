@@ -4,7 +4,33 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ccaad566-714c-4f46-9c79-8ab410cca91e" name="Changes" comment="touch up on new_profile_screen and added handling modify profile" />
+    <list default="true" id="57dba7c6-2f18-4359-a243-786b6b92d266" name="Changes" comment="touch up on new_profile_screen and added handling modify profile">
+      <change afterPath="$PROJECT_DIR$/medication/lib/Blocs/notification_bloc.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/medication/lib/Database_classes/NotificationData.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_04_11_2023_21_15__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_04_11_2023_21_15__Changes_.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_11_11_2023_23_45_[Changes]/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_11_11_2023_23_45__Changes_.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_11_11_2023_23_56__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_11_11_2023_23_56__Changes_.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_11_11_2023_23_59_[Changes]/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_11_11_2023_23_59__Changes_.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/medication/lib/Screens/new_usage_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/medication/lib/Screens/new_usage_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/medication/lib/Screens/splash_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/medication/lib/Screens/splash_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/medication/lib/Services/authorization.dart" beforeDir="false" afterPath="$PROJECT_DIR$/medication/lib/Services/authorization.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/medication/lib/Services/firestore_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/medication/lib/Services/firestore_service.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/medication/lib/Services/notification_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/medication/lib/Services/notification_service.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/medication/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/medication/lib/main.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/medication/lib/wrapper.dart" beforeDir="false" afterPath="$PROJECT_DIR$/medication/lib/wrapper.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/medication/linux/flutter/generated_plugin_registrant.cc" beforeDir="false" afterPath="$PROJECT_DIR$/medication/linux/flutter/generated_plugin_registrant.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/medication/linux/flutter/generated_plugins.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/medication/linux/flutter/generated_plugins.cmake" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/medication/macos/Flutter/GeneratedPluginRegistrant.swift" beforeDir="false" afterPath="$PROJECT_DIR$/medication/macos/Flutter/GeneratedPluginRegistrant.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/medication/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/medication/pubspec.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/medication/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/medication/pubspec.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/medication/windows/flutter/generated_plugin_registrant.cc" beforeDir="false" afterPath="$PROJECT_DIR$/medication/windows/flutter/generated_plugin_registrant.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/medication/windows/flutter/generated_plugins.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/medication/windows/flutter/generated_plugins.cmake" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -68,7 +94,7 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="ccaad566-714c-4f46-9c79-8ab410cca91e" name="Changes" comment="" />
+      <changelist id="57dba7c6-2f18-4359-a243-786b6b92d266" name="Changes" comment="touch up on new_profile_screen and added handling modify profile" />
       <created>1692812420756</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
@@ -196,6 +222,13 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="Dart">
+          <url>file://$PROJECT_DIR$/medication/lib/Screens/new_usage_screen.dart</url>
+          <line>1268</line>
+          <option name="timeStamp" value="29" />
+        </line-breakpoint>
+      </breakpoints>
       <default-breakpoints>
         <breakpoint type="dart-exception" />
       </default-breakpoints>

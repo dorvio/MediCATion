@@ -3,6 +3,7 @@ import '../Database_classes/Profile.dart';
 import '../Database_classes/Medication.dart';
 import '../Database_classes/Usage.dart';
 import '../Database_classes/UsageHistory.dart';
+import '../Database_classes/NotificationData.dart';
 
 class FirestoreService {
   final CollectionReference _profilesCollection =
@@ -16,6 +17,9 @@ class FirestoreService {
 
   final CollectionReference _usageHistoryCollection =
   FirebaseFirestore.instance.collection('usage_history');
+
+  final CollectionReference _notificationCollection =
+  FirebaseFirestore.instance.collection('notifications');
 
   Stream<List<Profile>> getProfiles(String userId) {
     return _profilesCollection.where('user_id', isEqualTo: userId).snapshots().map((snapshot) {
@@ -201,5 +205,37 @@ class FirestoreService {
         );
       }).toList();
     });
+  }
+
+  Stream<List<NotificationData>> getNotifications(String userId) {
+    return _notificationCollection.where('user_id', isEqualTo: userId).snapshots().map((snapshot) {
+      return snapshot.docs.map((doc) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        return NotificationData(
+          notificationId: doc.id,
+          awNotId: data['aw_not_id'],
+          userId: data['user_id'],
+          body: data['body'],
+          hour: data['hour'],
+          minute: data['minute'],
+          weekday: data['weekday'],
+        );
+      }).toList();
+    });
+  }
+
+  Future<void> addNotification(NotificationData notification) {
+    return _notificationCollection.add({
+      'aw_not_id': notification.awNotId,
+      'user_id': notification.userId,
+      'body': notification.body,
+      'hour': notification.hour,
+      'minute': notification.minute,
+      'weekday': notification.weekday,
+    });
+  }
+
+  Future<void> deleteNotification(String notificationId) {
+    return _notificationCollection.doc(notificationId).delete();
   }
 }
