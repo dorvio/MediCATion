@@ -57,23 +57,23 @@ class Wrapper extends StatelessWidget {
       }
       NotificationService().showScheduledNotifications();
       NotificationService().clearAllNotifications();
+      DateTime now = DateTime.now();
       for(var not in notifications) {
         if(not.weekday == null){
+          DateTime time = DateTime(now.year, now.month, now.day, not.hour, not.minute);
           await NotificationService().scheduleDailyNotification(
             title: 'Czas na lek!',
             body: not.body,
             id: not.awNotId,
-            hour: not.hour,
-            minute: not.minute,
+            scheduledNotificationDateTime: time,
           );
         } else {
-          await NotificationService().scheduleNotificationWeekday(
+          DateTime time = NotificationService().findNextDayOfWeek(not.weekday!);
+          await NotificationService().scheduleWeeklyNotification(
               title: 'Czas na lek!',
               body: not.body,
               id: not.awNotId,
-              hour: not.hour,
-              minute: not.minute,
-              weekday: not.weekday!
+            scheduledNotificationDateTime: time,
           );
         }
       }

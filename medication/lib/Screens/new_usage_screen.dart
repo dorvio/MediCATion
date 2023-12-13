@@ -78,6 +78,7 @@ class _NewUsageViewState extends State<NewUsageView> {
       medication = widget.usage!.medicationName;
       _typeAheadMedController.text = widget.usage!.medicationName;
       List<dynamic> tmp = widget.usage!.administration;
+      administration = widget.usage!.administration;
       if (tmp[0] == 'Codziennie') {
         _administrationChoice = 0;
       } else {
@@ -1266,12 +1267,13 @@ class _NewUsageViewState extends State<NewUsageView> {
         weekday: null,
       );
       BlocProvider.of<NotificationBloc>(context).add(AddNotification(notificationData));
+      DateTime now = DateTime.now();
+      DateTime time = DateTime(now.year, now.month, now.day, timeMed.hour, timeMed.minute);
       await NotificationService().scheduleDailyNotification(
           title: 'Czas na lek!',
           body: 'To już czas dla ${widget.profileName}, aby przyjąć $medication',
           id: notificationIds[0],
-          hour: timeMed.hour,
-          minute: timeMed.minute,
+          scheduledNotificationDateTime: time,
       );
     } else {
       int id = 0;
@@ -1287,13 +1289,12 @@ class _NewUsageViewState extends State<NewUsageView> {
             weekday: i + 1,
           );
           BlocProvider.of<NotificationBloc>(context).add(AddNotification(notificationData));
-          await NotificationService().scheduleNotificationWeekday(
+          DateTime time = NotificationService().findNextDayOfWeek(i+1);
+          await NotificationService().scheduleWeeklyNotification(
               title: 'Czas na lek',
               body: 'To już czas dla ${widget.profileName}, aby przyjąć $medication',
               id: notificationIds[id],
-              hour: timeMed.hour,
-              minute: timeMed.minute,
-              weekday: i +1
+            scheduledNotificationDateTime: time,
           );
         }
         id++;

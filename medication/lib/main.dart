@@ -24,7 +24,7 @@ void main() async{
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  NotificationService.initNotification();
+  NotificationService().initNotification();
   await _requestNotificationPermissions();
   await _requestExactAlarmPermissions();
   tz.initializeTimeZones();
