@@ -235,7 +235,9 @@ class FirestoreService {
     });
   }
 
-  Future<void> deleteNotification(String notificationId) {
-    return _notificationCollection.doc(notificationId).delete();
+  Future<void> deleteNotification(int awNotId) async {
+    return _notificationCollection.where("aw_not_id", isEqualTo: awNotId).get().then((snapshot){
+      snapshot.docs.first.reference.delete();
+    });
   }
 }

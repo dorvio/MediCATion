@@ -4,32 +4,15 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="57dba7c6-2f18-4359-a243-786b6b92d266" name="Changes" comment="touch up on new_profile_screen and added handling modify profile">
-      <change afterPath="$PROJECT_DIR$/medication/lib/Blocs/notification_bloc.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/medication/lib/Database_classes/NotificationData.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_04_11_2023_21_15__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_04_11_2023_21_15__Changes_.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_11_11_2023_23_45_[Changes]/shelved.patch" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_11_11_2023_23_45__Changes_.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_11_11_2023_23_56__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_11_11_2023_23_56__Changes_.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_11_11_2023_23_59_[Changes]/shelved.patch" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_11_11_2023_23_59__Changes_.xml" beforeDir="false" />
+    <list default="true" id="57dba7c6-2f18-4359-a243-786b6b92d266" name="Changes" comment="...">
+      <change afterPath="$PROJECT_DIR$/medication/lib/Services/messaging_service.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/medication/lib/Blocs/notification_bloc.dart" beforeDir="false" afterPath="$PROJECT_DIR$/medication/lib/Blocs/notification_bloc.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/medication/lib/Screens/new_usage_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/medication/lib/Screens/new_usage_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/medication/lib/Screens/splash_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/medication/lib/Screens/splash_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/medication/lib/Services/authorization.dart" beforeDir="false" afterPath="$PROJECT_DIR$/medication/lib/Services/authorization.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/medication/lib/Screens/usage_review_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/medication/lib/Screens/usage_review_screen.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/medication/lib/Services/firestore_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/medication/lib/Services/firestore_service.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/medication/lib/Services/notification_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/medication/lib/Services/notification_service.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/medication/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/medication/lib/main.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/medication/lib/wrapper.dart" beforeDir="false" afterPath="$PROJECT_DIR$/medication/lib/wrapper.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/medication/linux/flutter/generated_plugin_registrant.cc" beforeDir="false" afterPath="$PROJECT_DIR$/medication/linux/flutter/generated_plugin_registrant.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/medication/linux/flutter/generated_plugins.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/medication/linux/flutter/generated_plugins.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/medication/macos/Flutter/GeneratedPluginRegistrant.swift" beforeDir="false" afterPath="$PROJECT_DIR$/medication/macos/Flutter/GeneratedPluginRegistrant.swift" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/medication/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/medication/pubspec.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/medication/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/medication/pubspec.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/medication/windows/flutter/generated_plugin_registrant.cc" beforeDir="false" afterPath="$PROJECT_DIR$/medication/windows/flutter/generated_plugin_registrant.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/medication/windows/flutter/generated_plugins.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/medication/windows/flutter/generated_plugins.cmake" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -72,16 +55,16 @@
     &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
     &quot;io.flutter.reload.alreadyRun&quot;: &quot;true&quot;,
     &quot;last_opened_file_path&quot;: &quot;C:/Users/Dorota/AndroidStudioProjects/MediCATion&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;copyright&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
     &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;
   }
 }</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Dorota\AndroidStudioProjects\MediCATion\medication\lib\Services" />
       <recent name="C:\Users\Dorota\AndroidStudioProjects\MediCATion\medication\lib\CustomIcons" />
       <recent name="C:\Users\Dorota\AndroidStudioProjects\MediCATion\medication\lib" />
       <recent name="C:\Users\Dorota\AndroidStudioProjects\MediCATion\medication\assets" />
-      <recent name="C:\Users\Dorota\AndroidStudioProjects\MediCATion\medication\lib\Services" />
       <recent name="C:\Users\Dorota\AndroidStudioProjects\MediCATion\medication\lib\Blocks" />
     </key>
   </component>
@@ -191,7 +174,14 @@
       <option name="project" value="LOCAL" />
       <updated>1700003607057</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="...">
+      <created>1702329193342</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1702329193342</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -218,15 +208,31 @@
     <MESSAGE value="little fix splash screen" />
     <MESSAGE value="fixed offline problems,&#10;added new_profile_screen,&#10;added downloading data at splash screen,&#10;added protection in deleting a profile" />
     <MESSAGE value="touch up on new_profile_screen and added handling modify profile" />
-    <option name="LAST_COMMIT_MESSAGE" value="touch up on new_profile_screen and added handling modify profile" />
+    <MESSAGE value="..." />
+    <option name="LAST_COMMIT_MESSAGE" value="..." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="Dart">
-          <url>file://$PROJECT_DIR$/medication/lib/Screens/new_usage_screen.dart</url>
-          <line>1268</line>
-          <option name="timeStamp" value="29" />
+          <url>file://$PROJECT_DIR$/medication/lib/Screens/usage_review_screen.dart</url>
+          <line>366</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="Dart">
+          <url>file://$PROJECT_DIR$/medication/lib/main.dart</url>
+          <line>26</line>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="Dart">
+          <url>file://$PROJECT_DIR$/medication/lib/Services/notification_service.dart</url>
+          <line>12</line>
+          <option name="timeStamp" value="6" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="Dart">
+          <url>file://$PROJECT_DIR$/medication/lib/Services/notification_service.dart</url>
+          <line>71</line>
+          <option name="timeStamp" value="7" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

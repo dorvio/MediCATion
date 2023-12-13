@@ -23,6 +23,7 @@ class UsageReviewView extends StatefulWidget {
 
 class _UsageReviewViewState extends State<UsageReviewView> {
   final AuthorizationService _authorizationService = AuthorizationService();
+  List<UsageHistory> history = [];
   List<UsageHistory> thisUsageHistory = [];
   int showInfo = 0;
 
@@ -42,7 +43,7 @@ class _UsageReviewViewState extends State<UsageReviewView> {
             if (state is UsageHistoryLoading) {
               return const Center(child: CircularProgressIndicator());
             } else if (state is UsageHistoryLoaded) {
-              final history = state.history;
+              history = state.history;
               thisUsageHistory = history.where((element) => element.usageId == widget.usage.usageId).toList();
               return Container(
                 padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 50),
@@ -369,10 +370,13 @@ class _UsageReviewViewState extends State<UsageReviewView> {
       int hours = int.parse(parts[0]);
       int minutes = int.parse(parts[1]);
       Duration conflictTime = Duration(hours: hours, minutes: minutes);
-      if (thisUsageHistory.isNotEmpty) {
-        List<UsageHistory> todayUsageHistory = thisUsageHistory.where((element) {
+      if (history.isNotEmpty) {
+        List<UsageHistory> todayUsageHistory = history.where((element) {
           DateTime elementDate = DateTime.fromMillisecondsSinceEpoch(element.date.millisecondsSinceEpoch);
-          return elementDate.isAtSameMomentAs(DateTime(now.year, now.month, now.day));
+          DateTime today = DateTime(now.year, now.month, now.day);
+          return elementDate.year == today.year &&
+              elementDate.month == today.month &&
+              elementDate.day == today.day;
         }).toList();
         if(todayUsageHistory.any((element) => element.usageId == conflictMedId)){
           DateTime conflictUsageTime = DateTime.fromMillisecondsSinceEpoch(
@@ -380,7 +384,7 @@ class _UsageReviewViewState extends State<UsageReviewView> {
           if(isBreakLonger(conflictUsageTime, now, conflictTime)){
             result = true;
           } else {
-            result = await _showAlertDialog('Konfliktowy lek ${widget.usage.conflict[0]} został przyjęty mniej niź $conflictTime temu. Podanie leku ${widget.usage.medicationName} może spowodować wystąpienie skutów ubocznych. Czy na pewno chcesz teraz podac ten lek?');
+            result = await _showAlertDialog('Konfliktowy lek ${widget.usage.conflict[0]} został przyjęty mniej niż ${conflictTime.inHours.toString().padLeft(2, '0')}:${conflictTime.inMinutes.remainder(60).toString().padLeft(2, '0')} temu. Podanie leku ${widget.usage.medicationName} może spowodować wystąpienie skutów ubocznych. Czy na pewno chcesz teraz podac ten lek?');
             if(!result) return false;
           }
         }

@@ -1312,6 +1312,7 @@ class _NewUsageViewState extends State<NewUsageView> {
           for(int i = 2; i < notificationData.length; i++){
             //usuwamy poprzednie powiadomienia
             NotificationService().clearNotifications(notificationData[i]);
+            BlocProvider.of<NotificationBloc>(context).add(DeleteNotification(notificationData[i]));
           }
         }
         //nie było powidomień + tworzenie po usunięciu
@@ -1324,6 +1325,7 @@ class _NewUsageViewState extends State<NewUsageView> {
           for(int i = 2; i < notificationData.length; i++){
             //usuwamy poprzednie powidomienia
             NotificationService().clearNotifications(notificationData[i]);
+            BlocProvider.of<NotificationBloc>(context).add(DeleteNotification(notificationData[i]));
           }
         }
       }

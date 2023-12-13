@@ -11,20 +11,19 @@ class NotificationService{
         '@drawable/pill',
       [
         NotificationChannel(
-            channelGroupKey: 'basic_channel_group',
-            channelKey: 'basic_channel',
-            channelName: 'Basic notifications',
-            channelDescription: 'Notification channel for basic tests',
-            importance: NotificationImportance.High,
-            defaultColor: Color(0xFF9D50DD),
-            ledColor: Colors.white
-            //TODO might change
+          channelGroupKey: 'basic_channel_group',
+          channelKey: 'my_chanel',
+          channelName: 'My channel',
+          channelDescription: 'Notification channel for medication',
+          importance: NotificationImportance.High,
+          defaultColor: Color(0xFF9D50DD),
+          ledColor: Colors.white,
         )
       ],
         channelGroups: [
           NotificationChannelGroup(
-              channelGroupKey: 'basic_channel_group',
-              channelGroupName: 'Basic group')
+              channelGroupKey: 'my_channel_group',
+              channelGroupName: 'My group')
         ],
         debug: true
     );
@@ -81,7 +80,7 @@ class NotificationService{
     await AwesomeNotifications().createNotification(
       content: NotificationContent(
         id: id,
-        channelKey: 'basic_channel',
+        channelKey: 'my_chanel',
         title: title,
         body: body,
         actionType: ActionType.Default,
@@ -95,6 +94,7 @@ class NotificationService{
         timeZone: await AwesomeNotifications().getLocalTimeZoneIdentifier(),
         preciseAlarm: true,
         repeats: true,
+        allowWhileIdle: true,
       ),
     );
   }
@@ -111,7 +111,7 @@ class NotificationService{
     await AwesomeNotifications().createNotification(
       content: NotificationContent(
         id: id,
-        channelKey: 'basic_channel',
+        channelKey: 'my_channel',
         title: title,
         body: body,
         actionType: ActionType.Default,
@@ -126,6 +126,7 @@ class NotificationService{
         timeZone: await AwesomeNotifications().getLocalTimeZoneIdentifier(),
         preciseAlarm: true,
         repeats: true,
+        allowWhileIdle: true,
       ),
     );
   }
@@ -141,17 +142,6 @@ class NotificationService{
   Future<void> showScheduledNotifications() async {
     List<dynamic> scheduled = await AwesomeNotifications()
         .listScheduledNotifications();
-    DateTime? next = await AwesomeNotifications().getNextDate(NotificationCalendar(
-      hour: 00,
-      minute: 39,
-      weekday: 1,
-      timeZone: await AwesomeNotifications().getLocalTimeZoneIdentifier(),
-      preciseAlarm: true,
-      repeats: true,
-    ));
-    if(DateTime != null){
-      print('Next date: $next');
-    }
     if (scheduled.isEmpty) {
       print('No scheduled notifications');
     } else {
