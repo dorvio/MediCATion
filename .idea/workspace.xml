@@ -4,11 +4,10 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="57dba7c6-2f18-4359-a243-786b6b92d266" name="Changes" comment="fixed notifications">
+    <list default="true" id="57dba7c6-2f18-4359-a243-786b6b92d266" name="Changes" comment="added dose">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/medication/lib/Database_classes/Usage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/medication/lib/Database_classes/Usage.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/medication/lib/Screens/new_usage_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/medication/lib/Screens/new_usage_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/medication/lib/Services/firestore_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/medication/lib/Services/firestore_service.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/medication/lib/Screens/usage_review_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/medication/lib/Screens/usage_review_screen.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -191,7 +190,14 @@
       <option name="project" value="LOCAL" />
       <updated>1702510609078</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="added dose">
+      <created>1702842700685</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1702842700685</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -221,19 +227,15 @@
     <MESSAGE value="..." />
     <MESSAGE value="fixed adding to history restrictions" />
     <MESSAGE value="fixed notifications" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixed notifications" />
+    <MESSAGE value="added dose" />
+    <option name="LAST_COMMIT_MESSAGE" value="added dose" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="Dart">
-          <url>file://$PROJECT_DIR$/medication/lib/Screens/usage_review_screen.dart</url>
-          <line>366</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="Dart">
           <url>file://$PROJECT_DIR$/medication/lib/Screens/new_usage_screen.dart</url>
-          <line>1393</line>
+          <line>1336</line>
           <option name="timeStamp" value="13" />
         </line-breakpoint>
       </breakpoints>

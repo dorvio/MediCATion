@@ -70,6 +70,7 @@ class _NewUsageViewState extends State<NewUsageView> {
   List<bool> daysCardsSelected = [false, false, false, false, false, false, false];
   List<bool> timeOfDayCardsSelected = [false, false, false, false];
   List<bool> restrictionsCardsSelected = [false, false, false, false];
+  Map<String, bool> checkedConMeds = {};
 
   final List<String> types = <String>[
     'tabletka',
@@ -136,10 +137,12 @@ class _NewUsageViewState extends State<NewUsageView> {
         _conflictChoice = 1;
       } else {
         _conflictChoice = 0;
-        conflictMed = tmp[0].toString();
-        timeCon = stringToTimeOfDay(tmp[1].toString());
+        conflictMed = tmp[1].toString();
+        timeCon = stringToTimeOfDay(tmp[0].toString());
         conflictMedId = tmp[2];
-        _typeAheadConController.text = tmp[0].toString();
+        for(int i = 1; i < tmp.length; i+=2){
+          checkedConMeds[tmp[i]] = true;
+        }
       }
       restrictions = widget.usage!.restrictions;
       restrictionsCardsSelected[0] = restrictions == 'Brak' ? true : false;
@@ -238,6 +241,10 @@ class _NewUsageViewState extends State<NewUsageView> {
                     return Center(child: CircularProgressIndicator());
                   } else if (state is UsageLoaded) {
                     final List<Usage> usages = state.usages;
+                    final List<String> otherMeds = usages.map((us) => us.medicationName).toList();
+                    if(widget.usage != null){
+                      otherMeds.removeWhere((element) => element == widget.usage!.medicationName);
+                    }
                     return Form(
                       key: _formKey,
                       child: Container(
@@ -956,93 +963,24 @@ class _NewUsageViewState extends State<NewUsageView> {
                               visible: _conflictChoice == 0,
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
+                                  children: [
                                   const SizedBox(height: 30),
-                                  TypeAheadFormField(
-                                    textFieldConfiguration: TextFieldConfiguration(
-                                      controller: _typeAheadConController,
-                                      style: const TextStyle(color: Colors.white),
-                                      decoration: InputDecoration(
-                                        labelText: 'Lek konfliktowy',
-                                        labelStyle: const TextStyle(color: Colors.white),
-                                        counterStyle: const TextStyle(color: Colors.white),
-                                        enabledBorder: OutlineInputBorder(
-                                          borderSide: const BorderSide(color: Colors.grey),
-                                          borderRadius: BorderRadius.circular(30.0),
-                                        ),
-                                        filled: true,
-                                        fillColor: Colors.grey[800],
-                                        focusedBorder: OutlineInputBorder(
-                                          borderSide: const BorderSide(color: Color.fromARGB(255, 174, 199, 255)),
-                                          borderRadius: BorderRadius.circular(30.0),
-                                        ),
-                                        errorBorder: OutlineInputBorder(
-                                          borderSide: const BorderSide(color: Colors.red),
-                                          borderRadius: BorderRadius.circular(30.0),
-                                        ),
-                                        focusedErrorBorder: OutlineInputBorder(
-                                          borderSide: const BorderSide(color: Colors.red),
-                                          borderRadius: BorderRadius.circular(30.0),
-                                        ),
-                                        prefixIcon: Icon(MdiIcons.pill),
-                                        prefixIconColor: Colors.white,
-                                        suffixIcon: IconButton(
-                                          icon: const Icon(Icons.clear),
-                                          onPressed: (){
-                                            setState(() {
-                                              _typeAheadConController.clear();
-                                              conflictMed = '';
-                                            });
-                                          },
-                                        ),
-                                        suffixIconColor: Colors.white,
-                                      ),
-                                    ),
-                                    suggestionsCallback: (pattern) {
-                                      return usages
-                                          .where((us) => us.medicationName.toLowerCase().contains(pattern.toLowerCase()))
-                                          .map((us) => us.medicationName)
-                                          .toList();
-                                    },
-                                    itemBuilder: (context, String suggestion) {
-                                      return ListTile(
-                                        title: Text(
-                                          suggestion,
-                                          style: const TextStyle(color: Colors.white),
-                                        ),
-                                      );
-                                    },
-                                    transitionBuilder: (context, suggestionsBox, controller) =>
-                                    suggestionsBox,
-                                    onSuggestionSelected: (String suggestion) {
-                                      _typeAheadConController.text = suggestion;
-                                      setState(() {
-                                        conflictMed = suggestion;
-                                        conflictMedId = (usages
-                                            .where((us) => us.medicationName == conflictMed)).first.usageId;
-                                      });
-                                    },
-                                    noItemsFoundBuilder: (context) =>
-                                        Container(
-                                          height: 40,
-                                          alignment: Alignment.center,
-                                          child: Text(
-                                              'Nie znaleziono leku',
-                                              style: TextStyle(
-                                                color: Colors.grey[200],
-                                                fontSize: 20,
-                                              )
+                                    for (final itemName in otherMeds)
+                                      CheckboxListTile(
+                                        title: Text(itemName,
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 15,
                                           ),
                                         ),
-                                    suggestionsBoxDecoration: SuggestionsBoxDecoration(
-                                      color: Colors.grey[800],
-                                    ),
-                                    validator: (text) {
-                                      if(text == null || text.isEmpty){
-                                        return 'Pole nie może być puste';
-                                      }
-                                    },
-                                  ),
+                                        activeColor: Color.fromARGB(255, 174, 199, 255),
+                                        value: checkedConMeds[itemName] ?? false,
+                                        onChanged: (bool? value) {
+                                          setState(() {
+                                            checkedConMeds[itemName] = value ?? false;
+                                          });
+                                        },
+                                      ),
                                   const SizedBox(height: 30),
                                   const Text(
                                     'CZAS POMIĘDZY LEKAMI',
@@ -1142,7 +1080,7 @@ class _NewUsageViewState extends State<NewUsageView> {
                                   ),
                                   onPressed: () {
                                     if(_formKey.currentState!.validate() && _isAdministrationValid() && _isHourValid() && _isRestrictionValid()){
-                                      _handleSave(medications);
+                                      _handleSave(medications, usages);
                                     }
                                   },
                                 ),
@@ -1263,7 +1201,7 @@ class _NewUsageViewState extends State<NewUsageView> {
     }
   }
 
-  void saveUsage(List<Medication> medications) {
+  void saveUsage(List<Medication> medications, List<Usage> usages) {
     List<dynamic> doseData = [doseNumber, doseType];
     if(_administrationChoice == 0){
       administration = ['Codziennie'];
@@ -1274,7 +1212,12 @@ class _NewUsageViewState extends State<NewUsageView> {
       hour = ['Brak'];
     }
     if(_conflictChoice == 0){
-      conflict = [conflictMed, formatTimeOfDay(timeCon), conflictMedId];
+      conflict = [formatTimeOfDay(timeCon)];
+      List<String> conflictMeds = checkedConMeds.keys.where((key) => checkedConMeds[key] == true).toList();
+      for(String el in conflictMeds){
+        conflict.add(el);
+        conflict.add(usages.firstWhere((element) => element.medicationName == el).usageId);
+      }
     } else if(_conflictChoice == 1){
       conflict = ['Brak'];
     }
@@ -1427,7 +1370,7 @@ class _NewUsageViewState extends State<NewUsageView> {
     }
   }
 
-  void _handleSave (List<Medication> medications) async {
+  void _handleSave (List<Medication> medications, List<Usage> usages) async {
     List<int> idsInUse = await NotificationService().getScheduledNotificationIds();
     if(widget.usage != null){
       //edit mode
@@ -1463,6 +1406,6 @@ class _NewUsageViewState extends State<NewUsageView> {
         _scheduleNotifications();
       }
     }
-    saveUsage(medications);
+    saveUsage(medications, usages);
   }
 }
