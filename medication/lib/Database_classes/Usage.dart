@@ -12,6 +12,7 @@ class Usage {
   String probiotic;
   String userId;
   List <dynamic> notificationData;
+  List <dynamic> doseData;
 
 
   Usage({
@@ -25,6 +26,7 @@ class Usage {
     required this.probiotic,
     required this.userId,
     required this.notificationData,
+    required this.doseData,
   });
 
   Usage copyWith({
@@ -38,6 +40,7 @@ class Usage {
     String? probiotic,
     String? userId,
     List <dynamic>? notificationData,
+    List <dynamic>? doseData,
   }) {
     return Usage(
       usageId : usageId ?? this.usageId,
@@ -50,6 +53,7 @@ class Usage {
       probiotic : probiotic ?? this.probiotic,
       userId : userId ?? this.userId,
       notificationData : notificationData ?? this.notificationData,
+      doseData : doseData ?? this.doseData,
     );
   }
 }

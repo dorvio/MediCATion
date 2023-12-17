@@ -42,6 +42,7 @@ class _NewUsageViewState extends State<NewUsageView> {
   final TextEditingController _typeAheadMedController = TextEditingController();
   final TextEditingController _typeAheadConController = TextEditingController();
   final TextEditingController _typeAheadProController = TextEditingController();
+  final TextEditingController _doseNumerController = TextEditingController();
   String medication = '';
   String conflictMed = '';
   String conflictMedId = '';
@@ -60,6 +61,8 @@ class _NewUsageViewState extends State<NewUsageView> {
   List <dynamic> conflict = [];
   String probiotic = '';
   List <dynamic> notificationData = [];
+  String doseNumber = '';
+  String doseType = '';
   List<int> notificationIds = [];
   bool administrationError = false;
   bool hourError = false;
@@ -67,6 +70,17 @@ class _NewUsageViewState extends State<NewUsageView> {
   List<bool> daysCardsSelected = [false, false, false, false, false, false, false];
   List<bool> timeOfDayCardsSelected = [false, false, false, false];
   List<bool> restrictionsCardsSelected = [false, false, false, false];
+
+  final List<String> types = <String>[
+    'tabletka',
+    'kapsułka',
+    'ampułka',
+    'spray',
+    'plaster',
+    'czopek',
+    'zastrzyk',
+    'gram'
+  ];
 
   @override
   void initState() {
@@ -77,6 +91,9 @@ class _NewUsageViewState extends State<NewUsageView> {
     if (widget.usage != null) {
       medication = widget.usage!.medicationName;
       _typeAheadMedController.text = widget.usage!.medicationName;
+      doseNumber = widget.usage!.doseData[0];
+      _doseNumerController.text = doseNumber;
+      doseType = widget.usage!.doseData[1];
       List<dynamic> tmp = widget.usage!.administration;
       administration = widget.usage!.administration;
       if (tmp[0] == 'Codziennie') {
@@ -230,7 +247,7 @@ class _NewUsageViewState extends State<NewUsageView> {
                           children: [
                             Center(
                               child: Text(
-                                "Dodaj podawany lek",
+                                widget.usage == null ? "Dodaj podawany lek" : "Edytuj podawany lek",
                                 style: GoogleFonts.tiltNeon(
                                   textStyle: const TextStyle(
                                     color: Color.fromARGB(255, 174, 199, 255),
@@ -328,6 +345,112 @@ class _NewUsageViewState extends State<NewUsageView> {
                                   return 'Pole nie może być puste';
                                 }
                               },
+                            ),
+                            const SizedBox(height: 30),
+                            const Text(
+                              'DAWKA',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 25,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            Row(
+                              children: [
+                                Expanded(
+                                  flex: 2,
+                                    child: TextFormField(
+                                      controller: _doseNumerController,
+                                      style: const TextStyle(color: Colors.white),
+                                      keyboardType: TextInputType.number,
+                                      decoration: InputDecoration(
+                                        labelText: '',
+                                        labelStyle: const TextStyle(color: Colors.white),
+                                        counterStyle: const TextStyle(color: Colors.white),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderSide: const BorderSide(color: Colors.grey),
+                                          borderRadius: BorderRadius.circular(30.0),
+                                        ),
+                                        filled: true,
+                                        fillColor: Colors.grey[800],
+                                        focusedBorder: OutlineInputBorder(
+                                          borderSide: const BorderSide(color: Color.fromARGB(255, 174, 199, 255)),
+                                          borderRadius: BorderRadius.circular(30.0),
+                                        ),
+                                        errorBorder: OutlineInputBorder(
+                                          borderSide: const BorderSide(color: Colors.red),
+                                          borderRadius: BorderRadius.circular(30.0),
+                                        ),
+                                        focusedErrorBorder: OutlineInputBorder(
+                                          borderSide: const BorderSide(color: Colors.red),
+                                          borderRadius: BorderRadius.circular(30.0),
+                                        ),
+                                        prefixIcon: Icon(MdiIcons.numeric),
+                                        prefixIconColor: Colors.white,
+                                      ),
+                                      validator: (text) {
+                                        if (text == null || text.isEmpty) {
+                                          return 'Pole nie może być puste!';
+                                        }
+                                        return null;
+                                      },
+                                      onChanged: (text) => setState(() => doseNumber = text),
+                                    ),
+                                ),
+                                Expanded(
+                                  flex: 3,
+                                  child: DropdownButtonFormField(
+                                    dropdownColor: Colors.grey[800],
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                    decoration: InputDecoration(
+                                      labelText: "Jednostka",
+                                      labelStyle: const TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderSide: const BorderSide(color: Colors.grey),
+                                        borderRadius: BorderRadius.circular(30.0),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderSide: const BorderSide(color: Color.fromARGB(255, 174, 199, 255)),
+                                        borderRadius: BorderRadius.circular(30.0),
+                                      ),
+                                      errorBorder: OutlineInputBorder(
+                                        borderSide: const BorderSide(color: Colors.red),
+                                        borderRadius: BorderRadius.circular(30.0),
+                                      ),
+                                      focusedErrorBorder: OutlineInputBorder(
+                                        borderSide: const BorderSide(color: Colors.red),
+                                        borderRadius: BorderRadius.circular(30.0),
+                                      ),
+                                      filled: true,
+                                      fillColor: Colors.grey[800],
+                                      prefixIcon: const Icon(Icons.search),
+                                      prefixIconColor: Colors.white,
+                                    ),
+                                    padding: const EdgeInsets.all(0),
+                                    items: types.map<DropdownMenuItem<String>>((String value) {
+                                      return DropdownMenuItem<String>(
+                                        value: value,
+                                        child: Text(value),
+                                      );
+                                    }).toList(),
+                                    value: widget.usage != null ? doseType : null,
+                                    onChanged: (String? value) {
+                                      doseType = value!;
+                                    },
+                                    validator: (text) {
+                                      if (text == null || text.isEmpty) {
+                                        return 'Należy wybrać!';
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                ),
+                              ],
                             ),
                             const SizedBox(height: 30),
                             const Text(
@@ -1141,6 +1264,7 @@ class _NewUsageViewState extends State<NewUsageView> {
   }
 
   void saveUsage(List<Medication> medications) {
+    List<dynamic> doseData = [doseNumber, doseType];
     if(_administrationChoice == 0){
       administration = ['Codziennie'];
     }
@@ -1186,6 +1310,7 @@ class _NewUsageViewState extends State<NewUsageView> {
       probiotic: probiotic,
       userId: userId,
       notificationData: notificationData,
+      doseData: doseData,
     );
     if(widget.usage == null){
       BlocProvider.of<UsageBloc>(context).add(AddUsage(newUsage));

@@ -73,6 +73,23 @@ class _UsageReviewViewState extends State<UsageReviewView> {
                     ),
                     const SizedBox(height: 30),
                     const Text(
+                      'DAWKA',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      widget.usage.doseData.join(' '),
+                      style: const TextStyle(
+                        color: Color.fromARGB(255, 174, 199, 255),
+                        fontSize: 20,
+                      ),
+                    ),
+                    const SizedBox(height: 30),
+                    const Text(
                       'PODAWANIE',
                       style: TextStyle(
                         color: Colors.white,
