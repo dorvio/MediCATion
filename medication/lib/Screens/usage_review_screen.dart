@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:medication/Blocs/usage_history_bloc.dart';
+import 'package:medication/Blocs/medication_bloc.dart';
 import 'package:medication/Database_classes/Usage.dart';
 import 'package:medication/Services/authorization.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -25,6 +26,7 @@ class _UsageReviewViewState extends State<UsageReviewView> {
   final AuthorizationService _authorizationService = AuthorizationService();
   List<UsageHistory> history = [];
   List<UsageHistory> thisUsageHistory = [];
+  String description = '';
   int showInfo = 0;
 
   @override
@@ -45,108 +47,41 @@ class _UsageReviewViewState extends State<UsageReviewView> {
             } else if (state is UsageHistoryLoaded) {
               history = state.history;
               thisUsageHistory = history.where((element) => element.usageId == widget.usage.usageId).toList();
-              return Container(
-                padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 50),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          MdiIcons.pill,
-                          color: const Color.fromARGB(255, 174, 199, 255),
-                          size: 35,
-                        ),
-                        const SizedBox(width: 10),
-                        Text(
-                          widget.usage.medicationName,
-                          style: GoogleFonts.tiltNeon(
-                            textStyle: const TextStyle(
-                              color: Color.fromARGB(255, 174, 199, 255),
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 30),
-                    const Text(
-                      'PODAWANIE',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      widget.usage.administration.join(', '),
-                      style: const TextStyle(
-                        color: Color.fromARGB(255, 174, 199, 255),
-                        fontSize: 20,
-                      ),
-                    ),
-                    const SizedBox(height: 30),
-                    const Text(
-                      'GODZINA',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      widget.usage.hour.join(', '),
-                      style: const TextStyle(
-                        color: Color.fromARGB(255, 174, 199, 255),
-                        fontSize: 20,
-                      ),
-                    ),
-                    const SizedBox(height:30),
-                    const Text(
-                      'POWIADOMIENIE',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      widget.usage.notificationData[0] == 'Brak' ? 'Brak' : '${widget.usage.notificationData[0].toString().padLeft(2, '0')}:${widget.usage.notificationData[1].toString().padLeft(2, '0')}',
-                      style: const TextStyle(
-                        color: Color.fromARGB(255, 174, 199, 255),
-                        fontSize: 20,
-                      ),
-                    ),
-                    const SizedBox(height: 30),
-                    const Text(
-                      'OGRANICZNIA',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      widget.usage.restrictions,
-                      style: const TextStyle(
-                        color: Color.fromARGB(255, 174, 199, 255),
-                        fontSize: 20,
-                      ),
-                    ),
-                    Visibility(
-                      visible: widget.usage.probiotic != '',
+              return BlocBuilder<MedicationBloc, MedicationState>(
+                builder: (context, state) {
+                  if (state is MedicationLoading) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (state is MedicationLoaded) {
+                    description = state.medications.firstWhere((element) => element.medication == widget.usage.medicationName).description;
+                    return Container(
+                      padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 50),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                MdiIcons.pill,
+                                color: const Color.fromARGB(255, 174, 199, 255),
+                                size: 35,
+                              ),
+                              const SizedBox(width: 10),
+                              Text(
+                                widget.usage.medicationName,
+                                style: GoogleFonts.tiltNeon(
+                                  textStyle: const TextStyle(
+                                    color: Color.fromARGB(255, 174, 199, 255),
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                           const SizedBox(height: 30),
                           const Text(
-                            'PROBIOTYK',
+                            'PODAWANIE',
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 25,
@@ -155,40 +90,91 @@ class _UsageReviewViewState extends State<UsageReviewView> {
                           ),
                           const SizedBox(height: 10),
                           Text(
-                            widget.usage.probiotic,
+                            widget.usage.administration.join(', '),
                             style: const TextStyle(
                               color: Color.fromARGB(255, 174, 199, 255),
                               fontSize: 20,
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 30),
-                    const Text(
-                      'KONFLIKT Z INNYM LEKIEM',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 23,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      widget.usage.conflict[0],
-                      style: const TextStyle(
-                        color: Color.fromARGB(255, 174, 199, 255),
-                        fontSize: 20,
-                      ),
-                    ),
-                    Visibility(
-                      visible: widget.usage.conflict.length > 1,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
                           const SizedBox(height: 30),
                           const Text(
-                            'CZAS POMIĘDZY LEKAMI',
+                            'GODZINA',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 25,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            widget.usage.hour.join(', '),
+                            style: const TextStyle(
+                              color: Color.fromARGB(255, 174, 199, 255),
+                              fontSize: 20,
+                            ),
+                          ),
+                          const SizedBox(height:30),
+                          const Text(
+                            'POWIADOMIENIE',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 25,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            widget.usage.notificationData[0] == 'Brak' ? 'Brak' : '${widget.usage.notificationData[0].toString().padLeft(2, '0')}:${widget.usage.notificationData[1].toString().padLeft(2, '0')}',
+                            style: const TextStyle(
+                              color: Color.fromARGB(255, 174, 199, 255),
+                              fontSize: 20,
+                            ),
+                          ),
+                          const SizedBox(height: 30),
+                          const Text(
+                            'OGRANICZNIA',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 25,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            widget.usage.restrictions,
+                            style: const TextStyle(
+                              color: Color.fromARGB(255, 174, 199, 255),
+                              fontSize: 20,
+                            ),
+                          ),
+                          Visibility(
+                            visible: widget.usage.probiotic != '',
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(height: 30),
+                                const Text(
+                                  'PROBIOTYK',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 25,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                Text(
+                                  widget.usage.probiotic,
+                                  style: const TextStyle(
+                                    color: Color.fromARGB(255, 174, 199, 255),
+                                    fontSize: 20,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 30),
+                          const Text(
+                            'KONFLIKT Z INNYM LEKIEM',
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 23,
@@ -197,72 +183,136 @@ class _UsageReviewViewState extends State<UsageReviewView> {
                           ),
                           const SizedBox(height: 10),
                           Text(
-                            widget.usage.conflict.length > 1 ? widget.usage.conflict[1] : '',
+                            widget.usage.conflict[0],
                             style: const TextStyle(
                               color: Color.fromARGB(255, 174, 199, 255),
                               fontSize: 20,
                             ),
                           ),
+                          Visibility(
+                            visible: widget.usage.conflict.length > 1,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(height: 30),
+                                const Text(
+                                  'CZAS POMIĘDZY LEKAMI',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 23,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                Text(
+                                  widget.usage.conflict.length > 1 ? widget.usage.conflict[1] : '',
+                                  style: const TextStyle(
+                                    color: Color.fromARGB(255, 174, 199, 255),
+                                    fontSize: 20,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 30),
+                          Visibility(
+                            visible: description.isNotEmpty,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'OPIS LEKU',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 25,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                Text(
+                                  description,
+                                  style: const TextStyle(
+                                    color: Color.fromARGB(255, 174, 199, 255),
+                                    fontSize: 20,
+                                  ),
+                                ),
+                                const SizedBox(height: 60),
+                              ],
+                            )
+                          ),
+                          Center(
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                padding: EdgeInsets.fromLTRB(40, 15, 40, 15),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30.0),
+                                ),
+                                backgroundColor: const Color.fromARGB(255, 174, 199, 255),
+                              ),
+                              child: const Text(
+                                  'Podaj lek',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 20,
+                                  )
+                              ),
+                              onPressed: () async {
+                                bool result = await _checkUsage();
+                                if(result == true) {
+                                  _addToUsageHistory();
+                                  setState(() {
+                                    showInfo = 1;
+                                  });
+                                  Timer timer = Timer(Duration(seconds: 3), () {
+                                    setState(() {
+                                      showInfo = 0;
+                                    });
+                                  });
+                                } else {
+                                  setState(() {
+                                    showInfo = 2;
+                                  });
+                                  Timer timer = Timer(Duration(seconds: 3), () {
+                                    setState(() {
+                                      showInfo = 0;
+                                    });
+                                  });
+                                }
+                              },
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          Center(
+                            child: Visibility(
+                                visible: showInfo != 0,
+                                child: Text(
+                                    showInfo == 1 ? "Lek został podany" : "Lek NIE został podany",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 15,
+                                    )
+                                )
+                            ),
+                          )
                         ],
                       ),
-                    ),
-                    const SizedBox(height: 60),
-                    Center(
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.fromLTRB(40, 15, 40, 15),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30.0),
-                          ),
-                          backgroundColor: const Color.fromARGB(255, 174, 199, 255),
+                    );
+                  } else if (state is MedicationOperationSuccess) {
+                    return Container();
+                  } else if (state is MedicationError) {
+                    return Center(
+                      child: Text(
+                        state.errorMessage,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
                         ),
-                        child: const Text(
-                            'Podaj lek',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                            )
-                        ),
-                        onPressed: () async {
-                          bool result = await _checkUsage();
-                          if(result == true) {
-                            _addToUsageHistory();
-                            setState(() {
-                              showInfo = 1;
-                            });
-                            Timer timer = Timer(Duration(seconds: 3), () {
-                              setState(() {
-                                showInfo = 0;
-                              });
-                            });
-                          } else {
-                            setState(() {
-                              showInfo = 2;
-                            });
-                            Timer timer = Timer(Duration(seconds: 3), () {
-                              setState(() {
-                                showInfo = 0;
-                              });
-                            });
-                          }
-                        },
                       ),
-                    ),
-                    const SizedBox(height: 20),
-                    Center(
-                      child: Visibility(
-                          visible: showInfo != 0,
-                          child: Text(
-                              showInfo == 1 ? "Lek został podany" : "Lek NIE został podany",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 15,
-                              )
-                          )
-                      ),
-                    )
-                  ],
-                ),
+                    );
+                  } else {
+                    return Container();
+                  }
+                },
               );
             } else if (state is UsageHistoryOperationSuccess) {
               BlocProvider.of<UsageHistoryBloc>(context).add(LoadUsageHistory(widget.usage.profileId));

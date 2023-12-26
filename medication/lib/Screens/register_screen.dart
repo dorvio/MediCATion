@@ -21,6 +21,8 @@ class _RegisterViewState extends State<RegisterView> {
   bool hidePassword = true;
   String registerError = '';
   String errorMessage = '';
+  RegExp regexNumber = RegExp(r'\d');
+  RegExp regexLetter = RegExp(r'[a-zA-Z]');
 
   @override
   Widget build(BuildContext context) {
@@ -158,16 +160,19 @@ class _RegisterViewState extends State<RegisterView> {
                         ),
                         validator: (text) {
                           if (text == null || text.isEmpty) {
-                            setState(() {
-                              showErrorPassword = true;
-                            });
                             return 'Pole nie może być puste!';
                           }
                           if (text.length < 8){
-                            setState(() {
-                              showErrorPassword = true;
-                            });
                             return 'Hasło musi mieć przynajmniej 8 znaków.';
+                          }
+                          if(!regexNumber.hasMatch(text)){
+                            // setState(() {
+                            //   showErrorPassword = true;
+                            // });
+                            return 'Hasło musi zawierać przynajmniej jedną liczbę.';
+                          }
+                          if(!regexLetter.hasMatch(text)){
+                            return 'Hasło musi zawierać przynajmniej jedną literę.';
                           }
                           setState(() {
                             showErrorPassword = false;
