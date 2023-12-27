@@ -996,54 +996,54 @@ class _NewUsageViewState extends State<NewUsageView> {
                                               ),
                                             ),
                                             const SizedBox(height: 10),
+                                            Center(
+                                              child: ElevatedButton(
+                                                  style: ElevatedButton.styleFrom(
+                                                    padding: EdgeInsets.fromLTRB(30, 10, 30, 10),
+                                                    backgroundColor: const Color.fromARGB(255, 174, 199, 255),
+                                                  ),
+                                                  onPressed: () async {
+                                                    TimeOfDay? newTime = await showTimePicker(
+                                                      context: context,
+                                                      initialTime: timeCon,
+                                                      initialEntryMode: TimePickerEntryMode.inputOnly,
+                                                      cancelText: 'Anuluj',
+                                                      helpText: 'Wybierz odstęp czasowy',
+                                                      hourLabelText: 'Godzin',
+                                                      minuteLabelText: 'Minut',
+                                                      builder: (BuildContext context, Widget? child) {
+                                                        return Theme(
+                                                          data: ThemeData.dark().copyWith(
+                                                            primaryColor: const Color.fromARGB(255, 174, 199, 255),
+                                                            colorScheme: ColorScheme.dark(
+                                                              primary: const Color.fromARGB(255, 174, 199, 255),
+                                                              onPrimary: Colors.white,
+                                                              surface: Colors.grey[800]!,
+                                                              onSurface: Colors.white,
+                                                            ),
+                                                            dialogBackgroundColor: Colors.grey[900],
+                                                          ),
+                                                          child: child!,
+                                                        );
+                                                      },
+                                                    );
+                                                    if(newTime == null) return;
+                                                    setState(() {
+                                                      timeCon = newTime;
+                                                    });
+                                                  },
+                                                  child: Text(
+                                                    '$hourCon:$minuteCon',
+                                                    style: const TextStyle(
+                                                      fontSize: 35,
+                                                      fontWeight: FontWeight.bold,
+                                                    ),
+                                                  )
+                                              ),
+                                            ),
                                   ],
                                 )
                             ),
-                                  Center(
-                                    child: ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          padding: EdgeInsets.fromLTRB(30, 10, 30, 10),
-                                          backgroundColor: const Color.fromARGB(255, 174, 199, 255),
-                                        ),
-                                        onPressed: () async {
-                                          TimeOfDay? newTime = await showTimePicker(
-                                            context: context,
-                                            initialTime: timeCon,
-                                            initialEntryMode: TimePickerEntryMode.inputOnly,
-                                            cancelText: 'Anuluj',
-                                            helpText: 'Wybierz odstęp czasowy',
-                                            hourLabelText: 'Godzin',
-                                            minuteLabelText: 'Minut',
-                                            builder: (BuildContext context, Widget? child) {
-                                              return Theme(
-                                                data: ThemeData.dark().copyWith(
-                                                  primaryColor: const Color.fromARGB(255, 174, 199, 255),
-                                                  colorScheme: ColorScheme.dark(
-                                                    primary: const Color.fromARGB(255, 174, 199, 255),
-                                                    onPrimary: Colors.white,
-                                                    surface: Colors.grey[800]!,
-                                                    onSurface: Colors.white,
-                                                  ),
-                                                  dialogBackgroundColor: Colors.grey[900],
-                                                ),
-                                                child: child!,
-                                              );
-                                            },
-                                          );
-                                          if(newTime == null) return;
-                                          setState(() {
-                                            timeCon = newTime;
-                                          });
-                                        },
-                                        child: Text(
-                                          '$hourCon:$minuteCon',
-                                          style: const TextStyle(
-                                            fontSize: 35,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        )
-                                    ),
-                                  ),
                                 ],
                               ),
                             ),
