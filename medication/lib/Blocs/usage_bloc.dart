@@ -114,7 +114,7 @@ class UsageBloc extends Bloc<UsageEvent, UsageState> {
         emit(UsageLoading());
         var connectivityResult = await Connectivity().checkConnectivity();
         if (connectivityResult == ConnectivityResult.none)
-          emit(UsageOperationSuccess('Profile added successfully.'));
+          emit(UsageOperationSuccess('Usage deleted successfully.'));
         await _firestoreService.deleteUsage(event.usageId);
         emit(UsageOperationSuccess('Usage deleted successfully.'));
       } catch (e) {
