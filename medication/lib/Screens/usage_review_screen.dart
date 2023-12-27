@@ -353,7 +353,7 @@ class _UsageReviewViewState extends State<UsageReviewView> {
           if(!result) return false;
         }
       }
-      else if (now.hour > 22 && now.hour < 5){
+      else if ((now.hour > 22 && now.hour < 24) ||  (now.hour >= 0 && now.hour < 5)){
         if(widget.usage.hour.contains('Na noc')){
           result = true;
         } else {
@@ -362,23 +362,23 @@ class _UsageReviewViewState extends State<UsageReviewView> {
         }
       }
     } else {
-      //raz dziennie - sprawdzenie czy lek był już przyjęty tego dnia
-      if (thisUsageHistory.isNotEmpty) {
-        thisUsageHistory.sort((a, b) => b.date.compareTo(a.date));
-        DateTime newestHistoryElement = DateTime.fromMillisecondsSinceEpoch(
-            thisUsageHistory[0].date.millisecondsSinceEpoch);
-        if (newestHistoryElement.year == now.year &&
-            newestHistoryElement.month == now.month &&
-            newestHistoryElement.day == now.day) {
-          bool result = await _showAlertDialog(
-              "Lek ${widget.usage.medicationName} został już dzisiaj podany o ${newestHistoryElement
-                  .hour}:${newestHistoryElement
-                  .minute}. Czy na pewno chcesz podać lek jeszcze raz?");
-          if(!result) return false;
+        //raz dziennie - sprawdzenie czy lek był już przyjęty tego dnia
+        if (thisUsageHistory.isNotEmpty) {
+          thisUsageHistory.sort((a, b) => b.date.compareTo(a.date));
+          DateTime newestHistoryElement = DateTime.fromMillisecondsSinceEpoch(
+              thisUsageHistory[0].date.millisecondsSinceEpoch);
+          if (newestHistoryElement.year == now.year &&
+              newestHistoryElement.month == now.month &&
+              newestHistoryElement.day == now.day) {
+            bool result = await _showAlertDialog(
+                "Lek ${widget.usage.medicationName} został już dzisiaj podany o ${newestHistoryElement
+                    .hour}:${newestHistoryElement
+                    .minute}. Czy na pewno chcesz podać lek jeszcze raz?");
+            if(!result) return false;
+          }
         }
-      }
-      //konkretna godzina
-      if(widget.usage.hour[0] != 'Brak'){
+        //konkretna godzina
+        if(widget.usage.hour[0] != 'Brak'){
           List<String> timeSplit = widget.usage.hour[0].split(":");
           int hour = int.parse(timeSplit[0]);
           int minute = int.parse(timeSplit[1]);
