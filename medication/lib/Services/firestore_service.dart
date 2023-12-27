@@ -103,7 +103,8 @@ class FirestoreService {
           conflict: data['conflict'],
           probiotic: data['probiotic'],
           userId: data['user_id'],
-            notificationData: data['notification_data']
+          notificationData: data['notification_data'],
+          doseData: data['dose_data'],
         );
       }).toList();
     });
@@ -120,6 +121,7 @@ class FirestoreService {
       'probiotic': usage.probiotic,
       'user_id': usage.userId,
       'notification_data' : usage.notificationData,
+      'dose_data': usage.doseData,
     });
   }
 
@@ -131,6 +133,7 @@ class FirestoreService {
       'conflict': usage.conflict,
       'probiotic': usage.probiotic,
       'notification_data' : usage.notificationData,
+      'dose_data': usage.doseData,
     });
   }
 
@@ -153,6 +156,7 @@ class FirestoreService {
           probiotic: data['probiotic'],
           userId: data['user_id'],
           notificationData: data['notification_data'],
+          doseData: data['dose_data'],
         );
       }).toList();
     });

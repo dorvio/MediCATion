@@ -81,6 +81,23 @@ class _UsageReviewViewState extends State<UsageReviewView> {
                           ),
                           const SizedBox(height: 30),
                           const Text(
+                            'DAWKA',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 25,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            widget.usage.doseData.join(' '),
+                            style: const TextStyle(
+                              color: Color.fromARGB(255, 174, 199, 255),
+                              fontSize: 20,
+                            ),
+                          ),
+                          const SizedBox(height: 30),
+                          const Text(
                             'PODAWANIE',
                             style: TextStyle(
                               color: Colors.white,
@@ -183,7 +200,12 @@ class _UsageReviewViewState extends State<UsageReviewView> {
                           ),
                           const SizedBox(height: 10),
                           Text(
-                            widget.usage.conflict[0],
+                            widget.usage.conflict.length > 1 ? widget.usage.conflict.asMap()
+                                .entries
+                                .where((entry) => entry.key % 2 != 0)
+                                .map((entry) => entry.value)
+                                .join(', ')
+                                : 'Brak',
                             style: const TextStyle(
                               color: Color.fromARGB(255, 174, 199, 255),
                               fontSize: 20,
@@ -415,8 +437,19 @@ class _UsageReviewViewState extends State<UsageReviewView> {
       }
     }
     if (widget.usage.conflict.length > 1) {
+      List<String> conflictMedIds = widget.usage.conflict.asMap()
+          .entries
+          .where((entry) => entry.key % 2 == 0)
+          .map((entry) => entry.value.toString())
+          .toList();
+      conflictMedIds.removeAt(0);
+      List<String> conflictMeds = widget.usage.conflict.asMap()
+          .entries
+          .where((entry) => entry.key % 2 != 0)
+          .map((entry) => entry.value.toString())
+          .toList();
       String conflictMedId = widget.usage.conflict[2];
-      List<String> parts = widget.usage.conflict[1].split(':');
+      List<String> parts = widget.usage.conflict[0].split(':');
       int hours = int.parse(parts[0]);
       int minutes = int.parse(parts[1]);
       Duration conflictTime = Duration(hours: hours, minutes: minutes);
@@ -428,14 +461,16 @@ class _UsageReviewViewState extends State<UsageReviewView> {
               elementDate.month == today.month &&
               elementDate.day == today.day;
         }).toList();
-        if(todayUsageHistory.any((element) => element.usageId == conflictMedId)){
-          DateTime conflictUsageTime = DateTime.fromMillisecondsSinceEpoch(
-              todayUsageHistory.firstWhere((element) => element.usageId == conflictMedId).date.millisecondsSinceEpoch);
-          if(isBreakLonger(conflictUsageTime, now, conflictTime)){
-            result = true;
-          } else {
-            result = await _showAlertDialog('Konfliktowy lek ${widget.usage.conflict[0]} został przyjęty mniej niż ${conflictTime.inHours.toString().padLeft(2, '0')}:${conflictTime.inMinutes.remainder(60).toString().padLeft(2, '0')} temu. Podanie leku ${widget.usage.medicationName} może spowodować wystąpienie skutów ubocznych. Czy na pewno chcesz teraz podac ten lek?');
-            if(!result) return false;
+        for(int i = 0; i < conflictMedIds.length; i++) {
+          if(todayUsageHistory.any((element) => element.usageId == conflictMedIds[i])){
+            DateTime conflictUsageTime = DateTime.fromMillisecondsSinceEpoch(
+                todayUsageHistory.firstWhere((element) => element.usageId == conflictMedId).date.millisecondsSinceEpoch);
+            if(isBreakLonger(conflictUsageTime, now, conflictTime)){
+              result = true;
+            } else {
+              result = await _showAlertDialog('Konfliktowy lek ${conflictMeds[i]} został przyjęty mniej niż ${conflictTime.inHours.toString().padLeft(2, '0')}:${conflictTime.inMinutes.remainder(60).toString().padLeft(2, '0')} temu. Podanie leku ${widget.usage.medicationName} może spowodować wystąpienie skutów ubocznych. Czy na pewno chcesz teraz podac ten lek?');
+              if(!result) return false;
+            }
           }
         }
       }
