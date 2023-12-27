@@ -928,69 +928,77 @@ class _NewUsageViewState extends State<NewUsageView> {
                                 ],
                               ),
                             ),
-                            const SizedBox(height: 30),
-                            const Text(
-                              'KONFLIKT Z INNYM LEKIEM',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 23,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(height: 10),
-                            FlutterToggleTab(
-                              width: 75,
-                              height: 60,
-                              selectedTextStyle: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 15,
-                              ),
-                              unSelectedTextStyle: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 15,
-                              ),
-                              selectedBackgroundColors: const [Color.fromARGB(255, 174, 199, 255)],
-                              unSelectedBackgroundColors: [Colors.grey[800]!],
-                              labels: ['TAK', 'NIE'],
-                              selectedLabelIndex: (index) {
-                                setState(() {
-                                  _conflictChoice = index;
-                                });
-                              },
-                              selectedIndex: _conflictChoice,
-                            ),
                             Visibility(
-                              visible: _conflictChoice == 0,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              visible: otherMeds.isNotEmpty,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                  const SizedBox(height: 30),
-                                    for (final itemName in otherMeds)
-                                      CheckboxListTile(
-                                        title: Text(itemName,
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 15,
-                                          ),
-                                        ),
-                                        activeColor: Color.fromARGB(255, 174, 199, 255),
-                                        value: checkedConMeds[itemName] ?? false,
-                                        onChanged: (bool? value) {
-                                          setState(() {
-                                            checkedConMeds[itemName] = value ?? false;
-                                          });
-                                        },
+                                    const SizedBox(height: 30),
+                                    const Text(
+                                      'KONFLIKT Z INNYM LEKIEM',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 23,
+                                        fontWeight: FontWeight.bold,
                                       ),
-                                  const SizedBox(height: 30),
-                                  const Text(
-                                    'CZAS POMIĘDZY LEKAMI',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 23,
-                                      fontWeight: FontWeight.bold,
                                     ),
-                                  ),
-                                  const SizedBox(height: 10),
+                                    const SizedBox(height: 10),
+                                    FlutterToggleTab(
+                                      width: 75,
+                                      height: 60,
+                                      selectedTextStyle: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 15,
+                                      ),
+                                      unSelectedTextStyle: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 15,
+                                      ),
+                                      selectedBackgroundColors: const [Color.fromARGB(255, 174, 199, 255)],
+                                      unSelectedBackgroundColors: [Colors.grey[800]!],
+                                      labels: ['TAK', 'NIE'],
+                                      selectedLabelIndex: (index) {
+                                        setState(() {
+                                          _conflictChoice = index;
+                                        });
+                                      },
+                                      selectedIndex: _conflictChoice,
+                                    ),
+                                    Visibility(
+                                        visible: _conflictChoice == 0,
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            const SizedBox(height: 30),
+                                            for (final itemName in otherMeds)
+                                              CheckboxListTile(
+                                                title: Text(itemName,
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 15,
+                                                  ),
+                                                ),
+                                                activeColor: Color.fromARGB(255, 174, 199, 255),
+                                                value: checkedConMeds[itemName] ?? false,
+                                                onChanged: (bool? value) {
+                                                  setState(() {
+                                                    checkedConMeds[itemName] = value ?? false;
+                                                  });
+                                                },
+                                              ),
+                                            const SizedBox(height: 30),
+                                            const Text(
+                                              'CZAS POMIĘDZY LEKAMI',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 23,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 10),
+                                  ],
+                                )
+                            ),
                                   Center(
                                     child: ElevatedButton(
                                         style: ElevatedButton.styleFrom(
