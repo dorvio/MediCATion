@@ -27,7 +27,6 @@ class _UsageReviewViewState extends State<UsageReviewView> {
   List<UsageHistory> history = [];
   List<UsageHistory> thisUsageHistory = [];
   String description = '';
-  int showInfo = 0;
 
   @override
   void initState() {
@@ -262,60 +261,6 @@ class _UsageReviewViewState extends State<UsageReviewView> {
                                 ],
                               )
                           ),
-                          Center(
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                padding: EdgeInsets.fromLTRB(40, 15, 40, 15),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30.0),
-                                ),
-                                backgroundColor: const Color.fromARGB(255, 174, 199, 255),
-                              ),
-                              child: const Text(
-                                  'Podaj lek',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20,
-                                  )
-                              ),
-                              onPressed: () async {
-                                bool result = await _checkUsage();
-                                if(result == true) {
-                                  _addToUsageHistory();
-                                  setState(() {
-                                    showInfo = 1;
-                                  });
-                                  Timer timer = Timer(Duration(seconds: 3), () {
-                                    setState(() {
-                                      showInfo = 0;
-                                    });
-                                  });
-                                } else {
-                                  setState(() {
-                                    showInfo = 2;
-                                  });
-                                  Timer timer = Timer(Duration(seconds: 3), () {
-                                    setState(() {
-                                      showInfo = 0;
-                                    });
-                                  });
-                                }
-                              },
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-                          Center(
-                            child: Visibility(
-                                visible: showInfo != 0,
-                                child: Text(
-                                    showInfo == 1 ? "Lek został podany" : "Lek NIE został podany",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 15,
-                                    )
-                                )
-                            ),
-                          )
                         ],
                       ),
                     );
@@ -355,6 +300,26 @@ class _UsageReviewViewState extends State<UsageReviewView> {
           },
         ),
       ),
+      floatingActionButton: FloatingActionButton.extended(
+        backgroundColor: Color.fromARGB(255, 174, 199, 255),
+        onPressed: () async {
+          bool result = await _checkUsage();
+          if(result == true) {
+            _addToUsageHistory();
+            showSnackBar("Lek został podany");
+          } else {
+            showSnackBar("Lek NIE został podany");
+          }
+        },
+        label: const Text(
+            'Podaj lek',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+            )
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 
@@ -571,6 +536,14 @@ class _UsageReviewViewState extends State<UsageReviewView> {
       userId: widget.usage.userId,
     );
     BlocProvider.of<UsageHistoryBloc>(context).add(AddUsageHistory(usageHistory));
+  }
+
+  void showSnackBar(String message) {
+    final snackBar = SnackBar(
+      content: Text(message),
+      duration: Duration(seconds: 3),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
 }
