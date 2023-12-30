@@ -20,9 +20,9 @@ class AddNotification extends NotificationEvent {
 }
 
 class DeleteNotification extends NotificationEvent {
-  final int awNotId;
+  final int locNotId;
 
-  DeleteNotification(this.awNotId);
+  DeleteNotification(this.locNotId);
 }
 
 @immutable
@@ -83,7 +83,7 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
         var connectivityResult = await Connectivity().checkConnectivity();
         if (connectivityResult == ConnectivityResult.none)
           emit(NotificationOperationSuccess('Notification added successfully.'));
-        await _firestoreService.deleteNotification(event.awNotId);
+        await _firestoreService.deleteNotification(event.locNotId);
         emit(NotificationOperationSuccess('Notification deleted successfully.'));
       } catch (e) {
         emit(NotificationError('Failed to delete notification.'));

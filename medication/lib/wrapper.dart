@@ -64,7 +64,7 @@ class Wrapper extends StatelessWidget {
           await NotificationService().scheduleDailyNotification(
             title: 'Czas na lek!',
             body: not.body,
-            id: not.awNotId,
+            id: not.locNotId,
             scheduledNotificationDateTime: time,
           );
         } else {
@@ -72,7 +72,7 @@ class Wrapper extends StatelessWidget {
           await NotificationService().scheduleWeeklyNotification(
               title: 'Czas na lek!',
               body: not.body,
-              id: not.awNotId,
+              id: not.locNotId,
             scheduledNotificationDateTime: time,
           );
         }

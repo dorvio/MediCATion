@@ -1335,7 +1335,7 @@ class _NewUsageViewState extends State<NewUsageView> {
     if(_administrationChoice == 0){
       final notificationData = NotificationData(
         notificationId : DateTime.now().toString(),
-        awNotId: notificationIds[0],
+        locNotId: notificationIds[0],
         userId: userId,
         body: 'To już czas dla ${widget.profileName}, aby przyjąć $medication',
         hour: timeMed.hour,
@@ -1357,7 +1357,7 @@ class _NewUsageViewState extends State<NewUsageView> {
         if(daysCardsSelected[i]){
           final notificationData = NotificationData(
             notificationId : DateTime.now().toString(),
-            awNotId: notificationIds[id],
+            locNotId: notificationIds[id],
             userId: userId,
             body: 'To już czas dla ${widget.profileName}, aby przyjąć $medication',
             hour: timeMed.hour,

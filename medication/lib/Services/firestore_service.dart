@@ -217,7 +217,7 @@ class FirestoreService {
         Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
         return NotificationData(
           notificationId: doc.id,
-          awNotId: data['aw_not_id'],
+          locNotId: data['loc_not_id'],
           userId: data['user_id'],
           body: data['body'],
           hour: data['hour'],
@@ -230,7 +230,7 @@ class FirestoreService {
 
   Future<void> addNotification(NotificationData notification) {
     return _notificationCollection.add({
-      'aw_not_id': notification.awNotId,
+      'loc_not_id': notification.locNotId,
       'user_id': notification.userId,
       'body': notification.body,
       'hour': notification.hour,
@@ -240,7 +240,7 @@ class FirestoreService {
   }
 
   Future<void> deleteNotification(int awNotId) async {
-    return _notificationCollection.where("aw_not_id", isEqualTo: awNotId).get().then((snapshot){
+    return _notificationCollection.where("loc_not_id", isEqualTo: awNotId).get().then((snapshot){
       snapshot.docs.first.reference.delete();
     });
   }

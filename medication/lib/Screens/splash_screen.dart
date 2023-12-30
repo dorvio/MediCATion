@@ -137,7 +137,7 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
           await NotificationService().scheduleDailyNotification(
             title: 'Czas na lek!',
             body: not.body,
-            id: not.awNotId,
+            id: not.locNotId,
             scheduledNotificationDateTime: time,
           );
         } else {
@@ -145,7 +145,7 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
           await NotificationService().scheduleWeeklyNotification(
             title: 'Czas na lek!',
             body: not.body,
-            id: not.awNotId,
+            id: not.locNotId,
             scheduledNotificationDateTime: time,
           );
         }

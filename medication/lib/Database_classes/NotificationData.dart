@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 @immutable
 class NotificationData {
   String notificationId;
-  int awNotId;
+  int locNotId;
   String userId;
   String body;
   int hour;
@@ -13,7 +13,7 @@ class NotificationData {
 
   NotificationData({
     required this.notificationId,
-    required this.awNotId,
+    required this.locNotId,
     required this.userId,
     required this.body,
     required this.hour,
@@ -32,7 +32,7 @@ class NotificationData {
   }) {
     return NotificationData(
       notificationId : notificationId ?? this.notificationId,
-      awNotId : awNotId ?? this.awNotId,
+      locNotId : awNotId ?? this.locNotId,
       userId : userId ?? this.userId,
       body : body ?? this.body,
       hour : hour ?? this.hour,
