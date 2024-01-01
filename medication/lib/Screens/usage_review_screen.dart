@@ -434,7 +434,7 @@ class _UsageReviewViewState extends State<UsageReviewView> {
             if(isBreakLonger(conflictUsageTime, now, conflictTime)){
               result = true;
             } else {
-              result = await _showAlertDialog('Konfliktowy lek ${conflictMeds[i]} został przyjęty mniej niż ${conflictTime.inHours.toString().padLeft(2, '0')}:${conflictTime.inMinutes.remainder(60).toString().padLeft(2, '0')} temu. Podanie leku ${widget.usage.medicationName} może spowodować wystąpienie skutów ubocznych. Czy na pewno chcesz teraz podac ten lek?');
+              result = await _showAlertDialog('Konfliktowy lek ${conflictMeds[i]} został przyjęty mniej niż ${conflictTime.inHours.toString().padLeft(2, '0')}:${conflictTime.inMinutes.remainder(60).toString().padLeft(2, '0')} temu. Podanie leku ${widget.usage.medicationName} może spowodować wystąpienie skutków ubocznych. Czy na pewno chcesz teraz podac ten lek?');
               if(!result) return false;
             }
           }
