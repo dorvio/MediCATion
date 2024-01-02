@@ -3,11 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medication/Screens/new_medication_screen.dart';
 import 'package:medication/Screens/new_usage_screen.dart';
 import 'package:medication/CustomIcons/app_icons_icons.dart';
-import 'package:medication/Screens/usage_history_screen.dart';
 import 'package:medication/Screens/usage_screen_controller.dart';
 import '../Blocs/usage_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:medication/Services/authorization.dart';
+import '../Widgets/menuDrawer.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:medication/Database_classes/Usage.dart';
 import 'package:medication/Database_classes/Profile.dart';
@@ -43,59 +43,7 @@ class _MedicationViewState extends State<MedicationView> {
         title: const Text('MediCATion'),
         centerTitle: true,
       ),
-      endDrawer: Drawer(
-          backgroundColor: Colors.grey[900],
-          clipBehavior: Clip.none,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(20),
-                bottomLeft: Radius.circular(20)),
-          ),
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: [
-              const SizedBox(
-                height: 93, // To change the height of DrawerHeader
-                width: double.infinity, // To Change the width of DrawerHeader
-                child: DrawerHeader(
-                  decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 174, 199, 255),
-                  ),
-                  child: Center(
-                    child: Text(
-                      'Menu',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 30,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              OutlinedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.grey[900],
-                ),
-                onPressed: (){
-                  _authorizationService.signOut();
-                },
-                child: const Row(
-                  children: [
-                    Icon(Icons.logout, color: Colors.white),
-                    SizedBox(width: 20),
-                    Text(
-                      "Wyloguj się",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          )
-      ),
+      endDrawer: MenuDrawer(),
       backgroundColor: Colors.grey[900],
       body: BlocBuilder<UsageBloc, UsageState>(
         builder: (context, state) {

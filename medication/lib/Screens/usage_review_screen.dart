@@ -9,6 +9,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medication/Database_classes/UsageHistory.dart';
+import 'package:medication/Widgets/headerText.dart';
 
 class UsageReviewView extends StatefulWidget {
   final Usage usage;
@@ -79,14 +80,7 @@ class _UsageReviewViewState extends State<UsageReviewView> {
                             ],
                           ),
                           const SizedBox(height: 30),
-                          const Text(
-                            'DAWKA',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 25,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                          const HeaderText(text: "DAWKA"),
                           const SizedBox(height: 10),
                           Text(
                             widget.usage.doseData.join(' '),
@@ -96,14 +90,7 @@ class _UsageReviewViewState extends State<UsageReviewView> {
                             ),
                           ),
                           const SizedBox(height: 30),
-                          const Text(
-                            'PODAWANIE',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 25,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                          const HeaderText(text: "PODAWANIE"),
                           const SizedBox(height: 10),
                           Text(
                             widget.usage.administration.join(', '),
@@ -113,14 +100,7 @@ class _UsageReviewViewState extends State<UsageReviewView> {
                             ),
                           ),
                           const SizedBox(height: 30),
-                          const Text(
-                            'GODZINA',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 25,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                          const HeaderText(text: "GODZINA"),
                           const SizedBox(height: 10),
                           Text(
                             widget.usage.hour.join(', '),
@@ -130,14 +110,7 @@ class _UsageReviewViewState extends State<UsageReviewView> {
                             ),
                           ),
                           const SizedBox(height:30),
-                          const Text(
-                            'POWIADOMIENIE',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 25,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                          const HeaderText(text: "POWIADOMIENIE"),
                           const SizedBox(height: 10),
                           Text(
                             widget.usage.notificationData[0] == 'Brak' ? 'Brak' : '${widget.usage.notificationData[0].toString().padLeft(2, '0')}:${widget.usage.notificationData[1].toString().padLeft(2, '0')}',
@@ -147,14 +120,7 @@ class _UsageReviewViewState extends State<UsageReviewView> {
                             ),
                           ),
                           const SizedBox(height: 30),
-                          const Text(
-                            'OGRANICZNIA',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 25,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                          const HeaderText(text: "OGRANICZNIA"),
                           const SizedBox(height: 10),
                           Text(
                             widget.usage.restrictions,
@@ -169,14 +135,7 @@ class _UsageReviewViewState extends State<UsageReviewView> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 const SizedBox(height: 30),
-                                const Text(
-                                  'PROBIOTYK',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 25,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
+                                const HeaderText(text: "PROBIOTYK"),
                                 const SizedBox(height: 10),
                                 Text(
                                   widget.usage.probiotic,
@@ -190,7 +149,7 @@ class _UsageReviewViewState extends State<UsageReviewView> {
                           ),
                           const SizedBox(height: 30),
                           const Text(
-                            'KONFLIKT Z INNYM LEKIEM',
+                            "KONFLIK Z INNYM LEKIEM",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 23,
@@ -216,14 +175,7 @@ class _UsageReviewViewState extends State<UsageReviewView> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 const SizedBox(height: 30),
-                                const Text(
-                                  'CZAS POMIĘDZY LEKAMI',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 23,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
+                                const HeaderText(text: "CZAS POMIĘDZY LEKAMI"),
                                 const SizedBox(height: 10),
                                 Text(
                                   widget.usage.conflict.length > 1 ? widget.usage.conflict[0] : '',
@@ -241,14 +193,7 @@ class _UsageReviewViewState extends State<UsageReviewView> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Text(
-                                    'OPIS LEKU',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 25,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
+                                  const HeaderText(text: "OPIS LEKU"),
                                   const SizedBox(height: 10),
                                   Text(
                                     description,

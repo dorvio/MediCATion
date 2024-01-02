@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../Widgets/menuDrawer.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:medication/Screens/new_profile_screen.dart';
@@ -40,60 +41,7 @@ class _ProfileViewState extends State<ProfileView> {
         title: const Text('MediCATion'),
         centerTitle: true,
       ),
-      endDrawer: Drawer(
-        backgroundColor: Colors.grey[900],
-          clipBehavior: Clip.none,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(20),
-                bottomLeft: Radius.circular(20)),
-          ),
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            const SizedBox(
-              height: 93,
-              width: double.infinity,
-              child: DrawerHeader(
-                decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 174, 199, 255),
-                ),
-                child: Center(
-                  child: Text(
-                    'Menu',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 30,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            OutlinedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.grey[900],
-              ),
-              onPressed: (){
-                _authorizationService.signOut();
-              },
-              child: const Row(
-                children: [
-                  Icon(Icons.logout, color: Colors.white),
-                  SizedBox(width: 20),
-                  Text(
-                      "Wyloguj się",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                        ),
-                      ),
-                ],
-              ),
-            ),
-          ],
-        )
-
-      ),
+      endDrawer: MenuDrawer(),
       backgroundColor: Colors.grey[900],
       body: BlocBuilder<ProfileBloc, ProfileState>(
         builder: (context, state) {

@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../Widgets/headerText.dart';
+import '../Widgets/menuDrawer.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medication/Blocs/notification_bloc.dart';
 import 'package:medication/Blocs/usage_bloc.dart';
@@ -173,59 +175,7 @@ class _NewUsageViewState extends State<NewUsageView> {
         title: const Text('MediCATion'),
         centerTitle: true,
       ),
-      endDrawer: Drawer(
-          backgroundColor: Colors.grey[900],
-          clipBehavior: Clip.none,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(20),
-                bottomLeft: Radius.circular(20)),
-          ),
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: [
-              const SizedBox(
-                height: 93, // To change the height of DrawerHeader
-                width: double.infinity, // To Change the width of DrawerHeader
-                child: DrawerHeader(
-                  decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 174, 199, 255),
-                  ),
-                  child: Center(
-                    child: Text(
-                      'Menu',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 30,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              OutlinedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.grey[900],
-                ),
-                onPressed: (){
-                  _authorizationService.signOut();
-                },
-                child: const Row(
-                  children: [
-                    Icon(Icons.logout, color: Colors.white),
-                    SizedBox(width: 20),
-                    Text(
-                      "Wyloguj się",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          )
-      ),
+      endDrawer: MenuDrawer(),
       backgroundColor: Colors.grey[900],
       body: SingleChildScrollView(
         child: BlocBuilder<MedicationBloc, MedicationState>(
@@ -354,14 +304,7 @@ class _NewUsageViewState extends State<NewUsageView> {
                               },
                             ),
                             const SizedBox(height: 30),
-                            const Text(
-                              'DAWKA',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 25,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+                            const HeaderText(text: "DAWKA"),
                             const SizedBox(height: 10),
                             Row(
                               children: [
@@ -460,14 +403,7 @@ class _NewUsageViewState extends State<NewUsageView> {
                               ],
                             ),
                             const SizedBox(height: 30),
-                            const Text(
-                              'PODAWANIE',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 25,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+                            const HeaderText(text: "PODAWANIE"),
                             const SizedBox(height: 10),
                             FlutterToggleTab(
                               width: 75,
@@ -553,14 +489,7 @@ class _NewUsageViewState extends State<NewUsageView> {
                               ),
                             ),
                             const SizedBox(height: 30),
-                            const Text(
-                              'GODZINA',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 25,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+                            const HeaderText(text: "GODZINA"),
                             const SizedBox(height: 10),
                             FlutterToggleTab(
                               width: 75,
@@ -673,14 +602,7 @@ class _NewUsageViewState extends State<NewUsageView> {
                                 )
                             ),
                             const SizedBox(height: 30),
-                            const Text(
-                              'POWIADOMIENIE',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 25,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+                            const HeaderText(text: "POWIADOMIENIE"),
                             const SizedBox(height: 10),
                             FlutterToggleTab(
                               width: 75,
@@ -736,14 +658,7 @@ class _NewUsageViewState extends State<NewUsageView> {
                               ),
                             ),
                             const SizedBox(height: 30),
-                            const Text(
-                              'OGRANICZNIA',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 25,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+                            const HeaderText(text: "OGRANICZNIA"),
                             const SizedBox(height: 10),
                             MultiSelectContainer(
                               items: [
@@ -802,14 +717,7 @@ class _NewUsageViewState extends State<NewUsageView> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   const SizedBox(height: 30),
-                                  const Text(
-                                    'PROBIOTYK',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 25,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
+                                  const HeaderText(text: "PROBIOTYK"),
                                   const SizedBox(height: 10),
                                   FlutterToggleTab(
                                     width: 75,
@@ -987,14 +895,7 @@ class _NewUsageViewState extends State<NewUsageView> {
                                                 },
                                               ),
                                             const SizedBox(height: 30),
-                                            const Text(
-                                              'CZAS POMIĘDZY LEKAMI',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 23,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
+                                            const HeaderText(text: "CZAS POMIĘDZY LEKAMI"),
                                             const SizedBox(height: 10),
                                             Center(
                                               child: ElevatedButton(

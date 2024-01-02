@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:medication/Services/authorization.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:medication/Widgets/customButton.dart';
+import 'package:medication/Widgets/customTextFormField.dart';
 import 'profile_screen.dart';
 
 class RegisterView extends StatefulWidget {
@@ -71,53 +73,21 @@ class _RegisterViewState extends State<RegisterView> {
                         ],
                       ),
                       const SizedBox(height: 40),
-                      TextFormField(
-                        style: const TextStyle(color: Colors.white),
-                        decoration: InputDecoration(
-                          labelText: 'Podaj email',
-                          labelStyle: const TextStyle(color: Colors.white),
-                          counterStyle: const TextStyle(color: Colors.white),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(color: Colors.grey),
-                            borderRadius: BorderRadius.circular(30.0),
-                          ),
-                          filled: true,
-                          fillColor: Colors.grey[800],
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(color: Color.fromARGB(255, 174, 199, 255)),
-                            borderRadius: BorderRadius.circular(30.0),
-                          ),
-                          errorBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(color: Colors.red),
-                            borderRadius: BorderRadius.circular(30.0),
-                          ),
-                          focusedErrorBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(color: Colors.red),
-                            borderRadius: BorderRadius.circular(30.0),
-                          ),
-                          errorText: showErrorEmail ? 'Pole nie może być puste!' : null,
-                          prefixIcon: Icon(Icons.email),
-                          prefixIconColor: Colors.white,
-                        ),
+                      CustomTextFormField(
+                        onChanged: (text) {
+                          setState(() => email = text);
+                        },
                         validator: (text) {
                           if (text == null || text.isEmpty) {
-                            setState(() {
-                              showErrorEmail = true;
-                            });
                             return 'Pole nie może być puste!';
                           }
                           if(!EmailValidator.validate(text)){
-                            setState(() {
-                              showErrorEmail = true;
-                            });
                             return 'Niepoprawna forma adresu email';
                           }
-                          setState(() {
-                            showErrorEmail = false;
-                          });
                           return null;
                         },
-                        onChanged: (text) => setState(() => email = text),
+                        prefixIcon: Icon(Icons.email),
+                        labelText: 'Podaj email',
                       ),
                       const SizedBox(height: 40),
                       TextFormField(
@@ -190,14 +160,8 @@ class _RegisterViewState extends State<RegisterView> {
                           )
                       ),
                       const SizedBox(height: 30),
-                      ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            padding: EdgeInsets.fromLTRB(25, 15, 25, 15),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30.0),
-                            ),
-                            backgroundColor: const Color.fromARGB(255, 174, 199, 255),
-                          ),
+                      CustomButton(
+                        text: "Zarejestruj się",
                           onPressed: () async {
                             if(_formKey.currentState!.validate()){
                               dynamic result = await _authorizationService.registerEmail(email, password);
@@ -208,14 +172,7 @@ class _RegisterViewState extends State<RegisterView> {
                                 errorMessage = '';
                               }
                             }
-                          },
-                          child: const Text(
-                              "Zarejestruj się",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                              )
-                          )
+                          }
                       ),
                     ]
                 )
