@@ -1,19 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:medication/Widgets/customButton.dart';
+import 'package:medication/Widgets/customDropdownFormField.dart';
+import 'package:medication/Widgets/customToggleTab.dart';
+import 'package:medication/Widgets/customTypeAhead.dart';
 import '../Widgets/headerText.dart';
 import '../Widgets/menuDrawer.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medication/Blocs/notification_bloc.dart';
 import 'package:medication/Blocs/usage_bloc.dart';
 import 'package:medication/Database_classes/NotificationData.dart';
-import 'package:medication/Services/authorization.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:medication/Blocs/medication_bloc.dart';
 import 'package:medication/Database_classes/Medication.dart';
 import 'package:medication/Database_classes/Usage.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
-import 'package:flutter_toggle_tab/flutter_toggle_tab.dart';
 import 'package:flutter_multi_select_items/flutter_multi_select_items.dart';
 import 'package:day_night_time_picker/day_night_time_picker.dart';
 import 'dart:async';
@@ -39,10 +40,8 @@ class NewUsageView extends StatefulWidget {
 }
 
 class _NewUsageViewState extends State<NewUsageView> {
-  final AuthorizationService _authorizationService = AuthorizationService();
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _typeAheadMedController = TextEditingController();
-  final TextEditingController _typeAheadConController = TextEditingController();
   final TextEditingController _typeAheadProController = TextEditingController();
   final TextEditingController _doseNumerController = TextEditingController();
   String medication = '';
@@ -69,6 +68,7 @@ class _NewUsageViewState extends State<NewUsageView> {
   bool administrationError = false;
   bool hourError = false;
   bool restrictionError = false;
+  bool conflictError = false;
   List<bool> daysCardsSelected = [false, false, false, false, false, false, false];
   List<bool> timeOfDayCardsSelected = [false, false, false, false];
   List<bool> restrictionsCardsSelected = [false, false, false, false];
@@ -215,93 +215,29 @@ class _NewUsageViewState extends State<NewUsageView> {
                               ),
                             ),
                             const SizedBox(height: 30),
-                            TypeAheadFormField(
-                              textFieldConfiguration: TextFieldConfiguration(
-                                enabled: widget.usage == null,
+                            CustomTypeAheadFormField(
                                 controller: _typeAheadMedController,
-                                style: const TextStyle(color: Colors.white),
-                                decoration: InputDecoration(
-                                  labelText: 'Lek',
-                                  labelStyle: const TextStyle(color: Colors.white),
-                                  counterStyle: const TextStyle(color: Colors.white),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: const BorderSide(color: Colors.grey),
-                                    borderRadius: BorderRadius.circular(30.0),
-                                  ),
-                                  disabledBorder: OutlineInputBorder(
-                                    borderSide: const BorderSide(color: Colors.grey),
-                                    borderRadius: BorderRadius.circular(30.0),
-                                  ),
-                                  filled: true,
-                                  fillColor: Colors.grey[800],
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: const BorderSide(color: Color.fromARGB(255, 174, 199, 255)),
-                                    borderRadius: BorderRadius.circular(30.0),
-                                  ),
-                                  errorBorder: OutlineInputBorder(
-                                    borderSide: const BorderSide(color: Colors.red),
-                                    borderRadius: BorderRadius.circular(30.0),
-                                  ),
-                                  focusedErrorBorder: OutlineInputBorder(
-                                    borderSide: const BorderSide(color: Colors.red),
-                                    borderRadius: BorderRadius.circular(30.0),
-                                  ),
-                                  prefixIcon: Icon(MdiIcons.pill),
-                                  prefixIconColor: Colors.white,
-                                  suffixIcon: IconButton(
-                                    icon: const Icon(Icons.clear),
-                                    onPressed: (){
-                                      setState(() {
-                                        _typeAheadMedController.clear();
-                                        medication = '';
-                                      });
-                                    },
-                                  ),
-                                  suffixIconColor: Colors.white,
-                                ),
-                              ),
-                              suggestionsCallback: (pattern) {
-                                return medications
-                                    .where((med) => med.medication.toLowerCase().contains(pattern.toLowerCase()))
-                                    .map((med) => med.medication)
-                                    .toList();
-                              },
-                              itemBuilder: (context, String suggestion) {
-                                return ListTile(
-                                  title: Text(
-                                    suggestion,
-                                    style: const TextStyle(color: Colors.white),
-                                  ),
-                                );
-                              },
-                              transitionBuilder: (context, suggestionsBox, controller) =>
-                              suggestionsBox,
-                              onSuggestionSelected: (String suggestion) {
-                                _typeAheadMedController.text = suggestion;
-                                setState(() {
-                                  medication = suggestion;
-                                });
-                              },
-                              noItemsFoundBuilder: (context) =>
-                                  Container(
-                                    height: 40,
-                                    alignment: Alignment.center,
-                                    child: Text(
-                                        'Nie znaleziono leku',
-                                        style: TextStyle(
-                                          color: Colors.grey[200],
-                                          fontSize: 20,
-                                        )
-                                    ),
-                                  ),
-                              suggestionsBoxDecoration: SuggestionsBoxDecoration(
-                                color: Colors.grey[800],
-                              ),
-                              validator: (text) {
-                                if(text == null || text.isEmpty){
-                                  return 'Pole nie może być puste';
-                                }
-                              },
+                                onSuggestionSelected: (String suggestion) {
+                                  _typeAheadMedController.text = suggestion;
+                                  setState(() {
+                                    medication = suggestion;
+                                  });
+                                },
+                                onClear: (){
+                                  setState(() {
+                                    _typeAheadMedController.clear();
+                                    medication = '';
+                                  });
+                                },
+                                enabled: widget.usage == null,
+                                suggestionsCallback: (pattern) {
+                                  return medications
+                                      .where((med) => med.medication.toLowerCase().contains(pattern.toLowerCase()))
+                                      .map((med) => med.medication)
+                                      .toList();
+                                },
+                              label: 'Lek',
+                              icon: MdiIcons.pill,
                             ),
                             const SizedBox(height: 30),
                             const HeaderText(text: "DAWKA"),
@@ -350,48 +286,14 @@ class _NewUsageViewState extends State<NewUsageView> {
                                 ),
                                 Expanded(
                                   flex: 3,
-                                  child: DropdownButtonFormField(
-                                    dropdownColor: Colors.grey[800],
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                    ),
-                                    decoration: InputDecoration(
-                                      labelText: "Jednostka",
-                                      labelStyle: const TextStyle(
-                                        color: Colors.white,
-                                      ),
-                                      enabledBorder: OutlineInputBorder(
-                                        borderSide: const BorderSide(color: Colors.grey),
-                                        borderRadius: BorderRadius.circular(30.0),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderSide: const BorderSide(color: Color.fromARGB(255, 174, 199, 255)),
-                                        borderRadius: BorderRadius.circular(30.0),
-                                      ),
-                                      errorBorder: OutlineInputBorder(
-                                        borderSide: const BorderSide(color: Colors.red),
-                                        borderRadius: BorderRadius.circular(30.0),
-                                      ),
-                                      focusedErrorBorder: OutlineInputBorder(
-                                        borderSide: const BorderSide(color: Colors.red),
-                                        borderRadius: BorderRadius.circular(30.0),
-                                      ),
-                                      filled: true,
-                                      fillColor: Colors.grey[800],
-                                      prefixIcon: const Icon(Icons.search),
-                                      prefixIconColor: Colors.white,
-                                    ),
-                                    padding: const EdgeInsets.all(0),
-                                    items: types.map<DropdownMenuItem<String>>((String value) {
-                                      return DropdownMenuItem<String>(
-                                        value: value,
-                                        child: Text(value),
-                                      );
-                                    }).toList(),
-                                    value: widget.usage != null ? doseType : null,
+                                  child: CustomDropdownButtonFormField(
+                                    items: types,
                                     onChanged: (String? value) {
                                       doseType = value!;
                                     },
+                                    labelText: "Jednostka",
+                                    prefixIcon: Icon(Icons.search),
+                                    value: widget.usage != null ? doseType : null,
                                     validator: (text) {
                                       if (text == null || text.isEmpty) {
                                         return 'Należy wybrać!';
@@ -405,27 +307,14 @@ class _NewUsageViewState extends State<NewUsageView> {
                             const SizedBox(height: 30),
                             const HeaderText(text: "PODAWANIE"),
                             const SizedBox(height: 10),
-                            FlutterToggleTab(
-                              width: 75,
-                              height: 60,
-                              selectedTextStyle: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 15,
-                              ),
-                              unSelectedTextStyle: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 15,
-                              ),
-                              selectedBackgroundColors: const [Color.fromARGB(255, 174, 199, 255)],
-                              unSelectedBackgroundColors: [Colors.grey[800]!],
-                              labels: ['Codziennie', 'Harmonogram'],
-                              selectedLabelIndex: (index) {
-                                setState(() {
-                                  _administrationChoice = index;
-                                });
-                              },
-                              selectedIndex: _administrationChoice,
-                              iconSize: 25,
+                            CustomToggleTab(
+                                labels: ['Codziennie', 'Harmonogram'],
+                                selectedIndex: _administrationChoice,
+                                selectedLabelIndex: (index) {
+                                  setState(() {
+                                    _administrationChoice = index;
+                                  });
+                                },
                             ),
                             Visibility(
                               visible: _administrationChoice == 1,
@@ -491,27 +380,14 @@ class _NewUsageViewState extends State<NewUsageView> {
                             const SizedBox(height: 30),
                             const HeaderText(text: "GODZINA"),
                             const SizedBox(height: 10),
-                            FlutterToggleTab(
-                              width: 75,
-                              height: 60,
-                              selectedTextStyle: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 15,
-                              ),
-                              unSelectedTextStyle: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 15,
-                              ),
-                              selectedBackgroundColors: const [Color.fromARGB(255, 174, 199, 255)],
-                              unSelectedBackgroundColors: [Colors.grey[800]!],
+                            CustomToggleTab(
                               labels: ['Konkretna', 'Ogólna', 'Brak'],
+                              selectedIndex: _timeMedChoice,
                               selectedLabelIndex: (index) {
                                 setState(() {
                                   _timeMedChoice = index;
                                 });
                               },
-                              selectedIndex: _timeMedChoice,
-                              iconSize: 25,
                             ),
                             Visibility(
                               visible: _timeMedChoice == 0,
@@ -604,28 +480,15 @@ class _NewUsageViewState extends State<NewUsageView> {
                             const SizedBox(height: 30),
                             const HeaderText(text: "POWIADOMIENIE"),
                             const SizedBox(height: 10),
-                            FlutterToggleTab(
-                              width: 75,
-                              height: 60,
-                              selectedTextStyle: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 15,
-                              ),
-                              unSelectedTextStyle: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 15,
-                              ),
-                              selectedBackgroundColors: const [Color.fromARGB(255, 174, 199, 255)],
-                              unSelectedBackgroundColors: [Colors.grey[800]!],
+                            CustomToggleTab(
                               labels: ['TAK', 'NIE'],
+                              selectedIndex: _timeNotChoice,
                               selectedLabelIndex: (index) {
                                 setState(() {
                                   _timeNotChoice = index;
                                 });
                               },
                               icons: [Icons.notifications, Icons.notifications_off],
-                              selectedIndex: _timeNotChoice,
-                              iconSize: 25,
                             ),
                             Visibility(
                               visible: _timeNotChoice == 0 && _timeMedChoice != 0,
@@ -719,116 +582,43 @@ class _NewUsageViewState extends State<NewUsageView> {
                                   const SizedBox(height: 30),
                                   const HeaderText(text: "PROBIOTYK"),
                                   const SizedBox(height: 10),
-                                  FlutterToggleTab(
-                                    width: 75,
-                                    height: 60,
-                                    selectedTextStyle: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 15,
-                                    ),
-                                    unSelectedTextStyle: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 15,
-                                    ),
-                                    selectedBackgroundColors: const [Color.fromARGB(255, 174, 199, 255)],
-                                    unSelectedBackgroundColors: [Colors.grey[800]!],
+                                  CustomToggleTab(
                                     labels: ['TAK', 'NIE'],
+                                    selectedIndex: _probioticChoice,
                                     selectedLabelIndex: (index) {
                                       setState(() {
                                         _probioticChoice = index;
                                       });
                                     },
                                     icons: [MdiIcons.pill, MdiIcons.pillOff],
-                                    selectedIndex: _probioticChoice,
-                                    iconSize: 25,
                                   ),
                                   Visibility(
                                     visible: _probioticChoice == 0,
                                     child: Column(
                                       children: [
                                         const SizedBox(height: 30),
-                                        TypeAheadFormField(
-                                          textFieldConfiguration: TextFieldConfiguration(
-                                            controller: _typeAheadProController,
-                                            style: const TextStyle(color: Colors.white),
-                                            decoration: InputDecoration(
-                                              labelText: 'Probiotyk',
-                                              labelStyle: const TextStyle(color: Colors.white),
-                                              counterStyle: const TextStyle(color: Colors.white),
-                                              enabledBorder: OutlineInputBorder(
-                                                borderSide: const BorderSide(color: Colors.grey),
-                                                borderRadius: BorderRadius.circular(30.0),
-                                              ),
-                                              filled: true,
-                                              fillColor: Colors.grey[800],
-                                              focusedBorder: OutlineInputBorder(
-                                                borderSide: const BorderSide(color: Color.fromARGB(255, 174, 199, 255)),
-                                                borderRadius: BorderRadius.circular(30.0),
-                                              ),
-                                              errorBorder: OutlineInputBorder(
-                                                borderSide: const BorderSide(color: Colors.red),
-                                                borderRadius: BorderRadius.circular(30.0),
-                                              ),
-                                              focusedErrorBorder: OutlineInputBorder(
-                                                borderSide: const BorderSide(color: Colors.red),
-                                                borderRadius: BorderRadius.circular(30.0),
-                                              ),
-                                              prefixIcon: Icon(MdiIcons.pill),
-                                              prefixIconColor: Colors.white,
-                                              suffixIcon: IconButton(
-                                                icon: const Icon(Icons.clear),
-                                                onPressed: (){
-                                                  setState(() {
-                                                    _typeAheadProController.clear();
-                                                    probioticName = '';
-                                                  });
-                                                },
-                                              ),
-                                              suffixIconColor: Colors.white,
-                                            ),
-                                          ),
-                                          suggestionsCallback: (pattern) {
-                                            return probiotics
-                                                .where((pro) => pro.medication.toLowerCase().contains(pattern.toLowerCase()))
-                                                .map((pro) => pro.medication)
-                                                .toList();
-                                          },
-                                          itemBuilder: (context, String suggestion) {
-                                            return ListTile(
-                                              title: Text(
-                                                suggestion,
-                                                style: const TextStyle(color: Colors.white),
-                                              ),
-                                            );
-                                          },
-                                          transitionBuilder: (context, suggestionsBox, controller) =>
-                                          suggestionsBox,
+                                        CustomTypeAheadFormField(
+                                          controller: _typeAheadProController,
                                           onSuggestionSelected: (String suggestion) {
                                             _typeAheadProController.text = suggestion;
                                             setState(() {
                                               probioticName = suggestion;
                                             });
                                           },
-                                          noItemsFoundBuilder: (context) =>
-                                              Container(
-                                                height: 40,
-                                                alignment: Alignment.center,
-                                                child: Text(
-                                                    'Nie znaleziono probiotyku',
-                                                    style: TextStyle(
-                                                      color: Colors.grey[200],
-                                                      fontSize: 20,
-                                                    )
-                                                ),
-                                              ),
-                                          suggestionsBoxDecoration: SuggestionsBoxDecoration(
-                                            color: Colors.grey[800],
-                                          ),
-                                          validator: (text) {
-                                            if(text == null || text.isEmpty){
-                                              return 'Pole nie może być puste';
-                                            }
+                                          onClear: (){
+                                            setState(() {
+                                              _typeAheadProController.clear();
+                                              probioticName = '';
+                                            });
                                           },
+                                          suggestionsCallback: (pattern) {
+                                            return probiotics
+                                                .where((pro) => pro.medication.toLowerCase().contains(pattern.toLowerCase()))
+                                                .map((pro) => pro.medication)
+                                                .toList();
+                                          },
+                                          label: 'Probiotyk',
+                                          icon: MdiIcons.pill,
                                         ),
                                       ],
                                     ),
@@ -851,26 +641,14 @@ class _NewUsageViewState extends State<NewUsageView> {
                                       ),
                                     ),
                                     const SizedBox(height: 10),
-                                    FlutterToggleTab(
-                                      width: 75,
-                                      height: 60,
-                                      selectedTextStyle: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 15,
-                                      ),
-                                      unSelectedTextStyle: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 15,
-                                      ),
-                                      selectedBackgroundColors: const [Color.fromARGB(255, 174, 199, 255)],
-                                      unSelectedBackgroundColors: [Colors.grey[800]!],
+                                    CustomToggleTab(
                                       labels: ['TAK', 'NIE'],
+                                      selectedIndex: _conflictChoice,
                                       selectedLabelIndex: (index) {
                                         setState(() {
                                           _conflictChoice = index;
                                         });
                                       },
-                                      selectedIndex: _conflictChoice,
                                     ),
                                     Visibility(
                                         visible: _conflictChoice == 0,
@@ -894,6 +672,16 @@ class _NewUsageViewState extends State<NewUsageView> {
                                                   });
                                                 },
                                               ),
+                                            Visibility(
+                                              visible: conflictError,
+                                              child: const Text(
+                                                  'Należy wybrać przynajmniej 1 element',
+                                                  style: TextStyle(
+                                                    color: Colors.red,
+                                                    fontSize: 15,
+                                                  )
+                                              ),
+                                            ),
                                             const SizedBox(height: 30),
                                             const HeaderText(text: "CZAS POMIĘDZY LEKAMI"),
                                             const SizedBox(height: 10),
@@ -951,54 +739,28 @@ class _NewUsageViewState extends State<NewUsageView> {
                             const SizedBox(height: 60),
                             Row(
                               children: [
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    padding: EdgeInsets.fromLTRB(40, 15, 40, 15),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(30.0),
-                                    ),
-                                    backgroundColor: const Color.fromARGB(255, 174, 199, 255),
-                                  ),
-                                  child: const Text(
-                                      'Anuluj',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 20,
-                                      )
-                                  ),
-                                  onPressed: () {
-                                    NotificationService().showScheduledNotifications();
-                                    Navigator.pop(context);
-                                  },
+                                CustomButton(
+                                  text: "Anuluj",
+                                    onPressed: () {
+                                      NotificationService().showScheduledNotifications();
+                                      Navigator.pop(context);
+                                    },
                                 ),
                                 const SizedBox(width: 25),
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    padding: EdgeInsets.fromLTRB(40, 15, 40, 15),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(30.0),
-                                    ),
-                                    backgroundColor: const Color.fromARGB(255, 174, 199, 255),
-                                  ),
-                                  child: const Text(
-                                      'Zapisz',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 20,
-                                      )
-                                  ),
-                                  onPressed: () {
-                                    if(_formKey.currentState!.validate() && _isAdministrationValid() && _isHourValid() && _isRestrictionValid()){
-                                      _handleSave(medications, usages);
-                                    }
-                                  },
+                                CustomButton(
+                                  text: "Zapisz",
+                                    onPressed: () {
+                                      if(_formKey.currentState!.validate() && _isAdministrationValid() && _isHourValid() && _isRestrictionValid() && _isConflictValid()){
+                                        _handleSave(medications, usages);
+                                      }
+                                    },
                                 ),
                               ],
                             ),
                           ],
                         ),
                       ),
-                    );;
+                    );
                   }else if (state is UsageError) {
                     return Center(
                       child: Text(
@@ -1107,6 +869,19 @@ class _NewUsageViewState extends State<NewUsageView> {
         restrictionError = false;
       });
       return true;
+    }
+  }
+  bool _isConflictValid(){
+    if(_conflictChoice == 0 && checkedConMeds.values.any((value) => value == true)){
+      setState(() {
+        conflictError = false;
+      });
+      return true;
+    } else {
+      setState(() {
+        conflictError = true;
+      });
+      return false;
     }
   }
 

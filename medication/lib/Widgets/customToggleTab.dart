@@ -1,17 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_toggle_tab/flutter_toggle_tab.dart';
 
-class MyToggleTab extends StatefulWidget {
-  final bool editMode;
+class CustomToggleTab extends StatefulWidget {
+  final List<String> labels;
+  final List<IconData>? icons;
+  final int selectedIndex;
+  final void Function(int) selectedLabelIndex;
 
-  MyToggleTab({Key? key, required this.editMode}) : super(key: key);
+  CustomToggleTab({
+    required this.labels,
+    this.icons = null,
+    required this.selectedIndex,
+    required this.selectedLabelIndex,
+  });
 
   @override
-  _MyToggleTabState createState() => _MyToggleTabState();
+  _CustomToggleTabState createState() => _CustomToggleTabState();
 }
 
-class _MyToggleTabState extends State<MyToggleTab> {
-  int _tabIconIndexSelected = 0;
+class _CustomToggleTabState extends State<CustomToggleTab> {
 
   @override
   Widget build(BuildContext context) {
@@ -28,16 +35,10 @@ class _MyToggleTabState extends State<MyToggleTab> {
       ),
       selectedBackgroundColors: const [Color.fromARGB(255, 174, 199, 255)],
       unSelectedBackgroundColors: [Colors.grey[800]!],
-      labels: ['Człowiek', 'Zwierzę'],
-      selectedLabelIndex: (index) {
-        if (!widget.editMode) {
-          setState(() {
-            _tabIconIndexSelected = index;
-          });
-        } else {}
-      },
-      selectedIndex: _tabIconIndexSelected,
-      icons: [Icons.person, Icons.pets],
+      labels: widget.labels,
+      selectedLabelIndex: widget.selectedLabelIndex,
+      icons: widget.icons,
+      selectedIndex: widget.selectedIndex,
       iconSize: 25,
     );
   }

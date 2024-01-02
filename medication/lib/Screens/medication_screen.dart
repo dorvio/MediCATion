@@ -6,7 +6,7 @@ import 'package:medication/CustomIcons/app_icons_icons.dart';
 import 'package:medication/Screens/usage_screen_controller.dart';
 import '../Blocs/usage_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:medication/Services/authorization.dart';
+import '../Widgets/customItemsList.dart';
 import '../Widgets/menuDrawer.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:medication/Database_classes/Usage.dart';
@@ -26,8 +26,6 @@ class MedicationView extends StatefulWidget {
   }
 
 class _MedicationViewState extends State<MedicationView> {
-
-  final AuthorizationService _authorizationService = AuthorizationService();
 
   @override
   void initState() {
@@ -80,65 +78,18 @@ class _MedicationViewState extends State<MedicationView> {
                     itemCount: usages.length,
                     itemBuilder: (context, index) {
                       final usage = usages[index];
-                      return Column(
-                        children: [
-                          const SizedBox(height: 3),
-                          Container(
-                            width: double.infinity,
-                            height: 80,
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                ),
-                                backgroundColor: Colors.grey[800],
-                              ),
-                              onPressed: () {
-                                _goToUsageScreen(context, usage);
-                              },
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    flex: 1,
-                                    child: Icon(
-                                      color: Theme.of(context).colorScheme.inversePrimary,
-                                      MdiIcons.pill,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 20),
-                                  Expanded(
-                                    flex: 7,
-                                    child: Text(
-                                      usage.medicationName,
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 20,
-                                      ),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    flex: 1,
-                                    child: IconButton(
-                                      onPressed: () {
-                                        goToEditUsageScreen(context, widget.profile.isAnimal, widget.profile.profileId, usage, widget.profile.name);
-                                      },
-                                      icon: const Icon(Icons.edit),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    flex: 1,
-                                    child: IconButton(
-                                      onPressed: () {
-                                        _showDeleteDialog(context, usage);
-                                      },
-                                      icon: const Icon(Icons.delete),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
+                      return CustomItemList(
+                        item: usage,
+                        onDeletePressed: () {
+                          _showDeleteDialog(context, usage);
+                        },
+                        onEditPressed: () {
+                          goToEditUsageScreen(context, widget.profile.isAnimal, widget.profile.profileId, usage, widget.profile.name);
+                        },
+                        onPressed: () {
+                          _goToUsageScreen(context, usage);
+                        },
+                        icon: MdiIcons.pill,
                       );
                     },
                   ),

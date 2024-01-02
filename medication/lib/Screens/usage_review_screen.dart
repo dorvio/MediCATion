@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:medication/Blocs/usage_history_bloc.dart';
 import 'package:medication/Blocs/medication_bloc.dart';
 import 'package:medication/Database_classes/Usage.dart';
-import 'package:medication/Database_classes/Medication.dart';
-import 'package:medication/Services/authorization.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,7 +23,6 @@ class UsageReviewView extends StatefulWidget {
 }
 
 class _UsageReviewViewState extends State<UsageReviewView> {
-  final AuthorizationService _authorizationService = AuthorizationService();
   List<UsageHistory> history = [];
   List<UsageHistory> thisUsageHistory = [];
   String description = '';
@@ -159,7 +156,7 @@ class _UsageReviewViewState extends State<UsageReviewView> {
                           ),
                           const SizedBox(height: 30),
                           const Text(
-                            "KONFLIK Z INNYM LEKIEM",
+                            "KONFLIKT Z INNYM LEKIEM",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 23,
