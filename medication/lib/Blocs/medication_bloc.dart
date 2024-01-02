@@ -12,6 +12,11 @@ class LoadMedications extends MedicationEvent {
   LoadMedications(this.isAnimal);
 }
 
+class LoadAllMedications extends MedicationEvent {
+
+  LoadAllMedications();
+}
+
 class AddMedication extends MedicationEvent {
   final Medication medication;
 
@@ -63,6 +68,16 @@ class MedicationBloc extends Bloc<MedicationEvent, MedicationState> {
       try {
         emit(MedicationLoading());
         final medications = await _firestoreService.getMedications(event.isAnimal).first;
+        emit(MedicationLoaded(medications));
+      } catch (e) {
+        emit(MedicationError('Failed to load medications.'));
+      }
+    });
+
+    on<LoadAllMedications>((event, emit) async {
+      try {
+        emit(MedicationLoading());
+        final medications = await _firestoreService.getAllMedications().first;
         emit(MedicationLoaded(medications));
       } catch (e) {
         emit(MedicationError('Failed to load medications.'));

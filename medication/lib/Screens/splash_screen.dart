@@ -85,8 +85,7 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
     if (user == null) {} else {
       String userId = user.uid.toString();
       BlocProvider.of<ProfileBloc>(context).add(LoadProfiles(userId));
-      BlocProvider.of<MedicationBloc>(context).add(LoadMedications(true));
-      BlocProvider.of<MedicationBloc>(context).add(LoadMedications(false));
+      BlocProvider.of<MedicationBloc>(context).add(LoadAllMedications());
       BlocProvider.of<UsageBloc>(context).add(LoadUsagesById(userId));
       BlocProvider.of<UsageHistoryBloc>(context).add(
           LoadUsageHistoryById(userId));
