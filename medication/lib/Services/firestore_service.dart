@@ -69,6 +69,21 @@ class FirestoreService {
     });
   }
 
+  Stream<List<Medication>> getAllMedications() {
+    return _medicationsCollection.snapshots().map((snapshot) {
+      return snapshot.docs.map((doc) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        return Medication(
+          medicationId: doc.id,
+          medication: data['medication'],
+          type: data['type'],
+          description: data['description'],
+          forAnimal: data['for_animal'],
+        );
+      }).toList();
+    });
+  }
+
   Future<void> addMedication(Medication medication) {
     return _medicationsCollection.add({
       'medication': medication.medication,

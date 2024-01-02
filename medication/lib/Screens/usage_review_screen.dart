@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:medication/Blocs/usage_history_bloc.dart';
 import 'package:medication/Blocs/medication_bloc.dart';
 import 'package:medication/Database_classes/Usage.dart';
+import 'package:medication/Database_classes/Medication.dart';
 import 'package:medication/Services/authorization.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -32,6 +33,7 @@ class _UsageReviewViewState extends State<UsageReviewView> {
   @override
   void initState() {
     BlocProvider.of<UsageHistoryBloc>(context).add(LoadUsageHistory(widget.usage.profileId));
+    BlocProvider.of<MedicationBloc>(context).add(LoadAllMedications());
     super.initState();
   }
 
@@ -52,7 +54,15 @@ class _UsageReviewViewState extends State<UsageReviewView> {
                   if (state is MedicationLoading) {
                     return Center(child: CircularProgressIndicator());
                   } else if (state is MedicationLoaded) {
-                    description = state.medications.firstWhere((element) => element.medication == widget.usage.medicationName).description;
+                    final medications  = state.medications;
+                    try {
+                      description = medications
+                          .firstWhere((element) =>
+                      element.medication == widget.usage.medicationName)
+                          .description;
+                    } catch (error){
+                      description = '';
+                    }
                     return Container(
                       padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 50),
                       child: Column(
