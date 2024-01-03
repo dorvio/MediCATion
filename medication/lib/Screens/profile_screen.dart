@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import '../Widgets/customItemsList.dart';
+import '../Widgets/menuDrawer.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:medication/Screens/new_profile_screen.dart';
 import '../Database_classes/Profile.dart';
 import '../Blocs/profile_bloc.dart';
 import 'medication_screen.dart';
-import 'package:medication/Services/authorization.dart';
 
 class ProfileView extends StatefulWidget {
   final String userId;
@@ -22,8 +23,6 @@ class ProfileView extends StatefulWidget {
 
 class _ProfileViewState extends State<ProfileView> {
 
-  final AuthorizationService _authorizationService = AuthorizationService();
-
   @override
   void initState() {
     BlocProvider.of<ProfileBloc>(context).add(LoadProfiles(widget.userId));
@@ -33,67 +32,13 @@ class _ProfileViewState extends State<ProfileView> {
 
   @override
   Widget build(BuildContext context) {
-    final ProfileBloc _profileBloc = BlocProvider.of<ProfileBloc>(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text('MediCATion'),
         centerTitle: true,
       ),
-      endDrawer: Drawer(
-        backgroundColor: Colors.grey[900],
-          clipBehavior: Clip.none,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(20),
-                bottomLeft: Radius.circular(20)),
-          ),
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            const SizedBox(
-              height: 93,
-              width: double.infinity,
-              child: DrawerHeader(
-                decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 174, 199, 255),
-                ),
-                child: Center(
-                  child: Text(
-                    'Menu',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 30,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            OutlinedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.grey[900],
-              ),
-              onPressed: (){
-                _authorizationService.signOut();
-              },
-              child: const Row(
-                children: [
-                  Icon(Icons.logout, color: Colors.white),
-                  SizedBox(width: 20),
-                  Text(
-                      "Wyloguj się",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                        ),
-                      ),
-                ],
-              ),
-            ),
-          ],
-        )
-
-      ),
+      endDrawer: MenuDrawer(),
       backgroundColor: Colors.grey[900],
       body: BlocBuilder<ProfileBloc, ProfileState>(
         builder: (context, state) {
@@ -130,65 +75,18 @@ class _ProfileViewState extends State<ProfileView> {
                     itemCount: profiles.length,
                     itemBuilder: (context, index) {
                       final profile = profiles[index];
-                      return Column(
-                        children: [
-                          const SizedBox(height: 3),
-                          Container(
-                            width: double.infinity,
-                            height: 80,
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                ),
-                                backgroundColor: Colors.grey[800],
-                              ),
-                              onPressed: () {
-                                _goToMedicationScreen(context, profile);
-                              },
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    flex: 1,
-                                    child: Icon(
-                                      profile.isAnimal == false ? Icons.person : Icons.pets,
-                                      color: Theme.of(context).colorScheme.inversePrimary,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 30),
-                                  Expanded(
-                                    flex: 7,
-                                    child: Text(
-                                      profile.name,
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 20,
-                                      ),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    flex: 1,
-                                    child: IconButton(
-                                      onPressed: () {
-                                        _modifyProfile(context, profile);
-                                      },
-                                      icon: const Icon(Icons.edit),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    flex: 1,
-                                    child: IconButton(
-                                      onPressed: () {
-                                        _showDeleteDialog(context, profile);
-                                      },
-                                      icon: const Icon(Icons.delete),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
+                      return CustomItemList(
+                        item: profile,
+                        onDeletePressed: () {
+                          _showDeleteDialog(context, profile);
+                        },
+                        onEditPressed: () {
+                          _modifyProfile(context, profile);
+                        },
+                        onPressed: () {
+                          _goToMedicationScreen(context, profile);
+                        },
+                        icon: profile.isAnimal == false ? Icons.person : Icons.pets,
                       );
                     },
                   ),
