@@ -3,11 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medication/Screens/new_medication_screen.dart';
 import 'package:medication/Screens/new_usage_screen.dart';
 import 'package:medication/CustomIcons/app_icons_icons.dart';
-import 'package:medication/Screens/usage_history_screen.dart';
 import 'package:medication/Screens/usage_screen_controller.dart';
 import '../Blocs/usage_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:medication/Services/authorization.dart';
+import '../Widgets/customItemsList.dart';
+import '../Widgets/menuDrawer.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:medication/Database_classes/Usage.dart';
 import 'package:medication/Database_classes/Profile.dart';
@@ -27,8 +27,6 @@ class MedicationView extends StatefulWidget {
 
 class _MedicationViewState extends State<MedicationView> {
 
-  final AuthorizationService _authorizationService = AuthorizationService();
-
   @override
   void initState() {
     BlocProvider.of<UsageBloc>(context).add(LoadUsages(widget.profile.profileId));
@@ -43,59 +41,7 @@ class _MedicationViewState extends State<MedicationView> {
         title: const Text('MediCATion'),
         centerTitle: true,
       ),
-      endDrawer: Drawer(
-          backgroundColor: Colors.grey[900],
-          clipBehavior: Clip.none,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(20),
-                bottomLeft: Radius.circular(20)),
-          ),
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: [
-              const SizedBox(
-                height: 93, // To change the height of DrawerHeader
-                width: double.infinity, // To Change the width of DrawerHeader
-                child: DrawerHeader(
-                  decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 174, 199, 255),
-                  ),
-                  child: Center(
-                    child: Text(
-                      'Menu',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 30,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              OutlinedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.grey[900],
-                ),
-                onPressed: (){
-                  _authorizationService.signOut();
-                },
-                child: const Row(
-                  children: [
-                    Icon(Icons.logout, color: Colors.white),
-                    SizedBox(width: 20),
-                    Text(
-                      "Wyloguj się",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          )
-      ),
+      endDrawer: MenuDrawer(),
       backgroundColor: Colors.grey[900],
       body: BlocBuilder<UsageBloc, UsageState>(
         builder: (context, state) {
@@ -132,65 +78,18 @@ class _MedicationViewState extends State<MedicationView> {
                     itemCount: usages.length,
                     itemBuilder: (context, index) {
                       final usage = usages[index];
-                      return Column(
-                        children: [
-                          const SizedBox(height: 3),
-                          Container(
-                            width: double.infinity,
-                            height: 80,
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                ),
-                                backgroundColor: Colors.grey[800],
-                              ),
-                              onPressed: () {
-                                _goToUsageScreen(context, usage);
-                              },
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    flex: 1,
-                                    child: Icon(
-                                      color: Theme.of(context).colorScheme.inversePrimary,
-                                      MdiIcons.pill,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 20),
-                                  Expanded(
-                                    flex: 7,
-                                    child: Text(
-                                      usage.medicationName,
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 20,
-                                      ),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    flex: 1,
-                                    child: IconButton(
-                                      onPressed: () {
-                                        goToEditUsageScreen(context, widget.profile.isAnimal, widget.profile.profileId, usage, widget.profile.name);
-                                      },
-                                      icon: const Icon(Icons.edit),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    flex: 1,
-                                    child: IconButton(
-                                      onPressed: () {
-                                        _showDeleteDialog(context, usage);
-                                      },
-                                      icon: const Icon(Icons.delete),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
+                      return CustomItemList(
+                        item: usage,
+                        onDeletePressed: () {
+                          _showDeleteDialog(context, usage);
+                        },
+                        onEditPressed: () {
+                          goToEditUsageScreen(context, widget.profile.isAnimal, widget.profile.profileId, usage, widget.profile.name);
+                        },
+                        onPressed: () {
+                          _goToUsageScreen(context, usage);
+                        },
+                        icon: MdiIcons.pill,
                       );
                     },
                   ),
