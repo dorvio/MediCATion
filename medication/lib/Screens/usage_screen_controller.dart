@@ -5,6 +5,8 @@ import 'package:medication/Screens/usage_review_screen.dart';
 import 'package:medication/Services/authorization.dart';
 import 'package:medication/Database_classes/Usage.dart';
 
+///class to manage displaying usage review and usage history screens
+///allows to navigate between screen with swipes or BottomNavigationsBar
 class UsageController extends StatefulWidget {
   final Usage usage;
 
@@ -18,7 +20,6 @@ class UsageController extends StatefulWidget {
 }
 
 class _UsageControllerState extends State<UsageController> {
-  final AuthorizationService _authorizationService = AuthorizationService();
   int currentIndex = 0;
   PageController _pageController = PageController(initialPage: 0);
 

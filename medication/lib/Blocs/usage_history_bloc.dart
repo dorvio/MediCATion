@@ -4,6 +4,8 @@ import '../Services/firestore_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:connectivity/connectivity.dart';
 
+
+///bloc class for usage history
 @immutable
 abstract class UsageHistoryEvent {}
 
@@ -17,12 +19,6 @@ class AddUsageHistory extends UsageHistoryEvent {
   final UsageHistory usageHistory;
 
   AddUsageHistory(this.usageHistory);
-}
-
-class DeleteUsageHistory extends UsageHistoryEvent {
-  final String usageHistoryId;
-
-  DeleteUsageHistory(this.usageHistoryId);
 }
 
 class LoadUsageHistoryById extends UsageHistoryEvent {
@@ -60,6 +56,8 @@ class UsageHistoryBloc extends Bloc<UsageHistoryEvent, UsageHistoryState> {
   final FirestoreService _firestoreService;
 
   UsageHistoryBloc(this._firestoreService) : super(UsageHistoryInitial()) {
+
+    ///on event LoadUsageHistory
     on<LoadUsageHistory>((event, emit) async {
       try {
         emit(UsageHistoryLoading());
@@ -70,6 +68,7 @@ class UsageHistoryBloc extends Bloc<UsageHistoryEvent, UsageHistoryState> {
       }
     });
 
+    ///on event AddUsageHistory
     on<AddUsageHistory>((event, emit) async {
       try {
         emit(UsageHistoryLoading());
@@ -83,19 +82,7 @@ class UsageHistoryBloc extends Bloc<UsageHistoryEvent, UsageHistoryState> {
       }
     });
 
-    on<DeleteUsageHistory>((event, emit) async {
-      try {
-        emit(UsageHistoryLoading());
-        var connectivityResult = await Connectivity().checkConnectivity();
-        if (connectivityResult == ConnectivityResult.none)
-          emit(UsageHistoryOperationSuccess('History added successfully.'));
-        await _firestoreService.deleteUsageHistory(event.usageHistoryId);
-        emit(UsageHistoryOperationSuccess('History deleted successfully.'));
-      } catch (e) {
-        emit(UsageHistoryError('Failed to delete history.'));
-      }
-    });
-
+    ///on event LoadUsageHistoryById
     on<LoadUsageHistoryById>((event, emit) async {
       try {
         emit(UsageHistoryLoading());

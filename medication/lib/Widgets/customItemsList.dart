@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:medication/Database_classes/Usage.dart';
 import 'package:medication/Database_classes/Profile.dart';
 
+///custom list class
+///reusable list with customized look
 class CustomItemList<T> extends StatelessWidget {
   final T item;
   final VoidCallback onDeletePressed;

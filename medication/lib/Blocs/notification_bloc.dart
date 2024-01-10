@@ -4,6 +4,7 @@ import '../Services/firestore_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:connectivity/connectivity.dart';
 
+///bloc class for notifications
 @immutable
 abstract class NotificationEvent {}
 
@@ -54,6 +55,8 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   final FirestoreService _firestoreService;
 
   NotificationBloc(this._firestoreService) : super(NotificationInitial()) {
+
+    ///on event LoadNotifications
     on<LoadNotifications>((event, emit) async {
       try {
         emit(NotificationLoading());
@@ -64,6 +67,7 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
       }
     });
 
+    ///on event AddNotification
     on<AddNotification>((event, emit) async {
       try {
         emit(NotificationLoading());
@@ -77,6 +81,7 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
       }
     });
 
+    ///on event DeleteNotification
     on<DeleteNotification>((event, emit) async {
       try {
         emit(NotificationLoading());

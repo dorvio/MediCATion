@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:medication/Services/authorization.dart';
 
+///custom menu drawer class
+///reusable menu drawer with customized look
 class MenuDrawer extends StatelessWidget {
 
   MenuDrawer({Key? key}) : super(key: key);

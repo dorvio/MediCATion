@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_toggle_tab/flutter_toggle_tab.dart';
 
+///custom toggle tab class
+///reusable toggle tab with customized look
 class CustomToggleTab extends StatefulWidget {
   final List<String> labels;
   final List<IconData>? icons;

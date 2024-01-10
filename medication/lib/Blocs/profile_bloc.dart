@@ -4,6 +4,7 @@ import '../Services/firestore_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:connectivity/connectivity.dart';
 
+///bloc class for profiles
 @immutable
 abstract class ProfileEvent {}
 
@@ -60,6 +61,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   final FirestoreService _firestoreService;
 
   ProfileBloc(this._firestoreService) : super(ProfileInitial()) {
+
+    ///on event LoadProfiles
     on<LoadProfiles>((event, emit) async {
       try {
         emit(ProfileLoading());
@@ -70,6 +73,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       }
     });
 
+    ///on event AddProfile
     on<AddProfile>((event, emit) async {
       try {
         emit(ProfileLoading());
@@ -83,6 +87,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       }
     });
 
+    ///on event UpdateProfile
     on<UpdateProfile>((event, emit)  async {
       try {
         emit(ProfileLoading());
@@ -96,6 +101,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       }
     });
 
+    ///on event DeleteProfile
     on<DeleteProfile>((event, emit) async {
       try {
         emit(ProfileLoading());

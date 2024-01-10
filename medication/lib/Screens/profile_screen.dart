@@ -8,6 +8,8 @@ import '../Database_classes/Profile.dart';
 import '../Blocs/profile_bloc.dart';
 import 'medication_screen.dart';
 
+///class displaying profile screen with all activities
+///allows to display, add, edit and delete profile
 class ProfileView extends StatefulWidget {
   final String userId;
 
@@ -122,6 +124,9 @@ class _ProfileViewState extends State<ProfileView> {
   }
 }
 
+/// Function displaying a dialog to confirm delete
+/// The user is required to enter the name of the profile being deleted
+/// as an additional security measure.
 void _showDeleteDialog(BuildContext context, Profile profile) {
   final _formKey = GlobalKey<FormState>();
   String name = '';
@@ -199,6 +204,7 @@ void _showDeleteDialog(BuildContext context, Profile profile) {
   );
 }
 
+///function navigating to medication screen
 void _goToMedicationScreen(BuildContext context, Profile profile) {
   Navigator.push(
     context,
@@ -206,6 +212,7 @@ void _goToMedicationScreen(BuildContext context, Profile profile) {
   );
 }
 
+///function adding new profile to Firebase
 void _createNewProfile(BuildContext context, String userId) {
   Navigator.push(
     context,
@@ -213,6 +220,7 @@ void _createNewProfile(BuildContext context, String userId) {
   );
 }
 
+///function editing profile in Firebase
 void _modifyProfile(BuildContext context, Profile profile) {
   Navigator.push(
     context,

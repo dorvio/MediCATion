@@ -9,6 +9,7 @@ import '../Blocs/profile_bloc.dart';
 import 'package:medication/Services/authorization.dart';
 import 'package:flutter_toggle_tab/flutter_toggle_tab.dart';
 
+///class to add new profile
 class NewProfileView extends StatefulWidget {
   final String? userId;
   final bool editMode;
@@ -27,9 +28,6 @@ class NewProfileView extends StatefulWidget {
 }
 
 class _NewProfileViewState extends State<NewProfileView> {
-
-  final AuthorizationService _authorizationService = AuthorizationService();
-
   Color? button1Color = Color.fromARGB(255, 174, 199, 255);
   Color? button2Color = Colors.grey[200];
   final _formKey = GlobalKey<FormState>();

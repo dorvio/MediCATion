@@ -10,6 +10,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medication/Database_classes/UsageHistory.dart';
 import 'package:medication/Widgets/headerText.dart';
 
+///class to display data about usage
+///displays all given data and allows user to add usage to history
 class UsageReviewView extends StatefulWidget {
   final Usage usage;
 
@@ -275,6 +277,12 @@ class _UsageReviewViewState extends State<UsageReviewView> {
     );
   }
 
+  ///function checking usage restrictions
+  ///The medication has already been administered on this day.
+  ///Medication administration is scheduled for a different time.
+  ///Medication administration is scheduled for a different day of the week.
+  ///Medication administration is scheduled for a different time of day.
+  ///A conflicting medication was administered less than the required interval ago.
   Future<bool> _checkUsage() async {
     bool result = true;
     DateTime now = DateTime.now();
@@ -396,11 +404,13 @@ class _UsageReviewViewState extends State<UsageReviewView> {
     return result;
   }
 
+  ///function checking if time between two dates is bigger than given break
   bool isBreakLonger(DateTime start, DateTime end, Duration breakDuration) {
     Duration timeDifference = end.difference(start);
     return timeDifference >= breakDuration;
   }
 
+  ///function returning name of day of week for given number
   String getDayName(int day){
     switch(day){
       case 1:
@@ -421,6 +431,7 @@ class _UsageReviewViewState extends State<UsageReviewView> {
     return 'Brak';
   }
 
+  ///function showing dialog informing about wrong administration with confirming
   Future<bool> _showAlertDialog(String data) async {
     Completer<bool> completer = Completer<bool>();
 
@@ -479,6 +490,7 @@ class _UsageReviewViewState extends State<UsageReviewView> {
     return completer.future;
   }
 
+  ///function adding usage to history
   void _addToUsageHistory(){
     final usageHistory = UsageHistory(
       usageHistoryId: DateTime.now().toString(),
@@ -490,6 +502,7 @@ class _UsageReviewViewState extends State<UsageReviewView> {
     BlocProvider.of<UsageHistoryBloc>(context).add(AddUsageHistory(usageHistory));
   }
 
+  ///function showing snack bar with information id usage has been added to history
   void showSnackBar(String message) {
     final snackBar = SnackBar(
       content: Text(message),

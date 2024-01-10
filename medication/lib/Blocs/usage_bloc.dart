@@ -4,6 +4,7 @@ import '../Services/firestore_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:connectivity/connectivity.dart';
 
+///bloc class for usages
 @immutable
 abstract class UsageEvent {}
 
@@ -37,13 +38,6 @@ class LoadUsagesById extends UsageEvent {
   LoadUsagesById(this.userId);
 }
 
-class UpdateUsageConflict extends UsageEvent {
-  final String usageId;
-  final List<dynamic> conflict;
-
-  UpdateUsageConflict(this.usageId, this.conflict);
-}
-
 @immutable
 abstract class UsageState {}
 
@@ -73,6 +67,8 @@ class UsageBloc extends Bloc<UsageEvent, UsageState> {
   final FirestoreService _firestoreService;
 
   UsageBloc(this._firestoreService) : super(UsageInitial()) {
+
+    ///on event LoadUsages
     on<LoadUsages>((event, emit) async {
       try {
         emit(UsageLoading());
@@ -83,6 +79,7 @@ class UsageBloc extends Bloc<UsageEvent, UsageState> {
       }
     });
 
+    ///on event AddUsage
     on<AddUsage>((event, emit) async {
       try {
         emit(UsageLoading());
@@ -96,6 +93,7 @@ class UsageBloc extends Bloc<UsageEvent, UsageState> {
       }
     });
 
+    ///on event UpdateUsage
     on<UpdateUsage>((event, emit) async {
       try {
         emit(UsageLoading());
@@ -109,6 +107,7 @@ class UsageBloc extends Bloc<UsageEvent, UsageState> {
       }
     });
 
+    ///on event DeleteUsage
     on<DeleteUsage>((event, emit) async {
       try {
         emit(UsageLoading());
@@ -122,6 +121,7 @@ class UsageBloc extends Bloc<UsageEvent, UsageState> {
       }
     });
 
+    ///on event LoadUsagesById
     on<LoadUsagesById>((event, emit) async {
       try {
         emit(UsageLoading());
@@ -129,19 +129,6 @@ class UsageBloc extends Bloc<UsageEvent, UsageState> {
         emit(UsageLoaded(usages));
       } catch (e) {
         emit(UsageError('Failed to load usages.'));
-      }
-    });
-
-    on<UpdateUsageConflict>((event, emit) async {
-      try {
-        emit(UsageLoading());
-        var connectivityResult = await Connectivity().checkConnectivity();
-        if (connectivityResult == ConnectivityResult.none)
-          emit(UsageOperationSuccess('Usage conflict updated successfully.'));
-        await _firestoreService.updateUsageConflict(event.usageId, event.conflict);
-        emit(UsageOperationSuccess('Usage conflict updated successfully.'));
-      } catch (e) {
-        emit(UsageError('Failed to update usage.'));
       }
     });
   }

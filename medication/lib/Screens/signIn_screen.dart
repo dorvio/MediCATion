@@ -5,8 +5,8 @@ import 'register_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:medication/Widgets/customTextFormField.dart';
-import 'profile_screen.dart';
 
+///class displaying sign in screen with all activities
 class SignInView extends StatefulWidget {
   const SignInView({Key? key}) : super(key: key);
 
@@ -72,6 +72,7 @@ class _SignInViewState extends State<SignInView> {
               ),
               const SizedBox(height: 40),
               CustomTextFormField(
+                key: const Key('emailField'),
                 onChanged: (text) {
                   setState(() => email = text);
                 },
@@ -89,6 +90,7 @@ class _SignInViewState extends State<SignInView> {
               ),
               const SizedBox(height: 40),
               TextFormField(
+                key: const Key('passwordField'),
                 obscureText: hidePassword,
                 style: const TextStyle(color: Colors.white),
                 decoration: InputDecoration(
@@ -165,6 +167,7 @@ class _SignInViewState extends State<SignInView> {
               ),
               const SizedBox(height: 20),
               CustomButton(
+                key : const Key('logInButton'),
                 text: "Zaloguj",
                   onPressed: () async {
                     if(_formKey.currentState!.validate()){
@@ -185,6 +188,7 @@ class _SignInViewState extends State<SignInView> {
   }
 }
 
+///function navigating to register screen
 void _goToRegisterScreen(BuildContext context) {
   Navigator.push(
     context,

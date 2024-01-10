@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 
+///class to store data about notification
 @immutable
 class NotificationData {
   String notificationId;

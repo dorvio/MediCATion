@@ -4,8 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:medication/Widgets/customButton.dart';
 import 'package:medication/Widgets/customTextFormField.dart';
-import 'profile_screen.dart';
 
+///class displaying register screen with all activities
 class RegisterView extends StatefulWidget {
   const RegisterView({Key? key}) : super(key: key);
 

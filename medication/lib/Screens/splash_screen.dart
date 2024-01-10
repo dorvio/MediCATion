@@ -14,6 +14,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:medication/Services/notification_service.dart';
 
+///class displaying splash screen when app is loading
 class SplashView extends StatefulWidget {
   const SplashView({Key? key}) : super(key: key);
 
@@ -80,6 +81,7 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
     );
   }
 
+  ///function downloading all data from Firebase
   void downloadData() {
     User? user = FirebaseAuth.instance.currentUser;
     if (user == null) {} else {
@@ -92,6 +94,7 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
     }
   }
 
+  ///function to check Internet connection
   Future<void> checkInternetConnection() async {
     var connectivityResult = await Connectivity().checkConnectivity();
     if (connectivityResult == ConnectivityResult.none) {
@@ -108,11 +111,14 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
     }
   }
 
+  ///function to clear data in cache
   Future<void> clearFirestoreCache() async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     await firestore.clearPersistence();
   }
 
+  ///function to set up notification
+  ///notification data is download from Firebase
   Future<void> setUpNotifications() async {
     User? user = FirebaseAuth.instance.currentUser;
     if (user == null) {} else {
