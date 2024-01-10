@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+///custom dropdown button form field class
+///reusable dropdown button form field  with customized look
 class CustomDropdownButtonFormField extends StatelessWidget {
   final List<String> items;
   final FormFieldValidator<String>? validator;

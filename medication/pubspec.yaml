@@ -61,6 +61,8 @@ dependencies:
   fake_cloud_firestore: ^2.4.5
 
 dev_dependencies:
+  integration_test:
+    sdk: flutter
   flutter_test:
     sdk: flutter
 

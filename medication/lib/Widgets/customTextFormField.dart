@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+///custom text form field class
+///reusable text form field with customized look
 class CustomTextFormField extends StatefulWidget {
   final ValueChanged<String>? onChanged;
   final FormFieldValidator<String>? validator;

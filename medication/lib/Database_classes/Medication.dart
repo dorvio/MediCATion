@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 
+
+///class to store data about medication
 @immutable
 class Medication {
   String medicationId;

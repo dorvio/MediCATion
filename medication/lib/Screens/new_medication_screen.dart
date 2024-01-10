@@ -10,6 +10,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:medication/Blocs/medication_bloc.dart';
 import 'package:medication/Database_classes/Medication.dart';
 
+///class to add new medication
 class NewMedicationView extends StatefulWidget {
   final bool animal;
 
@@ -23,7 +24,6 @@ class NewMedicationView extends StatefulWidget {
 }
 
 class _NewMedicationViewState extends State<NewMedicationView> {
-  final AuthorizationService _authorizationService = AuthorizationService();
   final _formKey =GlobalKey<FormState>();
   bool showErrorName = false;
   bool showErrorType = false;

@@ -21,6 +21,7 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:medication/Services/notification_service.dart';
 
+///class to add new usage
 class NewUsageView extends StatefulWidget {
   final bool animal;
   final String profileId;
@@ -794,6 +795,9 @@ class _NewUsageViewState extends State<NewUsageView> {
       ),
     );
   }
+
+  ///function showing time picker
+  ///returns chosen time
   Future<TimeOfDay?> _showTimePicker (BuildContext context) async {
     Completer<TimeOfDay?> completer = Completer<TimeOfDay?>();
     TimeOfDay selectedTime = TimeOfDay.now();
@@ -821,6 +825,7 @@ class _NewUsageViewState extends State<NewUsageView> {
     return completer.future;
   }
 
+  ///function checking if medication is type antibiotic
   bool _isAntibiotic (List<Medication> medications){
     if(medication == '') {return false;}
     Medication selectedMed = medications.firstWhere((element) => element.medication == medication);
@@ -831,6 +836,7 @@ class _NewUsageViewState extends State<NewUsageView> {
     }
   }
 
+  ///function checking if data in category administration is filled correctly
   bool _isAdministrationValid(){
     if(_administrationChoice == 1 && administration.isEmpty){
       setState(() {
@@ -845,6 +851,7 @@ class _NewUsageViewState extends State<NewUsageView> {
     }
   }
 
+  ///function checking if data in category hour is filled correctly
   bool _isHourValid(){
     if(_timeMedChoice == 1 && hour.isEmpty){
       setState(() {
@@ -858,6 +865,8 @@ class _NewUsageViewState extends State<NewUsageView> {
       return true;
     }
   }
+
+  ///function checking if data in category restrictions is filled correctly
   bool _isRestrictionValid(){
     if(restrictions.isEmpty){
       setState(() {
@@ -871,6 +880,8 @@ class _NewUsageViewState extends State<NewUsageView> {
       return true;
     }
   }
+
+  ///function checking if data in category conflict is filled correctly
   bool _isConflictValid(){
     if(_conflictChoice == 0 && checkedConMeds.values.any((value) => value == true)){
       setState(() {
@@ -885,6 +896,7 @@ class _NewUsageViewState extends State<NewUsageView> {
     }
   }
 
+  ///function adding new usage to Firebase
   void saveUsage(List<Medication> medications, List<Usage> usages) {
     List<dynamic> doseData = [doseNumber, doseType];
     if(_administrationChoice == 0){
@@ -947,12 +959,14 @@ class _NewUsageViewState extends State<NewUsageView> {
     Navigator.pop(context);
   }
 
+  ///function formating time to string
   String formatTimeOfDay(TimeOfDay time) {
     final hour = time.hour.toString().padLeft(2, '0');
     final minute = time.minute.toString().padLeft(2, '0');
     return '$hour:$minute';
   }
 
+  ///function converting string to timeOfDay
   TimeOfDay stringToTimeOfDay(String timeString) {
     List<String> parts = timeString.split(':');
     int hour = int.parse(parts[0]);
@@ -960,6 +974,7 @@ class _NewUsageViewState extends State<NewUsageView> {
     return TimeOfDay(hour: hour, minute: minute);
   }
 
+  ///function checking which days where selected
   void checkSelectedDays(){
     daysCardsSelected[0] = administration.contains('Poniedziałek');
     daysCardsSelected[1] = administration.contains('Wtorek');
@@ -970,6 +985,7 @@ class _NewUsageViewState extends State<NewUsageView> {
     daysCardsSelected[6] = administration.contains('Niedziela');
   }
 
+  ///function finding the smallest missing number
   int findMissingNumber(List<int> numbers) {
     if(numbers.isEmpty) return 1;
     numbers.sort();
@@ -982,6 +998,7 @@ class _NewUsageViewState extends State<NewUsageView> {
     return missingNumber;
   }
 
+  ///function creating ids for notifications
   void _createNotificationIds(List<int> idsInUse) async  {
     int newId = 0;
     List<int> ids = [];
@@ -1004,6 +1021,7 @@ class _NewUsageViewState extends State<NewUsageView> {
     //return ids;
   }
 
+  ///functions schedulting new notifications
   void _scheduleNotifications() async {
     String userId = '';
     User? user = FirebaseAuth.instance.currentUser;
@@ -1054,6 +1072,7 @@ class _NewUsageViewState extends State<NewUsageView> {
     }
   }
 
+  /// Function checking data and adding new usage to Firebase or updating an existing one
   void _handleSave (List<Medication> medications, List<Usage> usages) async {
     List<int> idsInUse = await NotificationService().getScheduledNotificationIds();
     if(widget.usage != null){

@@ -13,6 +13,8 @@ import 'package:medication/Database_classes/Usage.dart';
 import 'package:medication/Database_classes/Profile.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
+///class displaying medication screen with all activities
+///allows to display, add, edit and delete usages
 class MedicationView extends StatefulWidget {
   final Profile profile;
 
@@ -144,6 +146,7 @@ class _MedicationViewState extends State<MedicationView> {
   }
 }
 
+///function navigating to new medication screen
 void goToNewMedicationScreen(BuildContext context, bool animal) {
   Navigator.push(
     context,
@@ -151,6 +154,7 @@ void goToNewMedicationScreen(BuildContext context, bool animal) {
   );
 }
 
+///function navigating to new usage screen
 void goToNewUsageScreen(BuildContext context, bool animal, String profileId, String profileName) {
   Navigator.push(
     context,
@@ -158,6 +162,7 @@ void goToNewUsageScreen(BuildContext context, bool animal, String profileId, Str
   );
 }
 
+///function navigating to edit usage screen
 void goToEditUsageScreen(BuildContext context, bool animal, String profileId, Usage usage, String profileName) {
   Navigator.push(
     context,
@@ -165,6 +170,7 @@ void goToEditUsageScreen(BuildContext context, bool animal, String profileId, Us
   );
 }
 
+///function navigating screen displaying data about usage
 void _goToUsageScreen(BuildContext context, Usage usage) {
   Navigator.push(
     context,
@@ -172,6 +178,9 @@ void _goToUsageScreen(BuildContext context, Usage usage) {
   );
 }
 
+/// Function displaying a dialog to confirm delete
+/// The user is required to enter the name of the profile being deleted
+/// as an additional security measure.
 void _showDeleteDialog(BuildContext context, Usage usage) {
   final _formKey = GlobalKey<FormState>();
   String name = '';

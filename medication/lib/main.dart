@@ -19,6 +19,7 @@ import 'package:timezone/data/latest.dart' as tz;
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
+/// The main class responsible for initializing components and declaring providers.
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -71,15 +72,19 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+///function requesting permission to schedule notifications
 Future<void> _requestNotificationPermissions() async {
   final PermissionStatus status = await Permission.notification.request();
   if (status != PermissionStatus.granted) {
-    print('Uprawnienia do powiadomień nie zostały udzielone.');
+    print('No permission to notifications.');
   }
 }
+
+///function requesting permission to schedule exacts alarms
 Future<void> _requestExactAlarmPermissions() async {
   final PermissionStatus status = await Permission.scheduleExactAlarm.request();
   if (status != PermissionStatus.granted) {
-    print('Uprawnienia do powiadomień nie zostały udzielone.');
+    print('No permission to exact alarms.');
   }
 }

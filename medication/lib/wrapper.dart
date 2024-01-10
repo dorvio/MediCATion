@@ -12,6 +12,8 @@ import 'package:medication/Services/notification_service.dart';
 import '../Blocs/notification_bloc.dart';
 import '../Database_classes/NotificationData.dart';
 
+/// A class responsible for checking internet connectivity and displaying
+/// either a loading screen or the main application screen accordingly.
 class Wrapper extends StatelessWidget {
   const Wrapper({Key? key}) : super(key: key);
 
@@ -28,7 +30,7 @@ class Wrapper extends StatelessWidget {
       return ProfileView(userId: userId);
     }
   }
-
+  ///function to download all data from Firebase
   void downloadData (BuildContext context){
     User? user = FirebaseAuth.instance.currentUser;
     if(user == null) {
@@ -40,6 +42,8 @@ class Wrapper extends StatelessWidget {
       BlocProvider.of<UsageHistoryBloc>(context).add(LoadUsageHistoryById(userId));
     }
   }
+  ///function to set up notification
+  ///notification data is download from Firebase
   Future<void> setUpNotifications(BuildContext context) async {
     User? user = FirebaseAuth.instance.currentUser;
     if (user == null) {} else {

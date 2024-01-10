@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+///custom header class
+///reusable header with customized look
 class HeaderText extends StatelessWidget {
   final String text;
 

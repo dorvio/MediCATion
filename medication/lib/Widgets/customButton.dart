@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+///custom button class
+///reusable button with customized look
 class CustomButton extends StatefulWidget {
   final Function onPressed;
   final String text;

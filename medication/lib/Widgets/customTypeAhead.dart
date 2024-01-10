@@ -1,8 +1,9 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
+///custom type ahead form field class
+///reusable type ahead form field with customized look
 class CustomTypeAheadFormField extends StatefulWidget {
   final TextEditingController controller;
   final ValueChanged<String> onSuggestionSelected;

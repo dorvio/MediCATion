@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medication/Database_classes/UsageHistory.dart';
 import 'package:flutter_heatmap_calendar/flutter_heatmap_calendar.dart';
 
+///class to display history of medication administration
 class UsageHistoryView extends StatefulWidget {
   final Usage usage;
 
@@ -21,7 +22,6 @@ class UsageHistoryView extends StatefulWidget {
 }
 
 class _UsageHistoryViewState extends State<UsageHistoryView> {
-  final AuthorizationService _authorizationService = AuthorizationService();
   List<UsageHistory> thisUsageHistory = [];
   Map<DateTime, int> heatMapData = {};
 

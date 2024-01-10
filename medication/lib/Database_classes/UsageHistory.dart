@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
+///class to store data about usage history
 @immutable
 class UsageHistory {
   String usageHistoryId;

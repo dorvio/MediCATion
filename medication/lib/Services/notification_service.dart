@@ -1,6 +1,7 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 
+/// A class responsible for managing all activities related to notifications.
 class NotificationService{
   final FlutterLocalNotificationsPlugin notificationsPlugin = FlutterLocalNotificationsPlugin();
   
@@ -15,7 +16,6 @@ class NotificationService{
         initializationSettings, onDidReceiveNotificationResponse:
         (NotificationResponse notificationResponse) async {});
   }
-
   notificationDetails(int id) {
     return NotificationDetails(
         android: AndroidNotificationDetails(
@@ -23,6 +23,7 @@ class NotificationService{
     );
   }
 
+  ///function scheduling daily notification
   Future scheduleDailyNotification({
     int id = 0,
     String? title,
@@ -44,7 +45,7 @@ class NotificationService{
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
         matchDateTimeComponents: DateTimeComponents.time);
   }
-
+  ///function scheduling weekly notification
   Future scheduleWeeklyNotification({
     int id = 0,
     String? title,
@@ -67,14 +68,17 @@ class NotificationService{
         matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime);
   }
 
+  ///function deleting notification by given id
   Future<void> clearNotifications(int id) async {
     await notificationsPlugin.cancel(id);
   }
 
+  ///function delecting all notifications
   Future<void> clearAllNotifications() async {
     await notificationsPlugin.cancelAll();
   }
 
+  ///function showing all scheduled notifications
   Future<void> showScheduledNotifications() async {
     List<dynamic> scheduled = await notificationsPlugin.pendingNotificationRequests();
     if (scheduled.isEmpty) {
@@ -88,6 +92,7 @@ class NotificationService{
     }
   }
 
+  ///function returning all ids of scheduled notifications
   Future<List<int>> getScheduledNotificationIds() async {
     List<int> ids = [];
     List<dynamic> scheduled = await await notificationsPlugin.pendingNotificationRequests();
@@ -99,6 +104,7 @@ class NotificationService{
     return ids;
   }
 
+  ///function finding closest date for given day of week
   DateTime findNextDayOfWeek(int targetDay) {
     DateTime today = DateTime.now();
     int daysUntilNextDayOfWeek = (targetDay - today.weekday + 7) % 7;
